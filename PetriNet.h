@@ -30,6 +30,11 @@ public:
 
   void display();
   
+  int getNofPlaces(){
+	 return nOfPlaces;
+  }
+  
+  
   PetriNet();
   
   void instantiate();

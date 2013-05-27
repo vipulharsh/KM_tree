@@ -35,24 +35,18 @@ int main(){
     temp.display();
     
     
-    kmTree t(*P);
-    
-    
-    t.expand();
-    
-    
-    
-    
-    
-    
-    
     }
 
 	
 	
 	
 	
-	
+	kmTree t(*P);
+    
+    
+    
+    t.expand();
+    
 	
 	return 0;
 }

@@ -45,7 +45,7 @@ public:
 	}
 	
 	
-	void expand();
+	node* expand();  //returns the root of the tree
 
 	
 	
