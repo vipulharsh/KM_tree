@@ -62,7 +62,14 @@ void PetriNet :: display(){
 
 
 
-
+std::list<marking> PetriNet :: reachableMarkings(marking m){
+	list<marking> markings;
+	
+	
+	
+	
+	
+}
 
 
 

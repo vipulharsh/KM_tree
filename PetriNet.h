@@ -34,7 +34,7 @@ public:
   
   void instantiate();
 	  
-  std::list<transition> firableTransitions(marking m);	  
+  std::list<marking> reachableMarkings(marking m);	  
 };	
 
 

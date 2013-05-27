@@ -16,12 +16,18 @@ typedef double wint;   //omega int
 
 class marking{
 	
-	vector<wint> tokens;
 	
-	int nOfPlaces;
 	
 public:
   
+   
+   
+   vector<wint> tokens;
+	
+	int nOfPlaces;
+   
+   
+   
    marking(vector<wint> tokens1){}   //constructor
    marking(){}
    
@@ -63,6 +69,29 @@ public:
 		
 	   cout <<tokens[i]<<") ";
    }	   
+    
+    
+    
+    
+    
+    
+   bool operator<=( const marking& other ) const{
+	   if(nOfPlaces != other.nOfPlaces) return false;
+	   
+	   bool res=true;
+	   
+	   for(int i=0; i<nOfPlaces && res; i++){
+		   res  &= (tokens[i] <= other.tokens[i]);		   
+	   }
+	   
+	   return res;
+	   
+   }
+    
+    
+    
+    
+    
     
    
 };   
