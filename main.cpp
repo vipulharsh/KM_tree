@@ -23,6 +23,24 @@ int main(){
 	
 	P->display();
 	
+	
+	list<marking> trying =  P->reachableMarkings(P->getInitialMarking());
+	
+	list<marking>::const_iterator iterator;
+	
+	cout<<endl<<"from here"<<endl;
+	for (iterator = trying.begin(); iterator != trying.end(); ++iterator) {    
+    marking temp = *iterator;
+    
+    temp.display();
+    }
+
+	
+	
+	
+	
+	
+	
 	return 0;
 }
 

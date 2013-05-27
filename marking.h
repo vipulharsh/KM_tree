@@ -11,6 +11,7 @@ using namespace std;
 #include <limits>
 #include <stdio.h>
 #include <stdlib.h>
+
 	
 typedef double wint;   //omega int
 
@@ -38,6 +39,10 @@ public:
 	   
    }
 	   
+  
+   
+   
+   
    
    
    void input()
@@ -88,6 +93,22 @@ public:
 	   
    }
     
+    
+    
+  marking operator+( const marking& other ) const{
+	   
+	   marking m;
+	   
+	   m.tokens.resize(nOfPlaces);
+	   m.nOfPlaces = nOfPlaces;
+	   
+	   for(int i=0; i<nOfPlaces; i++){
+		   m.tokens[i] = (tokens[i] + other.tokens[i]);		   
+	   }
+	   
+	   return m;
+	   
+   }  
     
     
     

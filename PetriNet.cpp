@@ -15,7 +15,7 @@ void PetriNet :: instantiate (){
 	transition t;
 	marking m(nOfPlaces);
 
-	for (int i=0 ; i<nOfPlaces ;i++){
+	for (int i=0 ; i<nOfTransitions ;i++){
 
 		m.input();
 		t.assignReqMarking(m);
@@ -26,9 +26,14 @@ void PetriNet :: instantiate (){
 
 	}
 	
-	m.input();
+	//m.input();
+	initialMarking.nOfPlaces = nOfPlaces;
 	
-	initialMarking = m;
+	initialMarking.tokens.resize(nOfPlaces);
+	
+	initialMarking.input();
+	cout<<"jfdkj"<<endl;
+	initialMarking.display();
 	
 }
 
@@ -65,9 +70,22 @@ void PetriNet :: display(){
 std::list<marking> PetriNet :: reachableMarkings(marking m){
 	list<marking> markings;
 	
+	//cout<<"flag1"<<endl;
 	
-	
-	
+	for (int i=0; i< nOfTransitions ; i++)
+	{
+		
+		//cout<<"flag2"<<endl;
+		if(transitions[i].req <= m){
+			
+			//m.display();
+			//cout<<endl;
+			//transitions[i].vec.display();
+			//cout<<endl;
+			markings.push_back(m+transitions[i].vec);
+		}
+	}
+	return markings;
 	
 }
 

@@ -35,6 +35,11 @@ public:
   void instantiate();
 	  
   std::list<marking> reachableMarkings(marking m);	  
+  
+  marking getInitialMarking(){
+	  return initialMarking ;
+  }
+  
 };	
 
 
