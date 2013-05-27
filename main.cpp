@@ -33,6 +33,19 @@ int main(){
     marking temp = *iterator;
     
     temp.display();
+    
+    
+    kmTree t(*P);
+    
+    
+    t.expand();
+    
+    
+    
+    
+    
+    
+    
     }
 
 	

@@ -11,6 +11,12 @@
    list<node*> children;
    
    marking label;
+  
+   bool visited;
+  
+  
+  node(){visited = false;}
+  
    
 };
  
@@ -31,10 +37,10 @@ public:
 	}
 	
 		
-	kmTree(marking initialMarking , PetriNet Pn){
+	kmTree(PetriNet Pn){
 		root = new node;
 		root->parent = NULL ;
-		root->label = initialMarking;
+		root->label = Pn.getInitialMarking();
 		P = Pn;
 	}
 	

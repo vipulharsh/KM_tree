@@ -95,6 +95,44 @@ public:
     
     
     
+    bool operator<( const marking& other ) const{
+	   if(nOfPlaces != other.nOfPlaces) return false;
+	   
+	   bool res=true;
+	   int eq = 0;
+	   
+	   for(int i=0; i<nOfPlaces && res; i++){
+		   res  &= (tokens[i] <= other.tokens[i]);
+		   if(tokens[i] == other.tokens[i])	eq++;	   
+	   }
+
+	   return (res && (eq != nOfPlaces));
+	   
+   }
+    
+    
+   bool operator==( const marking& other ) const{
+	   if(nOfPlaces != other.nOfPlaces) return false;
+	   
+	   bool res=true;
+	   
+	   for(int i=0; i<nOfPlaces && res; i++){
+		   res  &= (tokens[i] == other.tokens[i]);		   
+	   }
+	   
+	   return res;
+	   
+   }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
   marking operator+( const marking& other ) const{
 	   
 	   marking m;

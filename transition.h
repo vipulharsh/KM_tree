@@ -14,23 +14,10 @@ class transition{
 
 public:
 	
-	
-	
-	
-	
-	
 	marking req;      //the minimum marking required such that this transition is firable
 	
 	
 	transition_vector vec;  //the transition vector for the transition
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	transition(){};

@@ -70,12 +70,10 @@ void PetriNet :: display(){
 std::list<marking> PetriNet :: reachableMarkings(marking m){
 	list<marking> markings;
 	
-	//cout<<"flag1"<<endl;
 	
 	for (int i=0; i< nOfTransitions ; i++)
 	{
 		
-		//cout<<"flag2"<<endl;
 		if(transitions[i].req <= m){
 			
 			//m.display();
