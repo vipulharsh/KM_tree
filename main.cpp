@@ -45,8 +45,30 @@ int main(){
     
     
     
-    t.expand();
+    node *km = t.expand();
     
+
+	
+	cout<<endl<<endl<<"The tree"<<endl;
+	
+	
+   list<node *> var;
+   var.push_back(km);
+   
+   while(!var.empty()){
+	   node *a= var.front();
+	   var.pop_front();
+	   a->label.display();
+	   list<node *>::const_iterator iterator;
+	   for (iterator = a->children.begin(); iterator != a->children.end(); ++iterator) {    
+          var.push_back(*iterator);
+        }
+	}
+	
+	
+	
+	
+	
 	
 	return 0;
 }

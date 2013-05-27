@@ -33,14 +33,14 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 
 
 
-void kmTree :: expand(){
+node* kmTree :: expand(){
 	
 	cout<<endl<<"1"<<endl;
 	
 	
 	if(root == NULL) {
 		cout <<"Incorrect call to expand , instantiate the problem first" <<endl;
-		return;
+		return NULL;
 	}
 	
 	list<node*> unprocessedNodes;
@@ -95,6 +95,6 @@ void kmTree :: expand(){
 	  
 	  
     }
-	
+	return root;
 }
 
