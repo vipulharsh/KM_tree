@@ -52,22 +52,40 @@ int main(){
 	cout<<endl<<endl<<"The tree"<<endl;
 	
 	
-   list<node *> var;
-   var.push_back(km);
+   list<pair<node *,int> > var;
+   
+   pair<node* , int> p;
+   p.first = km;
+   p.second =0;
+   var.push_back(p);
+  
+  
+   cout<<"DONE !"<<endl;
+   
+   int t1;
    
    while(!var.empty()){
-	   node *a= var.front();
+	   node *a= var.front().first;
+	   t1  = var.front().second;
 	   var.pop_front();
 	   a->label.display();
+	   
+	   if(a->parent != NULL) {
+		   cout<<" : of parent";
+		   a->parent->label.display();
+		   cout<<" : at level "<<t1<<endl;
+	   }
+	    
 	   list<node *>::const_iterator iterator;
 	   for (iterator = a->children.begin(); iterator != a->children.end(); ++iterator) {    
-          var.push_back(*iterator);
+          p.first = *iterator ;
+          p.second = t1+1 ;
+          var.push_back(p);
         }
 	}
 	
 	
-	
-	
+	cout<<"level of tree is : "<<t1<<endl;
 	
 	
 	return 0;

@@ -11,19 +11,19 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 	node *t;
 	t = N->parent;
 	
-	cout<<"in here lesser Ancestors"<<endl;
-	N->label.display();
+	//cout<<"in here lesser Ancestors"<<endl;
+	//N->label.display();
 	
 	
 	
 	while(t != NULL){
-		t->label.display();
+		//t->label.display();
 		if(t->label < N->label) p.first.push_back(t->label);
-		if(N->label == t->label) p.second = true;
+		if(N->label <= t->label) p.second = true;
 		t = t->parent;
 	}
 	
-	cout<<"end of lesser Ancestors"<<endl;
+	//cout<<"end of lesser Ancestors"<<endl;
 	return p;
 }
 
@@ -35,7 +35,7 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 
 node* kmTree :: expand(){
 	
-	cout<<endl<<"1"<<endl;
+	//cout<<endl<<"1"<<endl;
 	
 	
 	if(root == NULL) {
@@ -51,7 +51,7 @@ node* kmTree :: expand(){
 	{
 	  
 	  
-	  cout<<endl<<"2"<<endl;
+	  //cout<<endl<<"2"<<endl;
 	
 	  node* temp = unprocessedNodes.front();
 	  unprocessedNodes.pop_front();
@@ -60,14 +60,15 @@ node* kmTree :: expand(){
 	  
 	  if(result.second) continue;
 	  
-	  
+	 // cout<<endl<<"3"<<endl;
+	
 	  
 	  
 	  //Acceleration
 	  if(!result.first.empty()){
 	  list<marking>::const_iterator iterator;
 	
-	  cout<<endl<<"part2"<<endl;
+	//  cout<<endl<<"part2"<<endl;
 	   for (iterator = result.first.begin(); iterator != result.first.end(); ++iterator) {    
 			marking ancestor1 = *iterator;
 			for (int i=0; i< P.getNofPlaces() ; i++){
@@ -76,21 +77,28 @@ node* kmTree :: expand(){
 			}
 			
 	  }
+	  
+	  
+	  //cout<<endl<<"4"<<endl;
+	
+	  
+	// unprocessedNodes.push_back(temp);
+	// continue; 
 	 }       
 	  
 	  //Add all children of the nodes
 	  list<marking> childrenNodes =  P.reachableMarkings(temp->label);
 	  list<marking>::const_iterator iterator;
 	  
-	  cout<<"part3"<<endl;
-	  temp->label.display();
+    // cout<<"part3"<<endl;
+	//  temp->label.display();
 	  for (iterator = childrenNodes.begin(); iterator != childrenNodes.end(); ++iterator) {
 		  node *N1 = new node;
 		  N1->parent  = temp;
 		  temp->children.push_back(N1);
 		  N1->label = *iterator;
 		  unprocessedNodes.push_back(N1);
-		  N1->label.display();
+		//  N1->label.display();
 	}
 	  
 	  
