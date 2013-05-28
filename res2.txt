@@ -50,7 +50,8 @@ from here
 
 The tree
 DONE !
- (1,0,0,0,0)  (0,1,0,0,0)  : of parent (1,0,0,0,0)  : at level 1
+ (1,0,0,0,0)  
+ (0,1,0,0,0)  : of parent (1,0,0,0,0)  : at level 1
  (0,0,0,1,0)  : of parent (1,0,0,0,0)  : at level 1
  (0,0,2,0,0)  : of parent (0,1,0,0,0)  : at level 2
  (0,0,0,0,2)  : of parent (0,0,0,1,0)  : at level 2
@@ -60,8 +61,10 @@ DONE !
  (0,inf,inf,0,0)  : of parent (0,1,inf,0,0)  : at level 4
  (0,0,0,0,inf)  : of parent (0,0,0,1,inf)  : at level 4
  (0,0,0,inf,inf)  : of parent (0,0,0,1,inf)  : at level 4
+ (0,1,inf,0,0)  : of parent (0,0,inf,0,0)  : at level 5
  (0,inf,inf,0,0)  : of parent (0,inf,inf,0,0)  : at level 5
  (0,inf,inf,0,0)  : of parent (0,inf,inf,0,0)  : at level 5
+ (0,0,0,1,inf)  : of parent (0,0,0,0,inf)  : at level 5
  (0,0,0,inf,inf)  : of parent (0,0,0,inf,inf)  : at level 5
  (0,0,0,inf,inf)  : of parent (0,0,0,inf,inf)  : at level 5
 level of tree is : 5

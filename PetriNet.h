@@ -39,7 +39,7 @@ public:
   
   void instantiate();
 	  
-  std::list<marking> reachableMarkings(marking m);	  
+  std::list<marking> reachableMarkings(marking m);	   //markings reachable from m in 1 step
   
   marking getInitialMarking(){
 	  return initialMarking ;

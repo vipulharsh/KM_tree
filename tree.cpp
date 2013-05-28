@@ -3,7 +3,14 @@
 
 
 
-
+/*
+ *Function to compute two things
+ * 1)  list of all ancestors which are strictly less than N 
+ * 2)  whether N is equal to or less than an ancestor
+ */
+ 
+ 
+ 
 pair<list<marking>,bool> lesserAncestors(node * N){
 	
 	pair<list<marking> , bool> p;
@@ -11,19 +18,21 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 	node *t;
 	t = N->parent;
 	
-	//cout<<"in here lesser Ancestors"<<endl;
 	//N->label.display();
-	
-	
 	
 	while(t != NULL){
 		//t->label.display();
+		
+		//return the places where omega needs to be placed , rather than nodes
+		
 		if(t->label < N->label) p.first.push_back(t->label);
-		if(N->label <= t->label) p.second = true;
+		if(N->label == t->label){ 
+			p.second = true;
+			break;
+		}
 		t = t->parent;
 	}
 	
-	//cout<<"end of lesser Ancestors"<<endl;
 	return p;
 }
 
@@ -35,7 +44,6 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 
 node* kmTree :: expand(){
 	
-	//cout<<endl<<"1"<<endl;
 	
 	
 	if(root == NULL) {
@@ -50,9 +58,6 @@ node* kmTree :: expand(){
 	while(!unprocessedNodes.empty())
 	{
 	  
-	  
-	  //cout<<endl<<"2"<<endl;
-	
 	  node* temp = unprocessedNodes.front();
 	  unprocessedNodes.pop_front();
 	  
@@ -60,15 +65,12 @@ node* kmTree :: expand(){
 	  
 	  if(result.second) continue;
 	  
-	 // cout<<endl<<"3"<<endl;
 	
-	  
-	  
+	
 	  //Acceleration
 	  if(!result.first.empty()){
 	  list<marking>::const_iterator iterator;
 	
-	//  cout<<endl<<"part2"<<endl;
 	   for (iterator = result.first.begin(); iterator != result.first.end(); ++iterator) {    
 			marking ancestor1 = *iterator;
 			for (int i=0; i< P.getNofPlaces() ; i++){
@@ -79,9 +81,6 @@ node* kmTree :: expand(){
 	  }
 	  
 	  
-	  //cout<<endl<<"4"<<endl;
-	
-	  
 	// unprocessedNodes.push_back(temp);
 	// continue; 
 	 }       
@@ -90,8 +89,7 @@ node* kmTree :: expand(){
 	  list<marking> childrenNodes =  P.reachableMarkings(temp->label);
 	  list<marking>::const_iterator iterator;
 	  
-    // cout<<"part3"<<endl;
-	//  temp->label.display();
+      //  temp->label.display();
 	  for (iterator = childrenNodes.begin(); iterator != childrenNodes.end(); ++iterator) {
 		  node *N1 = new node;
 		  N1->parent  = temp;

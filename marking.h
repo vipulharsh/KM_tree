@@ -13,7 +13,7 @@ using namespace std;
 #include <stdlib.h>
 
 	
-typedef double wint;   //omega int
+typedef double wint;   //since double can handle exact infinity
 
 class marking{
 	
@@ -25,7 +25,7 @@ public:
    
    vector<wint> tokens;
 	
-	int nOfPlaces;
+	int nOfPlaces;      //the length of the tuple
    
    
    
@@ -53,17 +53,27 @@ public:
 		cin>>s;
 
 	    if(s=="w")
-	     tokens[i] = numeric_limits<double>::infinity();
+	     tokens[i] = numeric_limits<double>::infinity(); 
+	     
+	    //numeric_limits<double>::infinity() is the exact infinity 
 		else {
-		//cout << atoi(s.);
 		 istringstream convert(s);
 		 if ( ! (istringstream(s) >> tokens[i]) ) tokens[i] = 0;
 		}
 	 } //end for	
  
-   }
+   }//end of input
    
    
+   
+   
+   
+   
+   
+   
+   
+   
+      
    
    void display(){
 	   cout<< " (";
@@ -78,6 +88,12 @@ public:
     
     
     
+    
+    
+/*
+ *Define the comparison operators < , <= , == for markings  
+ * 
+ */    
     
     
    bool operator<=( const marking& other ) const{

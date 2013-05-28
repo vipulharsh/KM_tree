@@ -12,10 +12,12 @@
    
    marking label;
   
-   bool visited;
+  // bool visited;
   
   
-  node(){visited = false;}
+  node(){
+	  //visited = false;
+	  }
   
    
 };
