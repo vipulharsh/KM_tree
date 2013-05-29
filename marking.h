@@ -11,6 +11,7 @@ using namespace std;
 #include <limits>
 #include <stdio.h>
 #include <stdlib.h>
+#include "wint.h"
 
 	
 typedef double wint;   //since double can handle exact infinity

@@ -67,8 +67,10 @@ void PetriNet :: display(){
 
 
 
-std::list<marking> PetriNet :: reachableMarkings(marking m){
-	list<marking> markings;
+pair< list<marking>::const_iterator, list<marking>::const_iterator> PetriNet::reachableMarkings(marking m){
+	list<marking>* markings;
+	
+	markings = new list<marking>;
 	
 	
 	for (int i=0; i< nOfTransitions ; i++)
@@ -80,10 +82,17 @@ std::list<marking> PetriNet :: reachableMarkings(marking m){
 			//cout<<endl;
 			//transitions[i].vec.display();
 			//cout<<endl;
-			markings.push_back(m+transitions[i].vec);
+			markings->push_back(m+transitions[i].vec);
 		}
 	}
-	return markings;
+	pair< list<marking>::const_iterator, list<marking>::const_iterator> p;
+	
+	p.first = markings->begin();
+	p.second  = markings->end();
+
+
+
+	return p;
 	
 }
 

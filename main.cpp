@@ -4,10 +4,45 @@ using namespace std;
 
 #include "PetriNet.h"
 #include "tree.h"
+#include "wint.h"
 
 
 
-
+void printTree(node *root){
+	list< pair<node* , int> > unprocessed;
+	
+	
+	pair<node* ,int> dummy;
+	
+	dummy.first = root;
+	dummy.second = 0;
+	
+	unprocessed.push_front(dummy);
+	
+	
+	
+	while(!unprocessed.empty()){
+	  
+	  pair<node* , int> p = unprocessed.front();
+	  unprocessed.pop_front();
+	  
+	  
+	  for(int i=0;i<p.second ; i++)
+	     cout<<"   ";
+	  p.first->label.display();
+	  cout<<endl;
+	  
+	  
+	  list<node*>::const_iterator iterator;
+      for (iterator = p.first->children.begin(); iterator != p.first->children.end(); ++iterator){
+		  
+		  dummy.first = *iterator;
+		  dummy.second  = p.second +1;
+		  
+		  unprocessed.push_front(dummy);     
+		}
+	}   
+}
 
 
 
@@ -24,6 +59,7 @@ int main(){
 	P->display();
 	
 	
+	/*
 	list<marking> trying =  P->reachableMarkings(P->getInitialMarking());
 	
 	list<marking>::const_iterator iterator;
@@ -36,6 +72,7 @@ int main(){
     
     
     }
+    */ 
 
 	
 	
@@ -62,8 +99,9 @@ int main(){
   
    cout<<"DONE !"<<endl;
    
-   int t1;
    
+
+/*
    while(!var.empty()){
 	   node *a= var.front().first;
 	   t1  = var.front().second;
@@ -83,9 +121,11 @@ int main(){
           var.push_back(p);
         }
 	}
-	
-	
-	cout<<"level of tree is : "<<t1<<endl;
+*/
+
+
+    printTree(km);
+    	
 	
 	
 	
