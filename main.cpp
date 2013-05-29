@@ -41,7 +41,7 @@ int main(){
 	
 	
 	
-	kmTree t(*P);
+	kmTree t(P);
     
     
     

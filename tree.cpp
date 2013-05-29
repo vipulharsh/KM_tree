@@ -11,10 +11,30 @@
  
  
  
-pair<list<marking>,bool> lesserAncestors(node * N){
+ 
+struct resultLA{
+	bool res;
+	bool empty;
+	list<int>::const_iterator begin;
+	list<int>::const_iterator end;
+}; 
+ 
+ 
+ 
+resultLA* lesserAncestors(node * N){
 	
-	pair<list<marking> , bool> p;
-	p.second =false;
+	
+	resultLA *res = new resultLA;
+	res->res = false;
+	
+	
+	list<int>* placesC; //places which needs to be changed
+	
+	placesC =  new list<int>;
+	
+	
+	
+	
 	node *t;
 	t = N->parent;
 	
@@ -25,15 +45,27 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 		
 		//return the places where omega needs to be placed , rather than nodes
 		
-		if(t->label < N->label) p.first.push_back(t->label);
+		if(t->label < N->label) {
+			
+			for (int i=0; i< N->label.nOfPlaces ; i++){
+				if(t->label.tokens[i] < N->label.tokens[i])
+					placesC->push_back(i);
+			}
+		  }	
+		
 		if(N->label == t->label){ 
-			p.second = true;
+			res->res = true;
 			break;
 		}
 		t = t->parent;
 	}
 	
-	return p;
+	
+	res->begin  = placesC->begin();
+	res->end  = placesC->end();
+	res->empty = placesC->empty();
+ 
+ 	return res;
 }
 
 
@@ -44,7 +76,7 @@ pair<list<marking>,bool> lesserAncestors(node * N){
 
 node* kmTree :: expand(){
 	
-	
+	cout<<"flag 1"<<endl;
 	
 	if(root == NULL) {
 		cout <<"Incorrect call to expand , instantiate the problem first" <<endl;
@@ -61,22 +93,38 @@ node* kmTree :: expand(){
 	  node* temp = unprocessedNodes.front();
 	  unprocessedNodes.pop_front();
 	  
-	  pair <list<marking>,bool> result  = lesserAncestors(temp);
 	  
-	  if(result.second) continue;
+	  cout<<"flag 2"<<endl;
+	  
+	  
+	  resultLA* result  = lesserAncestors(temp);
+	  
+	  
+	  
+	  cout<<"flag 3"<<endl;
+	  
+	  if(result->res) continue;
 	  
 	
 	
 	  //Acceleration
-	  if(!result.first.empty()){
-	  list<marking>::const_iterator iterator;
+	  if(!result->empty){
+		  
+		  
+	  cout<<"flag 4"<<endl;	  
+		  
+	  list<int>::const_iterator iterator;
 	
-	   for (iterator = result.first.begin(); iterator != result.first.end(); ++iterator) {    
+	   for (iterator = result->begin; iterator != result->end; ++iterator) {    
+			temp->label.tokens[*iterator] = numeric_limits<double>::infinity();
+			
+		/*	
 			marking ancestor1 = *iterator;
 			for (int i=0; i< P.getNofPlaces() ; i++){
 				if(ancestor1.tokens[i] < temp->label.tokens[i])
 					temp->label.tokens[i] = numeric_limits<double>::infinity();
 			}
+		*/ 
 			
 	  }
 	  
@@ -86,7 +134,7 @@ node* kmTree :: expand(){
 	 }       
 	  
 	  //Add all children of the nodes
-	  list<marking> childrenNodes =  P.reachableMarkings(temp->label);
+	  list<marking> childrenNodes =  P->reachableMarkings(temp->label);
 	  list<marking>::const_iterator iterator;
 	  
       //  temp->label.display();

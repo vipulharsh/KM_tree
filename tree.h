@@ -30,7 +30,7 @@
 class kmTree{
  
    node *root;
-   PetriNet P;
+   PetriNet* P;
 
 public:
        
@@ -39,10 +39,10 @@ public:
 	}
 	
 		
-	kmTree(PetriNet Pn){
+	kmTree(PetriNet* Pn){
 		root = new node;
 		root->parent = NULL ;
-		root->label = Pn.getInitialMarking();
+		root->label = Pn->getInitialMarking();
 		P = Pn;
 	}
 	
