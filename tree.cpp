@@ -1,10 +1,9 @@
 #include "tree.h"
 
-/*
- *Function to compute two things
- * 1)  list of all ancestors which are strictly less than N 
- * 2)  whether N is equal to or less than an ancestor
- */
+ 
+ 
+ double OMEGA = numeric_limits<double>::infinity() ;  //The Global Variable
+
  
  
  
@@ -70,20 +69,11 @@ resultLA* lesserAncestors(node * N){
 */
 
 
-struct resultLA{
+struct resultLA{           //struct used to store result of lesserAncestors1(the next function)
 	bool empty;
 	list<int>::const_iterator begin;
 	list<int>::const_iterator end;
 }; 
-
-
-
-
-
-
-
-
-
 
 
 
@@ -276,7 +266,7 @@ node* kmTree :: expand(){
 		  if(!S->empty){
 			 list<int>::const_iterator iterator;
 			 for (iterator = S->begin; iterator != S->end; ++iterator)     
-			    N1->label.tokens[*iterator] = numeric_limits<double>::infinity();
+			    N1->label.tokens[*iterator] = OMEGA;
           }
           
           

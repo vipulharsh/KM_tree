@@ -3,6 +3,10 @@
  
 #include "PetriNet.h" 
 #include <list> 
+
+
+
+
  
  struct node{         //each node is a tree in itself
 	 

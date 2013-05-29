@@ -7,3 +7,10 @@
 2 -1 1
 
 1 1 2
+
+
+
+fixed bug
+changed functions to avoid copy
+defined Macros
+wrote Wint

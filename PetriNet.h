@@ -10,6 +10,11 @@
 #include <vector>
 
 
+
+
+
+
+
 class PetriNet{
 	
 	int nOfPlaces ;

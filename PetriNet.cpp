@@ -13,7 +13,10 @@ void PetriNet :: instantiate (){
 
 
 	transition t;
-	marking m(nOfPlaces);
+	
+	marking::nOfPlaces = nOfPlaces;
+	
+	marking m;
 
 	for (int i=0 ; i<nOfTransitions ;i++){
 
@@ -27,7 +30,7 @@ void PetriNet :: instantiate (){
 	}
 	
 	//m.input();
-	initialMarking.nOfPlaces = nOfPlaces;
+	//initialMarking.nOfPlaces = nOfPlaces;   : not needed now , nOfPlaces is a static variable now
 	
 	initialMarking.tokens.resize(nOfPlaces);
 	
