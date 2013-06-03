@@ -4,7 +4,7 @@ CC = gcc
 CFLAGS = -Wall
 INCLUDES = -I.
 
-SRCS = main.c marking.c
+SRCS = main.c marking.c tree.c
 EXE = kmt
 
 # Main #########################################################################
