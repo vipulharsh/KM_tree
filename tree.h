@@ -18,7 +18,7 @@ typedef struct node {
 	transition	*action;
 	struct node	*next;
 	struct node	*child;
-	wnat		marking[1];	/* variable length */
+	wnat		marking[0];	/* variable length */
 } node;
 
 /*
@@ -27,6 +27,8 @@ typedef struct node {
  *	Allocates a new node.  The contents of the node are unspecified.
  */
 node		*node_create(void);
+
+void		 node_destroy(node *);
 
 /*
  * node_root:
@@ -46,7 +48,7 @@ node		*node_root(const net *);
  *
  *	c.marking == c.parent.marking - c.action.input + c.action.output
  */
-void		node_expand_all(const net *, node *);
+void		 node_expand_all(const net *, node *);
 
 /*
  * node_expand_one:
@@ -64,6 +66,6 @@ node		*node_expand_one(const transition *, node *);
  *
  *	Outputs, in text, the given node and its subtree.
  */
-int		node_write(const node *, FILE *stream);
+int		 node_write(const node *, FILE *stream);
 
 #endif	/* !_KMT_TREE_H */

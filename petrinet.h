@@ -29,7 +29,7 @@ typedef struct {
 /*
  * I/O functions for Petri nets.
  */
-int		petrinet_read(net **, FILE *stream);
-int		petrinet_write(const net *, FILE *stream);
+int		 petrinet_read(net **, FILE *stream);
+int		 petrinet_write(const net *, FILE *stream);
 
 #endif	/* !_KMT_PETRINET_H */

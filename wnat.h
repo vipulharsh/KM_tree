@@ -12,7 +12,7 @@
 typedef	double		 wnat;
 
 /*
- * omega: The value of type wnat htat represents omega.
+ * omega: The value of type wnat that represents omega.
  */
 static const wnat omega = INFINITY;
 
@@ -56,7 +56,7 @@ static inline wnat
 wnat_sub(wnat x, wnat n)
 {
 	assert(wnat_leq(n, x));
-	return x-n;
+	return x - n;
 }
 
 #endif	/* !_KMT_WNAT_H */
