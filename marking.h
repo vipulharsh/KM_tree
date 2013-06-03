@@ -59,6 +59,11 @@ void		 marking_add(wnat *, const wnat *, const wnat *);
 void		 marking_sub(wnat *, const wnat *, const wnat *);
 
 
+
+
+
+
+
 /*
  * I/O functions for markings.
  */
