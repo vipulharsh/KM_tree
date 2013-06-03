@@ -13,7 +13,7 @@
  */
 extern unsigned int	 dimension;
 
-void		 marking_initialize(unsigned int d);
+void		 marking_initialize(unsigned int d); //#done
 
 /*
  * A marking is an array of length dimension whose elements are wnats.
@@ -26,8 +26,8 @@ void		 marking_initialize(unsigned int d);
  *	memory.  The perform in-place modifications.
  */
 
-wnat		*marking_create(void);
-void		 marking_destroy(wnat *);
+wnat		*marking_create(void);        //#done
+void		 marking_destroy(wnat *);	  //#done
 
 /*
  * XXX	The following should be defined static inline.  Implement them!
@@ -50,16 +50,19 @@ marking_copy(wnat *x, const wnat *y)
 	(void)memcpy(x, y, dimension * sizeof(wnat));
 }
 
+
+
 int		 marking_eq(const wnat *, const wnat *);
 int		 marking_le(const wnat *, const wnat *);
 int		 marking_leq(const wnat *, const wnat *);
 void		 marking_add(wnat *, const wnat *, const wnat *);
 void		 marking_sub(wnat *, const wnat *, const wnat *);
 
+
 /*
  * I/O functions for markings.
  */
-int		 marking_read(wnat *, FILE *stream);
-int		 marking_write(const wnat *, FILE *stream);
+int		 marking_read(wnat *, FILE *stream); //to be done
+int		 marking_write(const wnat *, FILE *stream); //to be done
 
 #endif	/* !_KMT_MARKING_H */
