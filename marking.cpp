@@ -1,10 +1,9 @@
 #include "marking.h"
 
 
+
+
 int marking::nOfPlaces;
-
-
-
 
 
 
@@ -16,6 +15,7 @@ int marking::nOfPlaces;
 		cin>>s;
 
 	    if(s=="w")
+	     //tokens[i].omega = true;
 	     tokens[i] = numeric_limits<double>::infinity(); 
 	     
 	    //numeric_limits<double>::infinity() is the exact infinity 

@@ -1,0 +1,43 @@
+digraph G { 
+a->b
+0x24df0d0 [label = (0,1,0,0,0)];
+0x24df0a0->0x24df0d0;
+0x24df420 [label = (0,0,0,1,0)];
+0x24df0a0->0x24df420;
+0x24df2f0 [label = (0,0,2,0,0)];
+0x24df0d0->0x24df2f0;
+0x24df910 [label = (0,0,0,0,2)];
+0x24df420->0x24df910;
+0x24dfa10 [label = (0,1,inf,0,0)];
+0x24df2f0->0x24dfa10;
+0x24dfb30 [label = (0,0,0,1,inf)];
+0x24df910->0x24dfb30;
+0x24dfcc0 [label = (0,0,inf,0,0)];
+0x24dfa10->0x24dfcc0;
+0x24dfdb0 [label = (0,inf,inf,0,0)];
+0x24dfa10->0x24dfdb0;
+0x24dff80 [label = (0,0,0,0,inf)];
+0x24dfb30->0x24dff80;
+0x24e0070 [label = (0,0,0,inf,inf)];
+0x24dfb30->0x24e0070;
+0x24e01d0 [label = (0,inf,inf,0,0)];
+0x24dfcc0->0x24e01d0;
+0x24e03c0 [label = (0,inf,inf,0,0)];
+0x24dfdb0->0x24e03c0;
+0x24e0530 [label = (0,inf,inf,0,0)];
+0x24dfdb0->0x24e0530;
+0x24e0690 [label = (0,0,0,inf,inf)];
+0x24dff80->0x24e0690;
+0x24e0880 [label = (0,0,0,inf,inf)];
+0x24e0070->0x24e0880;
+0x24e09f0 [label = (0,0,0,inf,inf)];
+0x24e0070->0x24e09f0;
+0x24e0bc0 [label = (0,inf,inf,0,0)];
+0x24e01d0->0x24e0bc0;
+0x24e0d50 [label = (0,inf,inf,0,0)];
+0x24e01d0->0x24e0d50;
+0x24e0f00 [label = (0,0,0,inf,inf)];
+0x24e0690->0x24e0f00;
+0x24e1090 [label = (0,0,0,inf,inf)];
+0x24e0690->0x24e1090;
+}

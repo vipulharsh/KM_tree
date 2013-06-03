@@ -12,9 +12,11 @@
 	 
    node *parent;
    
+   int transitionNumber;
+   
    list<node*> children;
    
-   marking label;
+   marking *label;
   
   // bool visited;
   
@@ -56,23 +58,9 @@ public:
 	
 	node* expand();  //returns the root of the tree
 
-	
-	
-       
- };
+};
 	
 	
 	
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
 #endif 
 

@@ -3,36 +3,28 @@
 
 
 struct Wint{
-	unsigned long int val;
+	long int val;  //later make it unsigned
 	bool omega;
  	
-	
-	
-	
 	
 	
     bool operator<( const Wint& other ) const{
 	  if(omega) return false;
 	  
-	  if(other.omega) return true;
+	 // if(other.omega) return true;
 	  
-	  return (val < other.val);
+	  return ((val < other.val)  || other.omega);
 	}
    
    
   
     bool operator<=( const Wint& other ) const{
-	  if(other.omega) return true;
+	 // if(other.omega) return true;
 	  
 	  if(omega) return false;
 	  
-	  return (val <= other.val);
+	  return ((val <= other.val) || other.omega);
 	}
-   
-   
-   
-   
-   
    
    
    
@@ -41,9 +33,9 @@ struct Wint{
    bool operator>( const Wint& other ) const{
 	  if(other.omega) return false;
 	  
-	  if(omega) return true;
+	 // if(omega) return true;
 	  
-	  return (val > other.val);
+	  return ((val > other.val) || omega);
 	}
    
    
@@ -58,17 +50,10 @@ struct Wint{
    
    
    bool operator==( const Wint& other ) const{
-	  if(omega == other.omega) return true;
+	  if(omega && other.omega) return true;
 	  
 	  return (val == other.val);
 	}
-   
-   
-   
-   
-   
-   
-   
    
 };
 

@@ -80,7 +80,6 @@ struct resultLA{           //struct used to store result of lesserAncestors1(the
 
 resultLA* lesserAncestors1(node * N){
 	
-	
 	resultLA *res = new resultLA;
 	
 	list<int>* placesC; //places which needs to be changed
@@ -97,10 +96,10 @@ resultLA* lesserAncestors1(node * N){
 		
 		//return the places where omega needs to be placed , rather than nodes
 		
-		if(t->label < N->label) {
+		if(*(t->label) < *(N->label)) {
 			
-			for (int i=0; i< N->label.nOfPlaces ; i++){
-				if(t->label.tokens[i] < N->label.tokens[i])
+			for (int i=0; i< N->label->nOfPlaces ; i++){
+				if(t->label->tokens[i] < N->label->tokens[i])
 					placesC->push_back(i);
 			}
 		  }	
@@ -113,7 +112,13 @@ resultLA* lesserAncestors1(node * N){
 	res->end  = placesC->end();
 	res->empty = placesC->empty();
  
+ 	
+ 	
  	return res;
+ 	
+ 	
+ 	
+ 	
 }
 
 
@@ -122,18 +127,24 @@ resultLA* lesserAncestors1(node * N){
 
 bool equalAncestors(node * N){
 	
+	
+	//cout<<"equal ancestors"<<endl;
 	bool res = false;
 	node *t;
 	t = N->parent;
-	//N->label.display();
+	N->label->display();
+	cout<<endl;
 	while(t != NULL){
-		//t->label.display();
-		if(N->label == t->label){ 
+		t->label->display();
+		cout<<" ;"<<endl;
+		if(*(N->label) == *(t->label)){ 
 			res = true;
 			break;
 		}
 		t = t->parent;
 	}
+	
+	//cout<<"end of equal ancestors , result is "<<res<<endl;
 	return res;
 }
 
@@ -237,6 +248,10 @@ node* kmTree :: expand(){
 		return NULL;
 	}
 	
+
+   // cout<<"flag 1"<<endl;
+	
+
 	list<node*> unprocessedNodes;
 	unprocessedNodes.push_back(root);
 	
@@ -249,31 +264,40 @@ node* kmTree :: expand(){
 	  
 	  if(!equalAncestors(temp)){
 	    //Add all children of the nodes
-	  pair< list<marking>::const_iterator, list<marking>::const_iterator> childrenNodes =  P->reachableMarkings(temp->label);
-	  list<marking>::const_iterator iterator;
+	  pair< list<marking*>::const_iterator, list<marking*>::const_iterator> childrenNodes =  P->reachableMarkings(temp->label);
+	  list<marking*>::const_iterator iterator;
 	  
-      //  temp->label.display();
+      
+   //   cout<<"flag 2"<<endl;
+      
+        temp->label->display();
 	  for (iterator = childrenNodes.first; iterator != childrenNodes.second; ++iterator) {
 		  node *N1 = new node;
 		  N1->parent  = temp;
+		  
+	     
+		  
 		  N1->label = *iterator;
 		  
 		  resultLA* S  = lesserAncestors1(N1);
-		  
-		  
 		  
 		  //Perform Acceleration
 		  if(!S->empty){
 			 list<int>::const_iterator iterator;
 			 for (iterator = S->begin; iterator != S->end; ++iterator)     
-			    N1->label.tokens[*iterator] = OMEGA;
+			    N1->label->tokens[*iterator] = OMEGA;
           }
           
-          
-          
-             temp->children.push_back(N1);
+     //  cout<<"flag 3"<<endl;
+        
+      
+       temp->children.push_back(N1);
 		     unprocessedNodes.push_back(N1);
 		    //  N1->label.display();
+	   
+	      delete(S);
+	      
+	   
 	   }
 	 
       }

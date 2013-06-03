@@ -25,7 +25,7 @@ class PetriNet{
 	
 	std::vector<transition> transitions ;
 	
-	marking initialMarking ;
+	marking* initialMarking ;
 	
 	
 	
@@ -46,11 +46,11 @@ public:
 	  
   
   
-   //markings reachable from m in 1 step
-  pair< list<marking>::const_iterator, list<marking>::const_iterator> reachableMarkings(marking m);
+   //markings reachable from m in 1 step, returns iterators to the beginning and end of the list.
+  pair< list<marking*>::const_iterator, list<marking*>::const_iterator> reachableMarkings(marking* m);
   
   
-  marking getInitialMarking(){
+  marking* getInitialMarking(){
 	  return initialMarking ;
   }
   
