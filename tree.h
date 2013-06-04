@@ -16,7 +16,7 @@
 typedef struct node {
 	struct node	*parent;
 	transition	*action;
-	struct node	*next;
+	struct node	*next;  //pointer to the next sibling
 	struct node	*child;
 	wnat		marking[0];	/* variable length */
 } node;

@@ -38,4 +38,25 @@ node		*covtree_reduced_km(const net *);
  */
 node		*covtree_finkel_mct(const net *);
 
+
+
+
+/*
+ * accel:
+ * accelerates a node with respect to its ancestors
+ * NOTE :doesn't need the petri net as argument
+ * 
+ * 
+ */
+ 
+int accel(wnat *); 
+ 
+ 
+ 
+ 
+
+
+
+
+
 #endif	/* !_KMT_COVTREE_H */
