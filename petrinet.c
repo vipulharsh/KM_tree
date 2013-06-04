@@ -16,53 +16,91 @@ petrinet_read(net **PNet, FILE *stream)
 	
 	assert(stream != NULL);
 	
-	PNet = malloc(sizeof(net));
 	
-	net *PN = *PNet;
+//Initialize dimension here	
+	unsigned int nOfPlaces;
+	fscanf(stream , "%d" , &nOfPlaces);
+	marking_initialize(nOfPlaces);
+	
+	printf("flag 3\n");
+	
+//allocate space to PNet	
+	
+	net *PN ;
+	PN = malloc(sizeof(net));
+	
+	printf("flag 4\n");
+	
 	
 	PN->init = marking_create();
 	
+	printf("flag 5\n");
 	
-	unsigned int nOfPlaces;
-	fscanf(stream , "%d" , &nOfPlaces);
-	
-	marking_initialize(nOfPlaces);
-	
-	fscanf(stream , "%d" , &PN->trans_count);
-	
-	PN->trans = malloc(PN->trans_count * sizeof(transition));
+	int trans_count;
+		
+	fscanf(stream , "%d" , &trans_count);
+	PN->trans = malloc(trans_count * sizeof(transition));
+	PN->trans_count = trans_count;
 	
 	
-	int trans_count= PN->trans_count;
-	
+	printf("flag 6\n   %d the number of transitions \n" , PN->trans_count);
 	
 	int i,j;
 	double token;
 	for(i=0;i< PN->trans_count ; i++){
+		
+		printf("flag 8\n");
+		
+		PN->trans[i].input = marking_create();
+		marking_read(PN->trans[i].input , stream);
+		
+		PN->trans[i].output = marking_create();
+		marking_read(PN->trans[i].output , stream);		/*
 		for(j = 0 ; j<dimension ;j++)
 		{
 			assert(!feof (stream));
-			fscanf (stream, "%d", &(PN->trans[i].input[j]));
+			PN->trans[i].input = marking_create();
+			fscanf (stream, "%lf", &(PN->trans[i].input[j]));
+			printf(" %d %d \n",i,j);
 	    }
 	    for(j = 0 ; j<dimension ;j++)
 		{
 			assert(!feof (stream));
-			fscanf (stream, "%d", &(PN->trans[i].output[j]));
+			PN->trans[i].output = marking_create();
+			fscanf (stream, "%lf", &(PN->trans[i].output[j]));
+			printf(" %d %d \n",i,j);
 	    }
-	}    
+	    */ 
+	}
+	
+	
+	marking_read(PN->init , stream);
+	//PNet = malloc(sizeof(net *));
+	*PNet = PN;
+	printf("PNet->transcount = %d \n", (*PNet)->trans_count);    
 	return 1;
 	
 	
 }
 
 
-int		 petrinet_write(const net *PN, FILE *stream) //#to be done
+int		 petrinet_write(const net *PN, FILE *stream) 
 {
 	
 	assert(stream != NULL);
 	
+	printf(" flag 7 \n");
+	
+	printf("No of transitions : %d \n", PN->trans_count);
 	fprintf(stream , "No of transitions : %d \n", PN->trans_count);
+	
+	
+	printf(" flag 8 \n");
+	
+	printf("No of Places : %d \n\n", dimension);
 	fprintf(stream , "No of Places : %d \n\n", dimension);
+	
+	printf(" flag 9 \n");
 	
 	int i,j;
 	for(i=0;i< PN->trans_count ; i++){

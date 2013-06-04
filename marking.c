@@ -117,13 +117,13 @@ marking_read(wnat *m, FILE *stream)
 	
 	assert(stream != NULL);
 	
-	double token;
+	//double token;
 	int i;
 	for(i = 0 ; i<dimension ;i++)
 	{
 		assert(!feof (stream));
-		fscanf (stream, "%lf", &token);
-		m[i]= token;
+		fscanf (stream, "%lf", &m[i]);
+		//m[i]= token;
 	}    
 	return 1;
 }

@@ -8,7 +8,7 @@ node *
 node_create(void)
 {
 	assert(dimension > 0);
-	return malloc(sizeof(node) + dimension * sizeof(wnat));  //should be dimension - 1
+	return malloc(sizeof(node) + dimension * sizeof(wnat));  
 }
 
 void
