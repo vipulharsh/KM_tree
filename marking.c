@@ -29,15 +29,27 @@ marking_destroy(wnat *x)
 int
 marking_eq(const wnat *m1, const wnat *m2)
 {
-	int result = 1;
+	
+	
+//	printf("marking_eq :  ");
+//	marking_display(m1);
+//	printf("   ");
+//	marking_display(m2);
+//	printf("\n");
 	assert(dimension > 0);
 	int i;
-	for(i=0;i<dimension ; i++)
+	for(i=0;i<dimension ; i++){
+		
+		//printf("  %lf %lf | ",m1[i] ,m2[i]); 
 		if(!wnat_eq(m1[i] , m2[i])){
-			result = 0;
-			break;
+			//printf("now \n");
+			return 0;
 		}
-	return result;
+	}
+		
+	//printf("here \n");	
+		
+	return 1;
 	
 }
 
@@ -55,7 +67,7 @@ marking_le(const wnat *m1, const wnat *m2){
 			result = 0;
 			break;
 		}
-	return result & (marking_eq(m1,m2));   //NOTE : marking_eq is an inline function
+	return result & (!marking_eq(m1,m2));   //NOTE : marking_eq is an inline function
 
 }
 
@@ -70,11 +82,12 @@ marking_leq(const wnat *m1, const wnat *m2){
 	int result = 1;
 	assert(dimension > 0);
 	int i;
-	for(i=0;i<dimension ; i++)
+	for(i=0;i<dimension ; i++){
 		if(!wnat_leq(m1[i] , m2[i])){
 			result = 0;
 			break;
 		}
+	}
 	return result;
 }
 
@@ -102,7 +115,7 @@ void
 marking_sub(wnat *m1, const wnat *m2, const wnat *m3)  //might have to remove const from the 3rd argument
 {
 	assert(dimension > 0);
-	assert(marking_leq(m2,m3));
+	assert(marking_leq(m3,m2));
 	int i;
 	for(i=0;i<dimension ; i++)
 		m1[i] = wnat_sub(m2[i] , m3[i]);
@@ -139,15 +152,32 @@ marking_write(const wnat *m, FILE *stream)
 	
 	fprintf(stream , "(");
 	int i;
-	for(i = 0 ; i<dimension ;i++)
+	for(i = 0 ; i<dimension-1 ;i++)
 	{
-		fprintf (stream, "%lf,", m[i]);
+		fprintf (stream, "%lu,", (long unsigned int)m[i]);  
 	}
-	fprintf(stream , ")");    
+	
+	fprintf (stream, "%lu)", (long unsigned int)m[i]);    
 	return 1;
 	
 }
 
+
+
+int
+marking_display(const wnat *m)
+{
+	
+	printf("(");
+	int i;
+	for(i = 0 ; i<dimension-1 ;i++)
+	{
+		printf ("%lf,", m[i]);  
+	}
+	
+	printf ("%lf)", m[i]);    
+	return 1;
+}
 
 
 

@@ -22,19 +22,19 @@ petrinet_read(net **PNet, FILE *stream)
 	fscanf(stream , "%d" , &nOfPlaces);
 	marking_initialize(nOfPlaces);
 	
-	printf("flag 3\n");
+	//printf("flag 3\n");
 	
 //allocate space to PNet	
 	
 	net *PN ;
 	PN = malloc(sizeof(net));
 	
-	printf("flag 4\n");
+	//printf("flag 4\n");
 	
 	
 	PN->init = marking_create();
 	
-	printf("flag 5\n");
+	//printf("flag 5\n");
 	
 	int trans_count;
 		
@@ -43,13 +43,13 @@ petrinet_read(net **PNet, FILE *stream)
 	PN->trans_count = trans_count;
 	
 	
-	printf("flag 6\n   %d the number of transitions \n" , PN->trans_count);
+	//printf("flag 6\n   %d the number of transitions \n" , PN->trans_count);
 	
 	int i,j;
 	double token;
 	for(i=0;i< PN->trans_count ; i++){
 		
-		printf("flag 8\n");
+		//printf("flag 8\n");
 		
 		PN->trans[i].input = marking_create();
 		marking_read(PN->trans[i].input , stream);
@@ -89,32 +89,45 @@ int		 petrinet_write(const net *PN, FILE *stream)
 	
 	assert(stream != NULL);
 	
-	printf(" flag 7 \n");
+	//printf(" flag 7 \n");
 	
 	printf("No of transitions : %d \n", PN->trans_count);
 	fprintf(stream , "No of transitions : %d \n", PN->trans_count);
 	
 	
-	printf(" flag 8 \n");
+	//printf(" flag 8 \n");
 	
 	printf("No of Places : %d \n\n", dimension);
 	fprintf(stream , "No of Places : %d \n\n", dimension);
 	
-	printf(" flag 9 \n");
+	//printf(" flag 9 \n");
 	
 	int i,j;
 	for(i=0;i< PN->trans_count ; i++){
-		fprintf(stream , "Transition number %d :\n(" , i);
+		fprintf(stream , "Transition number %d :\n" , i);
+		
+		marking_write(PN->trans[i].input , stream);
+		
+		fprintf(stream ,"\n");
+		 
+		 marking_write(PN->trans[i].output , stream);
+		
+		fprintf(stream ,"\n");
+		
+		/*
 		for(j = 0 ; j<dimension-1 ;j++)
 		{
-			fprintf (stream, "%lf,", PN->trans[i].input[j]);
-		}
-		fprintf (stream, "%lf)\n", PN->trans[i].input[j]);
+			fprintf (stream, "%lu,", (unsigned long int)PN->trans[i].input[j]);
+		} 
+		fprintf (stream, "%lu)\n", PN->trans[i].input[j]);
+		*/
+		/*
 		for(j = 0 ; j<dimension-1 ;j++)
 		{
-			fprintf (stream, "%lf,", PN->trans[i].output[j]);
+			fprintf (stream, "%lu,", PN->trans[i].output[j]);
 		}
-		fprintf (stream, "%lf)\n", PN->trans[i].output[j]);
+		fprintf (stream, "%lu)\n", PN->trans[i].output[j]);
+		*/ 
 	}
 	return 1;
 

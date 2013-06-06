@@ -70,4 +70,28 @@ void		 marking_sub(wnat *, const wnat *, const wnat *);
 int		 marking_read(wnat *, FILE *stream); //to be done
 int		 marking_write(const wnat *, FILE *stream); //to be done
 
+
+
+
+
+
+
+
+
+
+/*
+ * 
+ *display_marking : displays markings on standard output 
+ * 
+ */ 
+
+int marking_display(const wnat *);
+
+
+
+
+
+
+
+
 #endif	/* !_KMT_MARKING_H */

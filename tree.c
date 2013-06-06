@@ -39,19 +39,24 @@ node_expand_all(const net *pn, node *x)
 	
 	struct node *curr;
 	
+	//printf("ok till here %d \n ", pn->trans_count);
+	
 	for(k=0;k<pn->trans_count;k++){
 		
-		if(le(x->marking , pn->trans[k].input))  //if this transition is not firable
+		//printf(" fl 3 \n");
+		
+		if(!marking_leq(pn->trans[k].input , x->marking))  //if this transition is not firable
 			continue;
 		
 		//else
-		if(count = 0){
+		if(count == 0){
 			node *child = node_create();
 			x->child =child;
 			child->action = &(pn->trans[k]);
 			child->parent = x;
 			child->next = NULL;
 			marking_add(child->marking , x->marking , pn->trans[k].output);
+			marking_sub(child->marking , child->marking , pn->trans[k].input);
 			curr = child;
 			count++;
 			continue; 
@@ -63,11 +68,70 @@ node_expand_all(const net *pn, node *x)
 		 child->action = &(pn->trans[k]);
 		 child->parent = x;
 		 child->next = NULL;
+		 
+		 //child->marking = x->marking + transition.output - transition.input
+		 
 		 marking_add(child->marking , x->marking , pn->trans[k].output);
+		 marking_sub(child->marking , child->marking , pn->trans[k].input);
 		 curr = child;
 	}
 //end of function
 }
+
+
+
+
+int
+node_write(const node *x, FILE *stream)
+{
+	if(x == NULL) return 1;
+	
+	node_write_helper(x , stream ,0);
+	
+	return 1;
+	
+}
+
+
+
+
+
+void
+node_write_helper(const node *x, FILE *stream, int spaces)
+{
+	if(x == NULL) return;
+	
+	int i;
+	
+	printf("once %d\n ", x==NULL);
+	
+	node *currNode = x->child;
+	
+	printf("twice \n");
+	for(i=0;i<spaces;i++)
+		fprintf(stream , "  ");	
+	marking_write(x->marking , stream);
+	fprintf(stream , "\n");
+	
+	while(currNode!=NULL){
+		node_write_helper(currNode, stream , spaces+1);
+		currNode = currNode->next;
+	}
+		
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	
 	
