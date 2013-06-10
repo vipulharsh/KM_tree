@@ -45,32 +45,14 @@ petrinet_read(net **PNet, FILE *stream)
 	
 	//printf("flag 6\n   %d the number of transitions \n" , PN->trans_count);
 	
-	int i,j;
-	double token;
+	int i;
 	for(i=0;i< PN->trans_count ; i++){
-		
-		//printf("flag 8\n");
 		
 		PN->trans[i].input = marking_create();
 		marking_read(PN->trans[i].input , stream);
 		
 		PN->trans[i].output = marking_create();
-		marking_read(PN->trans[i].output , stream);		/*
-		for(j = 0 ; j<dimension ;j++)
-		{
-			assert(!feof (stream));
-			PN->trans[i].input = marking_create();
-			fscanf (stream, "%lf", &(PN->trans[i].input[j]));
-			printf(" %d %d \n",i,j);
-	    }
-	    for(j = 0 ; j<dimension ;j++)
-		{
-			assert(!feof (stream));
-			PN->trans[i].output = marking_create();
-			fscanf (stream, "%lf", &(PN->trans[i].output[j]));
-			printf(" %d %d \n",i,j);
-	    }
-	    */ 
+		marking_read(PN->trans[i].output , stream);		 
 	}
 	
 	
@@ -89,46 +71,20 @@ int		 petrinet_write(const net *PN, FILE *stream)
 	
 	assert(stream != NULL);
 	
-	//printf(" flag 7 \n");
-	
-	printf("No of transitions : %d \n", PN->trans_count);
 	fprintf(stream , "No of transitions : %d \n", PN->trans_count);
-	
-	
-	//printf(" flag 8 \n");
-	
-	printf("No of Places : %d \n\n", dimension);
 	fprintf(stream , "No of Places : %d \n\n", dimension);
 	
-	//printf(" flag 9 \n");
 	
-	int i,j;
-	for(i=0;i< PN->trans_count ; i++){
+	int i;
+	for(i=0;i< PN->trans_count ; i++)
+	{
 		fprintf(stream , "Transition number %d :\n" , i);
-		
 		marking_write(PN->trans[i].input , stream);
-		
 		fprintf(stream ,"\n");
-		 
-		 marking_write(PN->trans[i].output , stream);
-		
+		marking_write(PN->trans[i].output , stream);
 		fprintf(stream ,"\n");
-		
-		/*
-		for(j = 0 ; j<dimension-1 ;j++)
-		{
-			fprintf (stream, "%lu,", (unsigned long int)PN->trans[i].input[j]);
-		} 
-		fprintf (stream, "%lu)\n", PN->trans[i].input[j]);
-		*/
-		/*
-		for(j = 0 ; j<dimension-1 ;j++)
-		{
-			fprintf (stream, "%lu,", PN->trans[i].output[j]);
-		}
-		fprintf (stream, "%lu)\n", PN->trans[i].output[j]);
-		*/ 
 	}
+	
 	return 1;
 
 }

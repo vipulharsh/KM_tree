@@ -1,45 +1,6 @@
 #include "covtree.h"
 
 
-node* pop_front(list_nodes **x)
-{
-	
-	
-	assert((*x)!=NULL);
-	
-	list_nodes *t = *x;
-	*x = (*x)->next;
-	 
-	//XXX : might want to free t; 
-	
-	return t->x;
-}
-
-
-int push_front(list_nodes **list , node *n)
-{
-	list_nodes *new = malloc(sizeof(list_nodes));
-	
-	new->x = n;
-	new->next  = *list;
-	*list = new;
-	return 1;
-}
-
-
-
-int empty(list_nodes *x){
-return (x==NULL);	
-}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -53,28 +14,9 @@ node* covtree_original_km(const net *PN){
 	
 	while(!empty(unprocessedNodes)){
 		
-
-			
+	//	printf("inside loop\n");
 		
-		printf("inside loop\n");
-		
-		
-		
-		curr_node = pop_front(&unprocessedNodes);
-		
-	
-		FILE *file;
-		file = fopen("side.txt","w");
-		
-	//	printf("flag 9 \n");
-		
-	//	node_write(curr_node , file);
-		
-	//	printf("flag 10 \n");
-		fprintf(file, "done\n");
-		fclose(file);
-
-	
+		curr_node = pop_front(&unprocessedNodes);  //!Node to be processed
 	
 		marking_display(curr_node->marking);
 		
@@ -93,20 +35,21 @@ node* covtree_original_km(const net *PN){
 		
 		
 		
-		if(equal_ancestor(curr_node)){
-			marking_display(curr_node->marking);
-			printf("ends here");
+		if(equal_ancestor(curr_node)){     //!check for termination condition of the branch
+ 			marking_display(curr_node->marking);
+			printf(" Branch ends here \n");
 			 continue;
 		}
 		
-		//printf("flag 2");
 		
 		//else
 		node_expand_all(PN , curr_node);
 		
 		//pushing children of currNode to unprocessed Nodes . 
 		//Acceleration is also done here
-		printf("Pushing children \n");
+		
+		//printf("Pushing children \n");
+		
 		node *temp = curr_node->child;
 		while(temp!=NULL){
 			accel(temp);
@@ -114,7 +57,6 @@ node* covtree_original_km(const net *PN){
 			marking_display(temp->marking);
 			temp = temp->next;
 		}
-		//printf("flag 3");
 		
 	}//end of while loop
 		
@@ -142,7 +84,8 @@ int equal_ancestor(node* x)
 	printf("node is :");
 	marking_display(x->marking);
 	printf("\n");
-*/	
+*/
+	
  // printf("Beginning of equal ancestor\n\n");
 
 	while(ancestor != NULL){

@@ -39,8 +39,6 @@ node_expand_all(const net *pn, node *x)
 	
 	struct node *curr;
 	
-	//printf("ok till here %d \n ", pn->trans_count);
-	
 	for(k=0;k<pn->trans_count;k++){
 		
 		//printf(" fl 3 \n");
@@ -49,7 +47,7 @@ node_expand_all(const net *pn, node *x)
 			continue;
 		
 		//else
-		if(count == 0){
+		if(count == 0){                   //for the first-child
 			node *child = node_create();
 			x->child =child;
 			child->action = &(pn->trans[k]);
@@ -62,7 +60,7 @@ node_expand_all(const net *pn, node *x)
 			continue; 
 		}
 		
-		//else if
+		//else if        			//for the second child and children hence
 		 node *child = node_create();
 		 curr->next =child;
 		 child->action = &(pn->trans[k]);
@@ -102,14 +100,11 @@ node_write_helper(const node *x, FILE *stream, int spaces)
 	if(x == NULL) return;
 	
 	int i;
-	
-	printf("once %d\n ", x==NULL);
-	
 	node *currNode = x->child;
 	
-	printf("twice \n");
 	for(i=0;i<spaces;i++)
 		fprintf(stream , "  ");	
+	
 	marking_write(x->marking , stream);
 	fprintf(stream , "\n");
 	

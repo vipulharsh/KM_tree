@@ -30,24 +30,16 @@ int
 marking_eq(const wnat *m1, const wnat *m2)
 {
 	
-	
-//	printf("marking_eq :  ");
-//	marking_display(m1);
-//	printf("   ");
-//	marking_display(m2);
-//	printf("\n");
 	assert(dimension > 0);
 	int i;
 	for(i=0;i<dimension ; i++){
 		
 		//printf("  %lf %lf | ",m1[i] ,m2[i]); 
 		if(!wnat_eq(m1[i] , m2[i])){
-			//printf("now \n");
 			return 0;
 		}
 	}
 		
-	//printf("here \n");	
 		
 	return 1;
 	
@@ -112,7 +104,7 @@ marking_add(wnat *m1, const wnat *m2, const wnat *m3)   //might have to remove c
 
 
 void
-marking_sub(wnat *m1, const wnat *m2, const wnat *m3)  //might have to remove const from the 3rd argument
+marking_sub(wnat *m1, const wnat *m2, const wnat *m3) 
 {
 	assert(dimension > 0);
 	assert(marking_leq(m3,m2));
@@ -129,14 +121,11 @@ marking_read(wnat *m, FILE *stream)
 {
 	
 	assert(stream != NULL);
-	
-	//double token;
 	int i;
 	for(i = 0 ; i<dimension ;i++)
 	{
 		assert(!feof (stream));
 		fscanf (stream, "%lf", &m[i]);
-		//m[i]= token;
 	}    
 	return 1;
 }
@@ -154,10 +143,10 @@ marking_write(const wnat *m, FILE *stream)
 	int i;
 	for(i = 0 ; i<dimension-1 ;i++)
 	{
-		fprintf (stream, "%lu,", (long unsigned int)m[i]);  
+		fprintf (stream, "%.0lf,", m[i]);  
 	}
 	
-	fprintf (stream, "%lu)", (long unsigned int)m[i]);    
+	fprintf (stream, "%.0lf)", m[i]);    
 	return 1;
 	
 }
@@ -172,10 +161,10 @@ marking_display(const wnat *m)
 	int i;
 	for(i = 0 ; i<dimension-1 ;i++)
 	{
-		printf ("%lf,", m[i]);  
+		printf ("%.0lf,", m[i]);  
 	}
 	
-	printf ("%lf)", m[i]);    
+	printf ("%.0lf)", m[i]);    
 	return 1;
 }
 
