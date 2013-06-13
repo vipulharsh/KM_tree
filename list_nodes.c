@@ -15,6 +15,54 @@ node* pop_front(list_nodes **x)
 }
 
 
+
+
+
+
+
+node* pop_back(list_nodes **x){
+	
+	
+	
+	
+	node *ret;
+	return ret;
+}
+node* pop(list_nodes **x){
+	
+	return ((*popF)(x));
+	
+}
+
+
+
+node* push(list_nodes **x){
+	
+	return ((*push)(x));
+	
+}
+
+
+
+
+
+
+int push_back(list_nodes **list ,  node *n){
+	
+	
+	
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
 int push_front(list_nodes **list , node *n)
 {
 	list_nodes *new = malloc(sizeof(list_nodes));
@@ -24,6 +72,22 @@ int push_front(list_nodes **list , node *n)
 	*list = new;
 	return 1;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
