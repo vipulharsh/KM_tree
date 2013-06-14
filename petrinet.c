@@ -10,15 +10,14 @@
  * I/O functions for Petri nets.
  */
 int
-petrinet_read(net **PNet, FILE *stream)
+petrinet_read(FILE *stream, net **PNet)
 {
-	
-	
-	assert(stream != NULL);
-	
-	
-//Initialize dimension here	
 	unsigned int nOfPlaces;
+
+	assert(stream != NULL);
+
+
+//Initialize dimension here
 	fscanf(stream , "%d" , &nOfPlaces);
 	marking_initialize(nOfPlaces);
 	
@@ -49,14 +48,14 @@ petrinet_read(net **PNet, FILE *stream)
 	for(i=0;i< PN->trans_count ; i++){
 		
 		PN->trans[i].input = marking_create();
-		marking_read(PN->trans[i].input , stream);
+		marking_read(stream, PN->trans[i].input);
 		
 		PN->trans[i].output = marking_create();
-		marking_read(PN->trans[i].output , stream);		 
+		marking_read(stream, PN->trans[i].output);
 	}
 	
 	
-	marking_read(PN->init , stream);
+	marking_read(stream, PN->init);
 	//PNet = malloc(sizeof(net *));
 	*PNet = PN;
 	printf("PNet->transcount = %d \n", (*PNet)->trans_count);    
@@ -66,25 +65,24 @@ petrinet_read(net **PNet, FILE *stream)
 }
 
 
-int		 petrinet_write(const net *PN, FILE *stream) 
+int
+petrinet_write(FILE *stream, const net *PN)
 {
-	
+	int i;
+
 	assert(stream != NULL);
-	
+
 	fprintf(stream , "No of transitions : %d \n", PN->trans_count);
 	fprintf(stream , "No of Places : %d \n\n", dimension);
-	
-	
-	int i;
+
 	for(i=0;i< PN->trans_count ; i++)
 	{
 		fprintf(stream , "Transition number %d :\n" , i);
-		marking_write(PN->trans[i].input , stream);
+		marking_write(stream, PN->trans[i].input);
 		fprintf(stream ,"\n");
-		marking_write(PN->trans[i].output , stream);
+		marking_write(stream, PN->trans[i].output);
 		fprintf(stream ,"\n");
 	}
-	
-	return 1;
 
+	return 1;
 }

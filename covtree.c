@@ -4,7 +4,7 @@
 static void
 marking_display(const wnat *m)
 {
-	(void)marking_write(m, stdout);
+	(void)marking_write(stdout, m);
 }
 
 

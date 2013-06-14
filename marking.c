@@ -117,36 +117,32 @@ marking_sub(wnat *m1, const wnat *m2, const wnat *m3)
 
 
 int
-marking_read(wnat *m, FILE *stream)
+marking_read(FILE *stream, wnat *m)
 {
-	
-	assert(stream != NULL);
 	int i;
-	for(i = 0 ; i<dimension ;i++)
-	{
-		assert(!feof (stream));
-		fscanf (stream, "%lf", &m[i]);
-	}    
+
+	assert(stream != NULL);
+
+	for(i = 0; i < dimension; i++) {
+		assert(!feof(stream));		/* XXX */
+		fscanf(stream, "%lf", &m[i]);
+	}
 	return 1;
 }
 
-
-
-
 int
-marking_write(const wnat *m, FILE *stream)
+marking_write(FILE *stream, const wnat *m)
 {
-	
-	assert(stream != NULL);
-	
-	fprintf(stream , "(");
 	int i;
-	for(i = 0 ; i<dimension-1 ;i++)
+
+	assert(stream != NULL);
+
+	fprintf(stream , "(");
+	for(i = 0; i < dimension-1; i++)
 	{
-		fprintf (stream, "%.0lf,", m[i]);  
+		fprintf(stream, "%.0lf,", m[i]);
 	}
-	
-	fprintf (stream, "%.0lf)", m[i]);    
+
+	fprintf(stream, "%.0lf)", m[i]);
 	return 1;
-	
 }

@@ -61,7 +61,7 @@ void		 marking_sub(wnat *, const wnat *, const wnat *);
 /*
  * I/O functions for markings.
  */
-int		 marking_read(wnat *, FILE *stream); //to be done
-int		 marking_write(const wnat *, FILE *stream); //to be done
+int		 marking_read(FILE *stream, wnat *);
+int		 marking_write(FILE *stream, const wnat *);
 
 #endif	/* !_KMT_MARKING_H */

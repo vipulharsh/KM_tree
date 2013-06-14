@@ -67,6 +67,6 @@ node		*node_expand_one(const transition *, node *);
  *
  *	Outputs, in text, the given node and its subtree.
  */
-int		 node_write(const node *, FILE *stream);
+int		 node_write(FILE *stream, const node *);
 
 #endif	/* !_KMT_TREE_H */

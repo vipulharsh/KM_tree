@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[1]);
 		/* NOTREACHED */
 	}
-	petrinet_read(&PetriNet , fp);
+	petrinet_read(fp, &PetriNet);
 	fclose(fp);
 
 	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
@@ -33,11 +33,11 @@ int main(int argc, char *argv[])
 		err(EXIT_FAILURE, "Unable to open `%s' for write", "res.txt");
 		/* NOTREACHED */
 	}
-	petrinet_write(PetriNet, fp);
+	petrinet_write(fp, PetriNet);
 
 	//node_root(PetriNet);
 	root = covtree_original_km(PetriNet);
-	node_write(root, fp);
+	node_write(fp, root);
 	fclose(fp);
 
 	return 0;

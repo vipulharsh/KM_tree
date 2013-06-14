@@ -12,7 +12,7 @@
  *
  *	Can be changed later.
  */
-static void	 node_write_helper(const node *, FILE *stream , int);
+static void	 node_write_helper(FILE *stream, const node *, int);
 
 
 node *
@@ -91,14 +91,14 @@ node_expand_all(const net *pn, node *x)
 
 
 int
-node_write(const node *x, FILE *stream)
+node_write(FILE *stream, const node *x)
 {
-	if(x == NULL) return 1;
-	
-	node_write_helper(x , stream ,0);
-	
+	if(x == NULL)
+		return 1;
+
+	node_write_helper(stream, x, 0);
+
 	return 1;
-	
 }
 
 
@@ -106,25 +106,24 @@ node_write(const node *x, FILE *stream)
 
 
 void
-node_write_helper(const node *x, FILE *stream, int spaces)
+node_write_helper(FILE *stream, const node *x, int spaces)
 {
-	if(x == NULL) return;
-	
 	int i;
 	node *currNode = x->child;
-	
-	for(i=0;i<spaces;i++)
-		fprintf(stream , "  ");	
-	
-	marking_write(x->marking , stream);
-	fprintf(stream , "\n");
-	
-	while(currNode!=NULL){
-		node_write_helper(currNode, stream , spaces+1);
+
+	if(x == NULL)
+		return;
+
+	for(i = 0; i < spaces; i++)
+		fprintf(stream, "  ");
+
+	marking_write(stream, x->marking);
+	fprintf(stream, "\n");
+
+	while(currNode != NULL) {
+		node_write_helper(stream, currNode, spaces+1);
 		currNode = currNode->next;
 	}
-		
-	
 }
 
 
