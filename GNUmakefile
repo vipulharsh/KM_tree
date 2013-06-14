@@ -4,50 +4,37 @@ CC = gcc
 CFLAGS = -Wall
 INCLUDES = -I.
 
-
-
-
 # Project Paths
-PROJECT_ROOT=$(HOME)/Desktop/KM_tree
-EXTERNAL_ROOT=$(PROJECT_ROOT)
+PROJECT_ROOT ?= $(CURDIR)
 SRCDIR = $(PROJECT_ROOT)
 OBJDIR = $(PROJECT_ROOT)/objs
-
-
-
 
 
 
 # Main #########################################################################
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
-DEPS = $(SRCS:%.c=%.d)
+DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)
 SRCS = main.c marking.c tree.c petrinet.c covtree.c list_nodes.c
 EXE = kmt
 
+.PHONY: all clean
 
+all: $(OBJDIR)/$(EXE)
 
-.PHONY: all clean setup
-
-all: setup $(OBJDIR)/$(EXE)
-
-
-
-setup:
+$(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
-
-
-$(OBJDIR)/$(EXE): $(OBJS)
+$(OBJDIR)/$(EXE): $(OBJS) $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
 
-$(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
+$(OBJDIR)/%.o : $(SRCDIR)/%.c $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-%.d: %.c
+$(OBJDIR)/%.d: $(SRCDIR)/%.c $(OBJDIR)
 	@$(CC) $(CFLAGS) $(INCLUDES) -MM $< > $@
 
 clean:
-	@rm -rf $(EXE) $(OBJDIR) $(DEPS) *.o
+	@rm -rf $(OBJDIR)
 
 -include $(DEPS)
