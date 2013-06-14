@@ -1,7 +1,7 @@
 # Configuration ################################################################
 
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -DDEBUG
 INCLUDES = -I.
 
 # Project Paths
@@ -32,7 +32,8 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(OBJDIR)/%.d: $(SRCDIR)/%.c | $(OBJDIR)
-	@$(CC) $(CFLAGS) $(INCLUDES) -MM $< > $@
+	@(echo -n $(OBJDIR)/ ; \
+	  $(CC) $(CFLAGS) $(INCLUDES) -MM $< ) > $@
 
 clean:
 	@rm -rf $(OBJDIR)

@@ -2,7 +2,6 @@
 #define _KMT_COVTREE_H
 
 #include "tree.h"
-#include <stdlib.h>
 
 /*
  * covtree_complete:
@@ -10,7 +9,7 @@
  *	Checks that the given coverability tree is complete, i.e., that the
  *	downward closure of its set of nodes is an inductive invariant.
  */
-int	covtree_complete(const net *, const node *);
+int		 covtree_complete(const net *, const node *);
 
 /*
  * covtree_original_km:
@@ -18,7 +17,7 @@ int	covtree_complete(const net *, const node *);
  *	Computes the Karp&Miller tree, as defined in the seminal paper by
  *	Karp & Miller (1969).
  */
-node*  covtree_original_km(const net *);
+node		*covtree_original_km(const net *);
 
 /*
  * covtree_reduced_km:
@@ -28,7 +27,7 @@ node*  covtree_original_km(const net *);
  *
  *	XXX Add the specification of the prefix.
  */
-node*		covtree_reduced_km(const net *);
+node		*covtree_reduced_km(const net *);
 
 /*
  * covtree_finkel_mct:
@@ -39,31 +38,22 @@ node*		covtree_reduced_km(const net *);
  */
 node		*covtree_finkel_mct(const net *);
 
-
-
-
 /*
  * accel:
- * Accelerates a node with respect to its ancestors
- * NOTE :doesn't need the petri net as argument
- * 
- * 
+ *
+ *	Accelerates a node with respect to its ancestors.
+ *
+ *	Note: doesn't need the Petri net as argument.
  */
- 
-int accel(node *); 
- 
- 
- 
- 
- /*
-  * equal_ancestor(x) : 
-  * returns 1 if an ancestor's marking is same as that of x
-  * 
-  */ 
- 
- int equal_ancestor(node *x);
- 
- 
+int		 accel(node *);
+
+/*
+ * equal_ancestor:
+ *
+ *	Returns 1 if the given node has the same marking as one of its
+ *	ancestors.  Returns 0 otherwise.
+ */
+int		 equal_ancestor(node *);
 
 
 /*

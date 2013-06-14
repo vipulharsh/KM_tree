@@ -150,25 +150,3 @@ marking_write(const wnat *m, FILE *stream)
 	return 1;
 	
 }
-
-
-
-int
-marking_display(const wnat *m)
-{
-	
-	printf("(");
-	int i;
-	for(i = 0 ; i<dimension-1 ;i++)
-	{
-		printf ("%.0lf,", m[i]);  
-	}
-	
-	printf ("%.0lf)", m[i]);    
-	return 1;
-}
-
-
-
-
-

@@ -16,7 +16,7 @@
 typedef struct node {
 	struct node	*parent;
 	transition	*action;
-	struct node	*next;  //pointer to the next sibling
+	struct node	*next;		/* pointer to the next sibling */
 	struct node	*child;
 	wnat		marking[0];	/* variable length */
 } node;
@@ -62,33 +62,11 @@ void		 node_expand_all(const net *, node *);
  */
 node		*node_expand_one(const transition *, node *);
 
-/* node_write:
+/*
+ * node_write:
  *
  *	Outputs, in text, the given node and its subtree.
  */
 int		 node_write(const node *, FILE *stream);
-
-
-
-
-/* node_write_helper:
- * 
- * 
- * helper function for node_write . Takes the number of spaces  as the argument
- * 
- * Can be changed later
- */ 
-void
-node_write_helper(const node *, FILE *stream , int);
-
-
-
-
-
-
-
-
-
-
 
 #endif	/* !_KMT_TREE_H */

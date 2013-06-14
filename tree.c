@@ -4,6 +4,17 @@
 #include "marking.h"
 #include "tree.h"
 
+/*
+ * node_write_helper:
+ *
+ *	Helper function for node_write.  Takes the number of spaces as the
+ *	argument.
+ *
+ *	Can be changed later.
+ */
+static void	 node_write_helper(const node *, FILE *stream , int);
+
+
 node *
 node_create(void)
 {

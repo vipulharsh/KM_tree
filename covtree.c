@@ -1,6 +1,14 @@
 #include "covtree.h"
 
 
+static void
+marking_display(const wnat *m)
+{
+	(void)marking_write(m, stdout);
+}
+
+
+
 
 
 
@@ -17,9 +25,10 @@ node* covtree_original_km(const net *PN){
 	//	printf("inside loop\n");
 		
 		curr_node = pop_front(&unprocessedNodes);  //!Node to be processed
-	
+#ifdef DEBUG
 		marking_display(curr_node->marking);
-		
+#endif
+
 	/*	
 		printf("parent is :  ");
 		if(curr_node->parent != NULL){
@@ -36,8 +45,10 @@ node* covtree_original_km(const net *PN){
 		
 		
 		if(equal_ancestor(curr_node)){     //!check for termination condition of the branch
+#ifdef DEBUG
  			marking_display(curr_node->marking);
 			printf(" Branch ends here \n");
+#endif
 			 continue;
 		}
 		
@@ -54,7 +65,9 @@ node* covtree_original_km(const net *PN){
 		while(temp!=NULL){
 			accel(temp);
 			push_front(&unprocessedNodes , temp);
+#ifdef DEBUG
 			marking_display(temp->marking);
+#endif
 			temp = temp->next;
 		}
 		
