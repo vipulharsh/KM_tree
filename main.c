@@ -1,39 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <err.h>
+#include <string.h>
+
 #include "petrinet.h"
 #include "tree.h"
 #include "covtree.h"
+
 int main(int argc, char *argv[])
 {
 	FILE *fp;
-	
-	
-	fp = fopen("ex2.in","r+");
-	assert(fp!=NULL);
-	
-	
-	
 	net *PetriNet;
-	petrinet_read(&PetriNet , fp);
-	
-	
-	
-	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
-	
+	node *root;
 
-	
-	FILE *fp1;
-	
-	fp1 = fopen("res.txt","w");
-	
-	assert(fp1!=NULL);
-	petrinet_write(PetriNet , fp1);
-	
-	
-    //node_root(PetriNet);
-	node *root1;
-	root1 = covtree_original_km(PetriNet);
-	
-	node_write(root1 , fp1);
-	
-	fclose(fp1);
+	if (argc != 2) {
+		errx(EXIT_FAILURE, "wrong number of arguments");
+		/* NOTREACHED */
+	}
+
+	fp = fopen(argv[1], "r");
+	if (fp == NULL) {
+		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[1]);
+		/* NOTREACHED */
+	}
+	petrinet_read(&PetriNet , fp);
+	fclose(fp);
+
+	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
+
+	fp = fopen("res.txt", "w");
+	if (fp == NULL) {
+		err(EXIT_FAILURE, "Unable to open `%s' for write", "res.txt");
+		/* NOTREACHED */
+	}
+	petrinet_write(PetriNet, fp);
+
+	//node_root(PetriNet);
+	root = covtree_original_km(PetriNet);
+	node_write(root, fp);
+	fclose(fp);
+
 	return 0;
 }
