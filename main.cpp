@@ -1,123 +1,10 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
 using namespace std;
 
 
 #include "PetriNet.h"
 #include "tree.h"
 #include "wint.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void createDotFile(node *root){
-	
-	ofstream dotFile;
-	dotFile.open("tree.dot");
-	
-	if (dotFile.is_open())
-	{
-		
-		dotFile<<"digraph G { \n";
-		
-		
-		dotFile<<"a->b\n";
-		
-		list<node*> unprocessedNodes;
-		unprocessedNodes.push_back(root);
-	
-	
-		string Result;          // string which will contain the result
-
-		stringstream ss;
-		string str = ss.str();    
-	
-		while(!unprocessedNodes.empty())
-		{
-	  
-		node* temp = unprocessedNodes.front();
-		unprocessedNodes.pop_front();
-	  
-	  
-	    list<node *>::const_iterator iterator;
-	    for (iterator = temp->children.begin(); iterator != temp->children.end(); ++iterator){     
-			    unprocessedNodes.push_back(*iterator);
-			    
-			    
-			    
-			    
-			    
-			    ss.str(std::string());
-				ss<<'(';
-				int i;
-				for (i=0; i<marking::nOfPlaces-1; i++){
-					ss << (*iterator)->label->tokens[i]<<",";
-				}
-				ss << (*iterator)->label->tokens[i]<<")";
-				Result = ss.str();
-				dotFile <<*iterator<<" [label = "<<Result<<"];\n";
-			    
-			    
-			    dotFile<<temp <<"->"<<*iterator<<";\n"; 
-					
-			    
-/*				
-			    dotFile<<"";
-				int i;
-				
-				ss.str(std::string());
-				
-				ss<<'(';
-				
-				for (i=0; i<marking::nOfPlaces-1; i++){
-					 ss << temp->label->tokens[i]<<","; 
-				}
-				ss << temp->label->tokens[i]<<")";
-				Result = ss.str(); 
-				dotFile <<Result<<"->";
-*/				
-				
-        
-        }
-	  }
-		
-		dotFile<<"}";
-		
-		dotFile.close();
-   }
-	else cout << "Unable to open file";
-	
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -145,7 +32,7 @@ void printTree(node *root){
 	  
 	  for(int i=0;i<p.second ; i++)
 	     cout<<"   ";
-	  p.first->label->display();
+	  p.first->label.display();
 	  cout<<endl;
 	  
 	  
@@ -169,12 +56,8 @@ int main(){
 	
 	P = new PetriNet;
 	
-	
-	cout<<"0"<<endl;
-	
 	P->instantiate();
 	
-	cout<<"1"<<endl;
 	
 	P->display();
 	
@@ -194,12 +77,11 @@ int main(){
     }
     */ 
 
-	cout<<"1"<<endl;
+	
 	
 	
 	
 	kmTree t(P);
-    
     
     
     
@@ -248,7 +130,7 @@ int main(){
     printTree(km);
     	
 	
-	createDotFile(km);
+	
 	
 	
 	

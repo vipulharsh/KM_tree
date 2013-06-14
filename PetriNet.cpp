@@ -32,14 +32,11 @@ void PetriNet :: instantiate (){
 	//m.input();
 	//initialMarking.nOfPlaces = nOfPlaces;   : not needed now , nOfPlaces is a static variable now
 	
-	initialMarking = new marking;
+	initialMarking.tokens.resize(nOfPlaces);
 	
-	
-	initialMarking->tokens.resize(nOfPlaces);
-	
-    initialMarking->input();
+	initialMarking.input();
 	cout<<"jfdkj"<<endl;
-	initialMarking->display();
+	initialMarking.display();
 	
 }
 
@@ -68,35 +65,30 @@ void PetriNet :: display(){
 
  
  cout<<"Initial Marking  : ";
- initialMarking->display();
+ initialMarking.display();
 }
 
 
 
-pair< list<marking*>::const_iterator, list<marking*>::const_iterator> PetriNet::reachableMarkings(marking* m){
-	list<marking*>* markings;
+pair< list<marking>::const_iterator, list<marking>::const_iterator> PetriNet::reachableMarkings(marking m){
+	list<marking>* markings;
 	
-	markings = new list<marking*>;
+	markings = new list<marking>;
 	
-	
-	marking* tempPointer;
 	
 	for (int i=0; i< nOfTransitions ; i++)
 	{
 		
-		if(transitions[i].req <= *m){
+		if(transitions[i].req <= m){
 			
 			//m.display();
 			//cout<<endl;
 			//transitions[i].vec.display();
 			//cout<<endl;
-			
-			tempPointer = new marking;
-			*tempPointer = *m+transitions[i].vec ;
-			markings->push_back(tempPointer);
+			markings->push_back(m+transitions[i].vec);
 		}
 	}
-	pair< list<marking*>::const_iterator, list<marking*>::const_iterator> p;
+	pair< list<marking>::const_iterator, list<marking>::const_iterator> p;
 	
 	p.first = markings->begin();
 	p.second  = markings->end();

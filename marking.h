@@ -26,11 +26,12 @@ public:
    
    vector<wint> tokens;
 	
-   static int nOfPlaces;      //the length of the tuple , defined in the marking.cpp file 
-  
-   marking(vector<wint> tokens1){}   //constructor, rarely used
-  
-   marking(){ tokens.resize(nOfPlaces);} 
+   static int nOfPlaces;      //the length of the tuple
+   
+   
+   
+   marking(vector<wint> tokens1){}   //constructor
+   marking(){ tokens.resize(nOfPlaces);}
    
    marking(int nOfPlaces1){
 	   
@@ -40,6 +41,11 @@ public:
    }
 	   
   
+   
+   
+   
+   
+   
    void input();
    
    
@@ -49,6 +55,7 @@ public:
  *Define the comparison operators < , <= , == for markings  
  * 
  */    
+    
     
    bool operator<=( const marking& other ) const;
    

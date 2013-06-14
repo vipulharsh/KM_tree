@@ -4,7 +4,6 @@
 
 #include "marking.h"
 
-
 typedef  marking transition_vector ;
 
 
@@ -16,8 +15,6 @@ class transition{
 public:
 	
 	marking req;      //the minimum marking required such that this transition is firable
-	
-	//int number;
 	
 	
 	transition_vector vec;  //the transition vector for the transition
