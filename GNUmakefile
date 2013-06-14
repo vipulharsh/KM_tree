@@ -25,13 +25,13 @@ all: $(OBJDIR)/$(EXE)
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
-$(OBJDIR)/$(EXE): $(OBJS) $(OBJDIR)
+$(OBJDIR)/$(EXE): $(OBJS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.c $(OBJDIR)
+$(OBJDIR)/%.o : $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-$(OBJDIR)/%.d: $(SRCDIR)/%.c $(OBJDIR)
+$(OBJDIR)/%.d: $(SRCDIR)/%.c | $(OBJDIR)
 	@$(CC) $(CFLAGS) $(INCLUDES) -MM $< > $@
 
 clean:
