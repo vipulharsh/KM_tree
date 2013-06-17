@@ -22,7 +22,6 @@ node* covtree_original_km(const net *PN){
 	
 	while(!empty(unprocessedNodes)){
 		
-	//	printf("inside loop\n");
 		
 		curr_node = pop_front(&unprocessedNodes);  //!Node to be processed
 #ifdef DEBUG
@@ -37,10 +36,7 @@ node* covtree_original_km(const net *PN){
 		}		
 		else
 		  printf(" NULL ");
-		  
-		 printf("\n"); 
-	*/	
-		//printf("flag 1");
+		*/
 		
 		
 		
@@ -91,27 +87,14 @@ int equal_ancestor(node* x)
 {
 	node *ancestor = x->parent;
 	
-/*
-	printf("\n\n\n\n\n\n\n\n");
-    printf("inside equal_ancestor\n");
-	printf("node is :");
-	marking_display(x->marking);
-	printf("\n");
-*/
 	
- // printf("Beginning of equal ancestor\n\n");
 
 	while(ancestor != NULL){
 		//marking_display(ancestor->marking);
-		//printf("  ");
 		//marking_display(x->marking);
-		//printf("\n");
 		if(marking_eq(x->marking , ancestor->marking)) return 1;
-		//printf("\n");
 		ancestor = ancestor->parent;
 	}
-	
-	//printf("end of equal_ancestor\n\n");
 	
 	return 0;	 
 }
