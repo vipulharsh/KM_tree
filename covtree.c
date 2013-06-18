@@ -105,14 +105,15 @@ int equal_ancestor(node* x)
 
 
 
-
+static wnat *ret = NULL;
 
 
 
 int accel(node *x)
 {
+	if(ret == NULL)
+	ret = marking_create(); //XXX : avoid malloc if possible
 	
-	wnat *ret = marking_create(); //XXX : avoid malloc if possible
 	
 	marking_copy(ret, x->marking); 
 	
@@ -133,7 +134,7 @@ int accel(node *x)
 		
 	}
 	
-	marking_destroy(ret);
+	//marking_destroy(ret);
 	
 	return 1;
 }
