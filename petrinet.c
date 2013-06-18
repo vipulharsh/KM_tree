@@ -20,20 +20,15 @@ petrinet_read(FILE *stream, net **PNet)
 //Initialize dimension here
 	fscanf(stream , "%d" , &nOfPlaces);
 	marking_initialize(nOfPlaces);
-	
-	//printf("flag 3\n");
-	
+		
 //allocate space to PNet	
 	
 	net *PN ;
 	PN = malloc(sizeof(net));
 	
-	//printf("flag 4\n");
-	
 	
 	PN->init = marking_create();
 	
-	//printf("flag 5\n");
 	
 	int trans_count;
 		
@@ -41,8 +36,6 @@ petrinet_read(FILE *stream, net **PNet)
 	PN->trans = malloc(trans_count * sizeof(transition));
 	PN->trans_count = trans_count;
 	
-	
-	//printf("flag 6\n   %d the number of transitions \n" , PN->trans_count);
 	
 	int i;
 	for(i=0;i< PN->trans_count ; i++){
@@ -60,7 +53,6 @@ petrinet_read(FILE *stream, net **PNet)
 	*PNet = PN;
 	printf("PNet->transcount = %d \n", (*PNet)->trans_count);    
 	return 1;
-	
 	
 }
 
