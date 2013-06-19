@@ -10,6 +10,128 @@ marking_display(const wnat *m)
 
 
 
+int		 covtree_covers(wnat* m, const node *x){
+	list_nodes *unProcessedNodes = NULL;
+	node *currNode;
+	push_front(&unProcessedNodes , x);
+	
+	while(unProcessedNodes != NULL){
+		 currNode = pop_front(&unProcessedNodes);
+		
+		if(marking_leq(m , currNode->marking)) return 1;  //m covered by this node , return 1
+		
+		
+		node *temp = currNode->child;
+		while(temp!=NULL){
+			push_front(&unProcessedNodes , temp);
+			temp = temp->next;
+		}
+		
+		
+	}
+	
+	return 0;  //not covered
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int		 covtree_complete(const net *PN, const node *x){
+	
+	wnat *rootMarking = node_root(PN)->marking; //label of the root
+	node *tree = x;  // XXX 
+	
+	list_nodes *unProcessedNodes = NULL;
+	
+	list_markings *unCheckedMarkings = NULL;
+    
+    push_frontM(&unCheckedMarkings , rootMarking);
+    push_front(&unProcessedNodes , tree);
+    
+
+
+	while(unProcessedNodes != NULL){
+		
+		node *currNode  = pop_front(&unProcessedNodes);
+		
+	//	marking_display(currNode->marking);
+	//	printf(" 1\n");
+			
+		int k;
+		for(k=0;k<PN->trans_count;k++){
+			
+			if(!marking_leq(PN->trans[k].input , currNode->marking))  //if this transition is not firable
+				continue;
+				
+			wnat *cMarking = marking_create();  // XXX
+			marking_add(cMarking , currNode->marking , PN->trans[k].output);
+			marking_sub(cMarking , cMarking , PN->trans[k].input);
+		//	marking_display(cMarking);
+		//	printf(" 2\n");
+			push_frontM(&unCheckedMarkings , cMarking);	
+		}
+		
+		while(unCheckedMarkings != NULL){
+			wnat *currMarking = pop_frontM(&unCheckedMarkings);
+		//	marking_display(currMarking);
+		//	printf(" 3\n");
+			int res = covtree_covers(currMarking , x);
+			if(res == 0) return 0;    // XXX
+		}
+		
+		node *temp = currNode->child;
+		while(temp!=NULL){
+			push_front(&unProcessedNodes , temp);
+			temp = temp->next;
+		}
+		
+	}
+	
+	
+	return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 node* covtree_original_km(const net *PN){

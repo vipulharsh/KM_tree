@@ -2,7 +2,7 @@
 #define _KMT_COVTREE_H
 
 #include "tree.h"
-
+#include "list_nodes.h"
 /*
  * covtree_complete:
  *
@@ -10,6 +10,29 @@
  *	downward closure of its set of nodes is an inductive invariant.
  */
 int		 covtree_complete(const net *, const node *);
+
+
+
+
+
+
+/*
+ * covtree_covers
+ * 
+ * Checks that the given marking is covered by some node in the given 
+ * coverability tree
+ * 
+ */ 
+int		 covtree_covers(wnat*, const node *);
+
+
+
+
+
+
+
+
+
 
 /*
  * covtree_original_km:
@@ -54,39 +77,6 @@ int		 accel(node *);
  *	ancestors.  Returns 0 otherwise.
  */
 int		 equal_ancestor(node *);
-
-
-/*
- * list_nodes:
- * A data structure to maintain a list of nodes 
- * Has one variable for a node pointer , and the other for the next item. 
- */ 
- 
-typedef struct list_nodes {
-	struct list_nodes *next;
-	node *x;
-} list_nodes;
- 
-/*
- *The usual list operations 
- * 
- *pop_front : pops out the front element and returns the pointer to the node popped out 
- * 			  Note that it also modifies the list	
- *
- *push_front : pushes a given node to the front of the list   
- * 
- * 
- *empty : returns true if list is empty. returns false otherwise 
- */  
-
-node* pop_front(list_nodes **x);
-
-
-int push_front(list_nodes **list , node *n);
-
-int empty(list_nodes *x);
-
-
 
 
 
