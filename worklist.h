@@ -5,7 +5,7 @@
 #include "tree.h"
 
 
-struct worklist_manager{
+typedef struct worklist_manager{
 	
 	void* (*create)(void);
 	void (*put)(void* , void*);
@@ -24,10 +24,10 @@ static const worklist_manager fifo_manager;
 
 
 
-struct lifo_node{
-	lifo_node* next;
+typedef struct lifo_node{
+	struct lifo_node* next;
 	node* x;
-}lifo_node;
+} lifo_node;
 
 
 
