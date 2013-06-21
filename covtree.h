@@ -11,11 +11,6 @@
  */
 int		 covtree_complete(const net *, const node *);
 
-
-
-
-
-
 /*
  * covtree_covers
  * 
@@ -24,15 +19,6 @@ int		 covtree_complete(const net *, const node *);
  * 
  */ 
 int		 covtree_covers(wnat*, const node *);
-
-
-
-
-
-
-
-
-
 
 /*
  * covtree_original_km:
@@ -47,8 +33,9 @@ node		*covtree_original_km(const net *);
  *
  *	Computes a reduced Karp&Miller tree.  This tree is a prefix of the
  *	original Karp&Miller tree, and is obtained as follows.
- *
- *	XXX Add the specification of the prefix.
+ *  
+ * A branch is not continued if its smaller than an ancestor
+ *	
  */
 node		*covtree_reduced_km(const net *);
 
@@ -76,8 +63,15 @@ int		 accel(node *);
  *	Returns 1 if the given node has the same marking as one of its
  *	ancestors.  Returns 0 otherwise.
  */
-int		 equal_ancestor(node *);
+int		 leq_ancestor(node *);
 
+/*
+ * leq_ancestor:
+ *
+ *	Returns 1 if the given node's marking is less than one of its
+ *	ancestors.  Returns 0 otherwise.
+ */
+int		 equal_ancestor(node *);
 
 
 #endif	/* !_KMT_COVTREE_H */

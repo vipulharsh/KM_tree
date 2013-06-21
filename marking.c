@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <err.h>
 #include "marking.h"
 
 unsigned int dimension = 0; //The Global Variable to store the number of places
@@ -124,11 +125,16 @@ marking_read(FILE *stream, wnat *m)
 	assert(stream != NULL);
 
 	for(i = 0; i < dimension; i++) {
-		assert(!feof(stream));		/* XXX */
+		//assert(!feof(stream));		/* XXX */
+		if (feof(stream)) {
+		err(EXIT_FAILURE, "Incomplete input file  to marking_read");
+	     }
 		fscanf(stream, "%lf", &m[i]);
 	}
 	return 1;
 }
+
+
 
 int
 marking_write(FILE *stream, const wnat *m)

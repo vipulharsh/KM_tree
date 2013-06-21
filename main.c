@@ -6,6 +6,7 @@
 #include "petrinet.h"
 #include "tree.h"
 #include "covtree.h"
+#include "worklist.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,17 +29,29 @@ int main(int argc, char *argv[])
 
 	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
 
-	fp = fopen("res.txt", "w");
+	fp = fopen("results/res.txt", "w");
 	if (fp == NULL) {
 		err(EXIT_FAILURE, "Unable to open `%s' for write", "res.txt");
 		/* NOTREACHED */
 	}
+	
+	
 	petrinet_write(fp, PetriNet);
-
-	//node_root(PetriNet);
+	
 	root = covtree_original_km(PetriNet);
 	node_write(fp, root);
+	
+	fprintf(fp," ---- cov -reduced ----- \n");
+	
+	node *root1 = covtree_reduced_km(PetriNet);
+	node_write(fp,root1);
 	fclose(fp);
+
+	int result = covtree_complete(PetriNet , root);
+	
+	printf("The result is %d \n", result);
+//	printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
+
 
 	return 0;
 }

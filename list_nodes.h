@@ -29,6 +29,18 @@ typedef struct list_nodes {
  
 
 
+/*
+ * List parameters :
+ * head 
+ * tail
+ */ 
+typedef struct list_param {
+	list_nodes *head;
+	list_nodes *tail;
+} list_param;
+
+
+static list_param l_param;
 
 
 
@@ -82,6 +94,68 @@ int push_front(list_nodes **list , node *n);
 int push_back(list_nodes **list ,  node *n);
 
 int empty(list_nodes *x);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * list_markings:
+ * A primitive data structure to maintain a list of markings 
+ * Has one variable for a node pointer , and the other for the next item in the list. 
+ */ 
+ 
+typedef struct list_markings {
+	struct list_markings *next;
+	wnat *x;
+} list_markings;
+ 
+
+
+/*
+ *The usual list operations 
+ * 
+ *pop_frontM : pops out the front element and returns the pointer to the node popped out 
+ * 			  Note that it also modifies the list	
+ *push_frontM : pushes a given node to the front of the list   
+ * 
+ *emptyM : returns true if list is empty. returns false otherwise 
+ */  
+
+wnat* pop_frontM(list_markings **x);
+
+int push_frontM(list_markings **list ,wnat *n);
+
+int emptyM(list_nodes *x);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #endif  /* _LIST_NODES_H */

@@ -7,7 +7,6 @@
 
 /*
  * dimension:
- *
  *	This global variable is assigned when the Petri net is read from the
  *	standard input, and remains constant afterwards.
  */

@@ -16,18 +16,14 @@ node* pop_front(list_nodes **x)
 
 
 
-
-
-
-
 node* pop_back(list_nodes **x){
-	
-	
-	
 	
 	node *ret;
 	return ret;
 }
+
+
+
 node* pop(list_nodes **x){
 	
 	return ((*popF)(x));
@@ -81,17 +77,63 @@ int push_front(list_nodes **list , node *n)
 
 
 
-
-
-
-
-
-
-
-
-
-
 int empty(list_nodes *x){
 return (x==NULL);	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+wnat* pop_frontM(list_markings **x){
+	
+	assert((*x)!=NULL);
+	list_markings *t = *x;
+	*x = (*x)->next;
+	 
+	//XXX : might want to free t; 
+	wnat *ret = t->x;
+	free(t);
+	return ret;	
+}
+
+int push_frontM(list_markings **list , wnat *n){
+
+	list_markings *new = malloc(sizeof(list_markings));
+	new->x = n;
+	new->next  = *list;
+	*list = new;
+	return 1;
+
+}
+
+int emptyM(list_nodes *x){
+	return (x==NULL);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

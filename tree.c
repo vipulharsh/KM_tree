@@ -57,13 +57,16 @@ node_expand_all(const net *pn, node *x)
 		if(!marking_leq(pn->trans[k].input , x->marking))  //if this transition is not firable
 			continue;
 		
+		
 		//else
+		
+		node *child = node_create();
+		child->action = &(pn->trans[k]);
+		child->parent = x;
+		child->next = NULL;
+			
 		if(count == 0){                   //for the first-child
-			node *child = node_create();
 			x->child =child;
-			child->action = &(pn->trans[k]);
-			child->parent = x;
-			child->next = NULL;
 			marking_add(child->marking , x->marking , pn->trans[k].output);
 			marking_sub(child->marking , child->marking , pn->trans[k].input);
 			curr = child;
@@ -72,14 +75,8 @@ node_expand_all(const net *pn, node *x)
 		}
 		
 		//else if        			//for the second child and children hence
-		 node *child = node_create();
 		 curr->next =child;
-		 child->action = &(pn->trans[k]);
-		 child->parent = x;
-		 child->next = NULL;
-		 
 		 //child->marking = x->marking + transition.output - transition.input
-		 
 		 marking_add(child->marking , x->marking , pn->trans[k].output);
 		 marking_sub(child->marking , child->marking , pn->trans[k].input);
 		 curr = child;
