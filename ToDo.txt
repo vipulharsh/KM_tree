@@ -1,0 +1,11 @@
+Worklist-complete (call it collection)
+
+Update examples in Tina format
+
+Implement MP and finkel algorithm
+
+Another field in node for cover relation
+
+dot output(with cover relation)
+
+latex report for the pushdown automaton criterion
