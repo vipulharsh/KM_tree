@@ -54,6 +54,8 @@
    
    \subsection{Transitions}
    \begin{enumerate}
+      
+     %1 
       \item  From the start state, for every node alphabet(i.e. alphabets which represent nodes in S),
             We have a transition from the start state to the node represented by the alphabet. 
             No change is affected in the stack. 
@@ -70,26 +72,75 @@
       Also after this point ,in our context we do not expect any input letters from the 
       alphabets representing nodes in S.
       
+      
+     %2 
       \item
       The label of n2 is exactly n1 + Action(t). 
       \begin{itemize}
         \item The transition from n1 to n2 : t is popped out from the stack. Nothing is pushed.
         \item The transition from n2 to n1 : t is pushed to the stack. Nothing is popped.
       \end{itemize}
-      
       \begin{center}
       \begin{tikzpicture}
         \node[circle,draw] (q0) at (0,-1) {$n1$};
         \node[circle,draw] (q1) at (4,-1) {$n2$};
         \draw[->] (q0) edge[bend left] node[above] {$\epsilon ,t,\epsilon $} (q1);
         \draw[->] (q1) edge[bend left] node[below] {$\epsilon ,X,tX $} (q0);
-        
         \end{tikzpicture}
 
       \end{center}
         
-      \item  The set of states - I
-    \end{enumerate}
+   
+   %3
+   \item
+      The label of n2  $\geq$ n1 . No change is affected in the stack in this case. 
+      \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (q0) at (0,-1) {$n1$};
+        \node[circle,draw] (q1) at (4,-1) {$n2$};
+        \draw[->] (q0) edge[bend left] node[above] {$\epsilon ,X,X$} (q1);
+        \end{tikzpicture}
+
+      \end{center} 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   %4
+   
+   \item
+      The label of n2 is n1 + Action(t), with extra $\Omega$ in some places. 
+      
+      \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (q0) at (0,-1) {$n1$};
+        \node[circle,draw] (q1) at (4,-1) {$n2$};
+        \draw[->] (q0) edge[bend left] node[above] {$\epsilon ,t,\epsilon $} (q1);
+        \draw[->] (q1) edge[bend left] node[below] {$\epsilon ,X,t(\rho)^{K} X $} (q0);
+        
+        \end{tikzpicture}
+
+      \end{center}
+       Where $\rho$ $\in$ $T^{\ast}$ \& Action($\rho$) yields positive tokens in the 
+       places where $\Omega$ are put and 0 elsewhere , \newline 
+       for all K $\geq$ $K_{0}$ (for a given $K_{0}$).
+       \newline
+       T is the set of transitions. 
+      
+       \end{enumerate}
+   
+   
+   \subsection{Initial Stack Alphabet}
+    Initially , the stack is empty.    
 
     
     
