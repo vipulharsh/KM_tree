@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{report}
+\documentclass[a4paper,10pt]{article}
 
 
 \usepackage{tikz}
@@ -17,10 +17,81 @@
 
 \maketitle
 
+\section{Introduction}
+  Consider a set of nodes , S for which we need to check completeness for a given Petri Net P. Also , consider 
+  another set I of nodes.
+  We aim to construct a pushdown automaton $\xi$  to verify the completness of the set S as the coverability 
+  set for P.  
+  
+\section{Construction}
+  \subsection{Start State} 
+    There is only one start state labelled "Start".
+    \newline
+    \begin{center}
+    \begin{tikzpicture}
+            \node[circle,draw] (q0) at (0,-1) {$Start$};
+    \end{tikzpicture}
+    \end{center}
+    
+  \subsection{Set of States}
+    The set of states comprise of the following
+    \begin{enumerate}
+      \item  The start state (discussed in the earlier section)
+      \item  The set of states - S
+      \item  The set of states - I
+    \end{enumerate}
+      
+   \subsection{Acceptance and Final states}
+     A word is accepted if a run on the word ends in an empty stack and a state belonging to the set S.
+     Thus , the set of final states is S and acceptance is by empty stack.
+     
+   \subsection{Input Alphabet}
+     The input alphabet is the set of nodes(their names/symbols) belonging to set S and the set of transitions of the Petri Net P.
+   
+   \subsection{Stack Alphabet}
+     The set of Transitions(their names/symbols).
+     
+   
+   \subsection{Transitions}
+   \begin{enumerate}
+      \item  From the start state, for every node alphabet(i.e. alphabets which represent nodes in S),
+            We have a transition from the start state to the node represented by the alphabet. 
+            No change is affected in the stack. 
+      \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (q0) at (0,-1) {$Start$};
+        \node[circle,draw] (q1) at (4,-1) {$n$};
+        \draw[->] (q0) edge[bend left] node[above] {$n,X,X$} (q1);
+        \end{tikzpicture}
 
-\begin{tikzpicture}
-        \node[circle,draw] (q0) at (0,-1) {$q_0$};
-\end{tikzpicture}
+      \end{center}
+      These are the only transitions from the start state. 
+      \newline
+      Also after this point ,in our context we do not expect any input letters from the 
+      alphabets representing nodes in S.
+      
+      \item
+      The label of n2 is exactly n1 + Action(t). 
+      \begin{itemize}
+        \item The transition from n1 to n2 : t is popped out from the stack. Nothing is pushed.
+        \item The transition from n2 to n1 : t is pushed to the stack. Nothing is popped.
+      \end{itemize}
+      
+      \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (q0) at (0,-1) {$n1$};
+        \node[circle,draw] (q1) at (4,-1) {$n2$};
+        \draw[->] (q0) edge[bend left] node[above] {$\epsilon ,t,\epsilon $} (q1);
+        \draw[->] (q1) edge[bend left] node[below] {$\epsilon ,X,tX $} (q0);
+        
+        \end{tikzpicture}
 
+      \end{center}
+        
+      \item  The set of states - I
+    \end{enumerate}
+
+    
+    
 \end{document}
 
