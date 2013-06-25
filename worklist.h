@@ -20,29 +20,21 @@ typedef struct worklist_manager{
 
 
 
-
-
-
 // LIFO IMPELEMENTATION
 //********************************************************************************//
-static const worklist_manager lifo_manager;
-//XXX	gives an error//lifo_manager.put = lifo_push;
-//XXX	gives an error//lifo_manager.get = &lifo_pop; 
-//XXX	gives an error//lifo_manager.empty = &lifo_empty;
-
-
 typedef struct lifo_node{
 	struct lifo_node* next;
 	node* x;
 } lifo_node;
 
+lifo_node* lifo_create();
 node* lifo_pop(lifo_node **x);
 int lifo_push(lifo_node **list , node *n);
 int lifo_empty(lifo_node **list);
+
+//XXX : declaration not working
+// static const worklist_manager lifo_manager={&lifo_create , &lifo_pop , &lifo_push , &lifo_empty};
 //*******************************************************************************//
-
-
-
 
 
 
@@ -71,10 +63,43 @@ typedef struct fifo_list{
 
 static const worklist_manager fifo_manager;
 
+fifo_node* fifo_create();
 node* fifo_pop(fifo_list **x);
 int fifo_push(fifo_list **list , node *n);
 int fifo_empty(fifo_list **list);
+
+//XXX : declaration not working
+//static const worklist_manager fifo_manager={&fifo_create , &fifo_pop , &fifo_push , &fifo_empty};
 //*******************************************************************************//
+
+
+
+
+
+
+
+
+
+
+
+
+//DICTIONARY IMPLEMENTATION
+//**************************************************************************//
+typedef struct pair{
+	char key[80];
+	int val;
+	struct pair* next;
+}pair;
+
+pair* pair_create();
+pair* pair_pop(pair **x);
+int pair_push(pair **list , pair *n);
+int pair_empty(pair **list);
+
+
+//XXX: declaration not working
+//static const worklist_manager dictionary_manager={&pair_create , &pair_pop , &pair_push , &pair_empty};
+//***************************************************************************
 
 
 
