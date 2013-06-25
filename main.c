@@ -8,6 +8,82 @@
 #include "covtree.h"
 #include "worklist.h"
 
+
+
+
+
+void createDotFile(FILE *dotFile , node *root){
+	
+	
+	if (dotFile!=NULL)
+	{
+		
+		fprintf(dotFile, "digraph G { \n");
+		
+		
+		fprintf(dotFile,"a->b \n");
+		
+		list_nodes* unprocessedNodes = NULL;
+		push_front(&unprocessedNodes , root);
+		fprintf(dotFile , " \"%X\"   [label = \"" , (int)root); 
+		marking_write(dotFile,root->marking);
+		fprintf(dotFile , "\"]; \n");
+	
+		while(unprocessedNodes!=NULL)
+		{
+	  
+		 node* temp = pop_front(&unprocessedNodes);
+		 node* child = temp->child; 
+		 
+			while(child!=NULL){
+			    
+			    push_front(&unprocessedNodes,child);
+			    
+			    fprintf(dotFile , "\"%X\"  [label = \"" , child); 
+			    marking_write(dotFile,child->marking);
+			    fprintf(dotFile , "\"]; \n");
+			    fprintf(dotFile , "\"%X\" -> \"%X\" \n" , temp , child);
+				
+				child = child->next;
+				}
+	    
+	    }
+	    
+		fprintf(dotFile ,"}");
+	    fclose(dotFile);
+   }
+	else printf("Unable to open file");
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main(int argc, char *argv[])
 {
 	FILE *fp;
@@ -51,7 +127,10 @@ int main(int argc, char *argv[])
 	
 	printf("The result is %d \n", result);
 //	printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
-
+    
+    FILE *dotFile1;
+	dotFile1= fopen("results/tree.dot","w");
+	createDotFile(dotFile1,root);
 
 	return 0;
 }
