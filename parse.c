@@ -19,9 +19,6 @@ int main(int argc, char *argv[])
 	
 	while((curr_char=fgetc(fp))!= EOF){
 		
-		
-		
-		
 		if(flag==0 && curr_char!='t') continue;  //not seen the first transition
 		
 		if(flag==0 && curr_char== 't'){        
@@ -46,31 +43,6 @@ int main(int argc, char *argv[])
 	//removed the first redundant line	
 		
 	
-	
-	
-		
-		
-	//if last character was a bracket , then ignore
-		if(last_char=='['){
-			if(curr_char==']' || curr_char=='['){
-				last_char = '%';  //brackets over
-				continue;
-			}
-			else
-			continue;
-		}
-		
-		
-		
-		
-		if(curr_char=='['){
-			last_char= '[';
-			continue;
-		}
-		
-		
-		
-		
 		if(curr_char=='t'){
 		 last_char= curr_char;
 			curr_char = fgetc(fp);
@@ -95,25 +67,67 @@ int main(int argc, char *argv[])
 			 last_char = curr_char;
 		    }
 		    char trans_name[100];
+		    char trans_input[100];
+		    char trans_output[100];
+		    
+		    
+		    
 		    int t=0;
 		    while(!(last_char==' ' || last_char=='\t' || last_char=='\n')){
 			 trans_name[t] = last_char;
 			 t++;
-			 curr_char = fgetc(fp);
-			 last_char = curr_char;
-		    }
+			 last_char =  (curr_char = fgetc(fp));
+			 }
 		    trans_name[t] = '\0';  
 		    
+		    
+		    
 		    printf("trans_name : %s \n" , trans_name);
-		    last_char  = '%';
+		    
+		    
+		    while(last_char==' ' || last_char=='\t' || last_char=='\n'){
+			 last_char =  (curr_char = fgetc(fp));
+			 }
+		    
+		    if(last_char=='['){
+				last_char =  (curr_char = fgetc(fp));
+				while(!(last_char=='[' || last_char== ']'))
+				  last_char =  (curr_char = fgetc(fp));
+		    }
+		    
+		    
+		    last_char =  (curr_char = fgetc(fp));
+		    while(last_char==' ' || last_char=='\t' || last_char=='\n'){
+			 last_char =  (curr_char = fgetc(fp));
+		    }
+		    
+		    
+		    t=0;
+		    while(!(last_char=='-')){
+			 trans_input[t] = last_char;
+			 t++;
+			 last_char =  (curr_char = fgetc(fp));
+			 }
+		    trans_input[t] = '\0';  
+		    printf("trans_input: %s \n" ,trans_input);
+
+		    
+		    while(last_char=='-' || last_char==' ' || last_char=='>' || last_char=='\t')
+		      last_char =  (curr_char = fgetc(fp));
+		    
+		    
+		    t=0;
+		    while(last_char!='\n'){
+				trans_output[t] = last_char;
+				t++;
+				last_char =  (curr_char = fgetc(fp));
+			}
+			trans_output[t] = '\0';
+			printf("trans_output: %s \n" , trans_output);
+				
 		    continue;
 		}
 		
-		
-		
-		
-		
-			
 		
 		 last_char=curr_char;
 	     printf("%c",last_char);
