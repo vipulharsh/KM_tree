@@ -6,7 +6,7 @@
 #include "petrinet.h"
 #include "tree.h"
 #include "covtree.h"
-#include "worklist.h"
+#include "collection.h"
 
 
 
