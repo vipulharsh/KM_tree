@@ -60,10 +60,10 @@ int		 accel(node *);
 /*
  * equal_ancestor:
  *
- *	Returns 1 if the given node has the same marking as one of its
- *	ancestors.  Returns 0 otherwise.
+ *	Returns a node pointer(cover) if the given node has the same marking as one of its
+ *	ancestors.  Returns NULL otherwise.
  */
-int		 leq_ancestor(node *);
+node*		 leq_ancestor(node *);
 
 /*
  * leq_ancestor:

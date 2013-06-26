@@ -20,9 +20,6 @@ void createDotFile(FILE *dotFile , node *root){
 		
 		fprintf(dotFile, "digraph G { \n");
 		
-		
-		fprintf(dotFile,"a->b \n");
-		
 		list_nodes* unprocessedNodes = NULL;
 		push_front(&unprocessedNodes , root);
 		fprintf(dotFile , " \"%X\"   [label = \"" , (int)root); 
@@ -42,7 +39,11 @@ void createDotFile(FILE *dotFile , node *root){
 			    fprintf(dotFile , "\"%X\"  [label = \"" , child); 
 			    marking_write(dotFile,child->marking);
 			    fprintf(dotFile , "\"]; \n");
-			    fprintf(dotFile , "\"%X\" -> \"%X\" \n" , temp , child);
+			    fprintf(dotFile , "\"%X\" -> \"%X\" [color=\"red\"]\n" , temp , child);
+			    
+			    if(child->cover!=NULL){
+				fprintf(dotFile , "\"%X\" -> \"%X\" [color=\"green\" style=\"dashed\"]\n" , child , child->cover);
+				}
 				
 				child = child->next;
 				}
@@ -115,6 +116,8 @@ int main(int argc, char *argv[])
 	petrinet_write(fp, PetriNet);
 	
 	root = covtree_original_km(PetriNet);
+
+	
 	node_write(fp, root);
 	
 	fprintf(fp," ---- cov -reduced ----- \n");
@@ -130,7 +133,7 @@ int main(int argc, char *argv[])
     
     FILE *dotFile1;
 	dotFile1= fopen("results/tree.dot","w");
-	createDotFile(dotFile1,root);
+	createDotFile(dotFile1,root1);
 
 	return 0;
 }

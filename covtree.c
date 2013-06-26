@@ -124,17 +124,19 @@ node* covtree_reduced_km(const net *PN){
 	*/
 		
 		
-		
-		if(leq_ancestor(curr_node)){     //!check for termination condition of the branch
+		node *res=leq_ancestor(curr_node);
+		if(res!=NULL){     //!check for termination condition of the branch
 #ifdef DEBUG
  			marking_display(curr_node->marking);
 			printf(" Branch ends here \n");
 #endif
+			 curr_node->cover = res;
 			 continue;
 		}
 		
 		
 		//else
+		curr_node->cover = NULL;
 		node_expand_all(PN , curr_node);
 		//!pushing children of currNode to unprocessed Nodes . 
 		//!Acceleration is also done here
@@ -227,16 +229,16 @@ node* covtree_original_km(const net *PN){
 
 
 
-int leq_ancestor(node* x)
+node* leq_ancestor(node* x)
 {
 	node *ancestor = x->parent;
 	while(ancestor != NULL){
 		//marking_display(ancestor->marking);
 		//marking_display(x->marking);
-		if(marking_leq(x->marking , ancestor->marking)) return 1;
+		if(marking_leq(x->marking , ancestor->marking)) return ancestor;
 		ancestor = ancestor->parent;
 	}
-	return 0;	 
+	return NULL;	 
 }
 
 
