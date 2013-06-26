@@ -11,17 +11,17 @@ marking_display(const wnat *m)
 
 
 int		 covtree_covers(wnat* m, const node *x){
-	list_nodes *unProcessedNodes = NULL;
+	void *unProcessedNodes = list_manager.create();
 	node *currNode;
-	push_front(&unProcessedNodes , x);
+	list_manager.put(unProcessedNodes , x);
 	
-	while(unProcessedNodes != NULL){
-		currNode = pop_front(&unProcessedNodes);
+	while(!list_manager.empty(unProcessedNodes)){
+		currNode = list_manager.get(unProcessedNodes);
 		if(marking_leq(m , currNode->marking)) return 1;  //m covered by this node , return 1
 		
 		node *temp = currNode->child;        //add children of this node to unprocessed nodes
 		while(temp!=NULL){
-			push_front(&unProcessedNodes , temp);
+			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}	
 	}
@@ -39,15 +39,15 @@ int		 covtree_complete(const net *PN, const node *x){
 	
 	wnat *rootMarking = node_root(PN)->marking; //label of the root
 	node *tree = x;  // XXX 
-	list_nodes *unProcessedNodes = NULL;
-	list_markings *unCheckedMarkings = NULL;
+	void *unProcessedNodes = list_manager.create();
+	void *unCheckedMarkings = list_manager.create();
     
-    push_frontM(&unCheckedMarkings , rootMarking);
-    push_front(&unProcessedNodes , tree);
+    list_manager.put(unCheckedMarkings , rootMarking);
+    list_manager.put(unProcessedNodes , tree);
     
-	while(unProcessedNodes != NULL){
+	while(!list_manager.empty(unProcessedNodes)){
 		
-		node *currNode  = pop_front(&unProcessedNodes);
+		node *currNode  = list_manager.get(unProcessedNodes);
 		
 	//	marking_display(currNode->marking);
 	//	printf(" 1\n");
@@ -65,11 +65,11 @@ int		 covtree_complete(const net *PN, const node *x){
 			marking_sub(cMarking , cMarking , PN->trans[k].input);
 		//	marking_display(cMarking);
 		//	printf(" 2\n");
-			push_frontM(&unCheckedMarkings , cMarking);	
+			list_manager.put(unCheckedMarkings , cMarking);	
 		}
 		
-		while(unCheckedMarkings != NULL){
-			wnat *currMarking = pop_frontM(&unCheckedMarkings);
+		while(!list_manager.empty(unCheckedMarkings)){
+			wnat *currMarking = list_manager.get(unCheckedMarkings);
 		//	marking_display(currMarking);
 		//	printf(" 3\n");
 			int res = covtree_covers(currMarking , x);
@@ -78,7 +78,7 @@ int		 covtree_complete(const net *PN, const node *x){
 		
 		node *temp = currNode->child;          //!add children of this node to unprocessed nodes
 		while(temp!=NULL){
-			push_front(&unProcessedNodes , temp);
+			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}
 		
@@ -102,14 +102,14 @@ int		 covtree_complete(const net *PN, const node *x){
 node* covtree_reduced_km(const net *PN){
 	
 	node *root = node_root(PN);
-	list_nodes *unprocessedNodes = NULL ;
-	push_front(&unprocessedNodes , root);
+	void *unprocessedNodes = list_manager.create() ;
+	list_manager.put(unprocessedNodes , root);
 	
 	node *curr_node;
 	
-	while(!empty(unprocessedNodes)){
+	while(!list_manager.empty(unprocessedNodes)){
 		
-		curr_node = pop_front(&unprocessedNodes);  //!Node to be processed
+		curr_node = list_manager.get(unprocessedNodes);  //!Node to be processed
 #ifdef DEBUG
 		marking_display(curr_node->marking);
 #endif
@@ -143,7 +143,7 @@ node* covtree_reduced_km(const net *PN){
 		node *temp = curr_node->child;         
 		while(temp!=NULL){
 			accel(temp);
-			push_front(&unprocessedNodes , temp);
+			list_manager.put(unprocessedNodes , temp);
 #ifdef DEBUG
 			marking_display(temp->marking);
 #endif
@@ -164,14 +164,14 @@ node* covtree_reduced_km(const net *PN){
 
 node* covtree_original_km(const net *PN){
 	node *root = node_root(PN);
-	list_nodes *unprocessedNodes = NULL ;
-	push_front(&unprocessedNodes , root);
+	void *unprocessedNodes = list_manager.create() ;
+	list_manager.put(unprocessedNodes , root);
 	
 	node *curr_node;
 	
-	while(!empty(unprocessedNodes)){
+	while(!list_manager.empty(unprocessedNodes)){
 		
-		curr_node = pop_front(&unprocessedNodes);  //!Node to be processed
+		curr_node = list_manager.get(unprocessedNodes);  //!Node to be processed
 #ifdef DEBUG
 		marking_display(curr_node->marking);
 #endif
@@ -206,7 +206,7 @@ node* covtree_original_km(const net *PN){
 		node *temp = curr_node->child;
 		while(temp!=NULL){
 			accel(temp);
-			push_front(&unprocessedNodes , temp);
+			list_manager.put(unprocessedNodes , temp);
 #ifdef DEBUG
 			marking_display(temp->marking);
 #endif

@@ -2,7 +2,7 @@
 #define _KMT_COVTREE_H
 
 #include "tree.h"
-#include "list_nodes.h"
+#include "collection.h"
 /*
  * covtree_complete:
  *
