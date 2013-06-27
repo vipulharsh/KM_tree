@@ -117,7 +117,6 @@ static
 long int returnAmt(char *s){
 	
 	
-	printf("amt is %s \n",s);
 	
 	long int res=0;
 	if(strcmp (s,"")==0) { res=1; return 1;}
@@ -261,7 +260,6 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 		if(state == 1 && (c == ' ' || c == '\t' || c=='\n')){
 		//read entire transition
 		
-		 printf("\n New Transition **** \n");
 		
 			trans_number++;
 			i=0;
@@ -299,7 +297,6 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 					strncpy(amt , so + span, strlen(so)-span);
 					int pl_number = returnIndex(pch , places_list);
 					long int tokens = returnAmt(amt);
-					printf("Input :first %s , second %s %d %d\n" , pch , amt, strlen(amt),tokens);
 					PN->trans[trans_number].input[pl_number] = tokens;
 				 so = strtok (NULL, " ");	
 				 continue;
@@ -313,7 +310,6 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 					strncpy(amt , so + span, strlen(so)-span);
 					int pl_number = returnIndex(pch , places_list);
 					long int tokens = returnAmt(amt);
-					printf("output :first %s , second %s %d %d\n" , pch , amt, strlen(amt),tokens);
 					PN->trans[trans_number].output[pl_number] = tokens;
 				 so = strtok (NULL, " ");	
 				 continue;
@@ -332,16 +328,52 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 			}
 			continue;
 		}
+		
+		
+		
+		if(state == 3 && c=='p'){
+			if((c = fgetc(fp))=='l'){
+				state = 7;
+			}
+		}
+		
+		if(state == 7){
+			//read entire place
+			i=0;
+			char *entPlace = malloc(100);
+			while((c = fgetc(fp))!='\n'){
+			   entPlace[(i++)] = c;
+			}
+			int place_number;
+			int amt;
+			char *so;
+			so = strtok (entPlace," ");
+			while(so!=NULL){
+				//printf(" so : %s \n" , so);
+				if(so[0] == '('){
+					char *temp = malloc(strlen(so)-2);
+					strncpy(temp , so+1 , strlen(so)-2);
+					amt = returnAmt(temp);
+				//	printf("temp : %s \n" , temp); 
+				 }
+				else{
+					place_number = returnIndex(so , places_list);
+				}
+				 so = strtok (NULL, " ");
+			}
+			printf("pl no: %d  and amt %d \n" , place_number , amt);
+			PN->init[place_number] = amt;
+			state = 3;
+		}
+		
+		
+		
+		
+		
 	}//end of reading file twice
 	
-	printf("ho ja yaar \n");
-	for(h=0; h< PN->trans_count ; h++){
-		printf(" %d %d \n", h ,PN->trans_count);
-		marking_write(stdout , PN->trans[h].input);
-		marking_write(stdout , PN->trans[h].output);
-		printf( "done \n\n");
-	}
-
+	
+   *PNet = PN; 
 			
 return 1;
 }
