@@ -2,9 +2,9 @@
 #define _KMT_PETRINET_H
 
 #include <stdio.h>
-
+#include <err.h>
 #include "marking.h"
-
+#include "collection.h"
 /*
  * A marking is an array of length dimension whose elements are wnats.
  */
@@ -31,6 +31,7 @@ typedef struct {
  * I/O functions for Petri nets.
  */
 int		 petrinet_read(FILE *stream, net **);
+int		 petrinet_read1(FILE *fp, net **);
 int		 petrinet_write(FILE *stream, const net *);
 
 #endif	/* !_KMT_PETRINET_H */
