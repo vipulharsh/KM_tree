@@ -44,6 +44,8 @@ dot: $(RESDIR)/tree.dot
 	@dot -Tpdf $(RESDIR)/tree.dot > $(RESDIR)/tree.pdf
 
 clean:
-	@rm -rf $(OBJDIR)
+	@rm -rf $(OBJDIR) $(DOCDIR)/*.aux $(DOCDIR)/*.pdf $(DOCDIR)/*.dvi $(DOCDIR)/*.log $(DOCDIR)/*~
+	@rm -rf $(PROJECT_ROOT)/*.aux $(PROJECT_ROOT)/*.pdf $(PROJECT_ROOT)/*.dvi $(PROJECT_ROOT)/*.log $(PROJECT_ROOT)/*~
+	@rm -rf $(PROJECT_ROOT)/*.out $(PROJECT_ROOT)/*.o $(RESDIR)/*
 
 -include $(DEPS)
