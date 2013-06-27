@@ -62,7 +62,7 @@ petrinet_read(FILE *stream, net **PNet)
 
 
 static
-int returnIndex(char *pch , void *places_list){
+int returnIndex(char *pch , void *places_list , int place_count){
 	
 	int ind=0;
 	
@@ -74,7 +74,7 @@ int returnIndex(char *pch , void *places_list){
 			while(!list_manager.empty(temp)){
 		     list_manager.put(places_list , list_manager.get(temp));
 		  }
-		  return ind;
+		  return (place_count - ind) - 1;
 		}
 		else ind++; 
 	}
@@ -295,7 +295,7 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 					char *amt = malloc(strlen(so) - span+1);
 					strncpy(pch , so , span);
 					strncpy(amt , so + span, strlen(so)-span);
-					int pl_number = returnIndex(pch , places_list);
+					int pl_number = returnIndex(pch , places_list , place_count);
 					long int tokens = returnAmt(amt);
 					PN->trans[trans_number].input[pl_number] = tokens;
 				 so = strtok (NULL, " ");	
@@ -308,7 +308,7 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 					char *amt = malloc(strlen(so) - span+1);
 					strncpy(pch , so , span);
 					strncpy(amt , so + span, strlen(so)-span);
-					int pl_number = returnIndex(pch , places_list);
+					int pl_number = returnIndex(pch , places_list , place_count);
 					long int tokens = returnAmt(amt);
 					PN->trans[trans_number].output[pl_number] = tokens;
 				 so = strtok (NULL, " ");	
@@ -357,7 +357,7 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 				//	printf("temp : %s \n" , temp); 
 				 }
 				else{
-					place_number = returnIndex(so , places_list);
+					place_number = returnIndex(so , places_list,place_count);
 				}
 				 so = strtok (NULL, " ");
 			}
