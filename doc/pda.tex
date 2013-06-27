@@ -8,9 +8,7 @@
 \usepackage{float}
 \addtolength{\topmargin}{-.50in}
 \title{Pushdown automaton criterion for completeness of coverability sets}
-\author{Vipul Harsh \and J\'er\^ome Leroux \and Gr\'egoire Sutre\\
-        IIT Bombay , INDIA\\
-        \texttt{vipulharsh.cse.iitb.ac.in}\\[0.3 cm]
+\author{Vipul Harsh \and J\'er\^ome Leroux \and Gr\'egoire Sutre\\[0.3 cm]
         }
 
 
@@ -31,6 +29,8 @@
 
 \maketitle
 
+
+\section{Preliminaries}
 The set of natural numbers $\setN$ is extended with a special symbol $\omega\not\in\setN$. The completed set $\setN\cup\{\omega\}$ is denoted by $\setN_\omega$. The sum function is extended over $\setN_\omega$ by $x+y=\omega$ if $x=\omega$ or $y=\omega$. The classical total order $\leq$ over $\setN$ is extended into the total order over $\setN_\omega$, still denoted by $\leq$, and defined by $x\leq y$ if, and only if, there exists $z\in\setN_\omega$ such that $y=x+z$. In the sequel, $d$ denotes a natural number, called the \emph{dimension}. The sum and the total order are also extended component-wise over the vectors in $\setN_\omega^d$.
 
 
@@ -180,4 +180,3 @@ An \emph{accelerated graph} for a Petri net $T$ is a tuple $G=(Q,\Lambda,\Delta,
     
     
 \end{document}
-
