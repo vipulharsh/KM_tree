@@ -32,8 +32,7 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(OBJDIR)/%.d: $(SRCDIR)/%.c | $(OBJDIR)
-	@(echo -n $(OBJDIR)/ ; \
-	  $(CC) $(CFLAGS) $(INCLUDES) -MM $< ) > $@
+	@$(CC) $(CFLAGS) $(INCLUDES) -MM -MT $(@:%.d=%.o) $< > $@
 doc:
 	@latex $(DOCDIR)/pda.tex
 	@dvipdf $(PROJECT_ROOT)/pda.dvi $(DOCDIR)/pda.pdf
