@@ -2,6 +2,66 @@
 #include <stdlib.h>
 #include <err.h>
 #include <string.h>
+#include "collection.h"
+
+typedef struct{
+	int place;
+	char val[100];
+} pair;
+
+
+
+int index(char *pch , void *places_list){
+	
+	int index=0;
+	
+	void *temp = list_manager.create();
+	while(!list_manager.empty(places_list)){
+		char* m = list_manager.get(places_list);
+		list_manager.put(temp , m);
+		if(strcmp(m , pch) == 0){
+			while(!list_manager.empty(temp)){
+		     list_manager.put(places_list , list_manager.get(temp));
+		  }
+		  return index;
+		}
+		else index++; 
+	}
+   while(!list_manager.empty(temp)){
+		     list_manager.put(places_list , list_manager.get(temp));
+		  }
+	return -1;
+	
+}
+
+
+
+
+
+
+int notPresent(char *pch , void *places_list){
+	
+	void *temp = list_manager.create();
+	while(!list_manager.empty(places_list)){
+	    char* m = list_manager.get(places_list);
+		list_manager.put(temp , m);
+		if(strcmp(m , pch) == 0){
+		  while(!list_manager.empty(temp)){
+		     list_manager.put(places_list , list_manager.get(temp));
+		  }
+		  return 0;
+	    }
+	 }
+
+
+   while(!list_manager.empty(temp)){
+		     list_manager.put(places_list , list_manager.get(temp));
+		  }
+   return 1;		  
+}
+
+
+
 
 
 int main(int argc, char *argv[])
@@ -15,6 +75,10 @@ int main(int argc, char *argv[])
 	
 	int flag=0; //to remove the initial garbage
 	int trans_count=0;
+	
+	char transitions[100][3][80]; //to store transitions
+	
+	
 	
 	
 	while((curr_char=fgetc(fp))!= EOF){
@@ -62,27 +126,22 @@ int main(int argc, char *argv[])
 		
 		if(last_char=='|'){
 			last_char = curr_char;
-			while(last_char==' ' || last_char=='\t' || last_char=='\n'){
-			 curr_char = fgetc(fp);
-			 last_char = curr_char;
-		    }
-		    char trans_name[100];
-		    char trans_input[100];
-		    char trans_output[100];
-		    
-		    
+			 while(last_char==' ' || last_char=='\t' || last_char=='\n'){
+				curr_char = fgetc(fp);
+				last_char = curr_char;
+		     }
 		    
 		    int t=0;
 		    while(!(last_char==' ' || last_char=='\t' || last_char=='\n')){
-			 trans_name[t] = last_char;
+			 transitions[trans_count-1][0][t] = last_char;
 			 t++;
 			 last_char =  (curr_char = fgetc(fp));
 			 }
-		    trans_name[t] = '\0';  
+		    transitions[trans_count-1][0][t] = '\0';  
 		    
 		    
 		    
-		    printf("trans_name : %s \n" , trans_name);
+	//	    printf("trans_name : %s \n" , transitions[trans_count-1][0]);
 		    
 		    
 		    while(last_char==' ' || last_char=='\t' || last_char=='\n'){
@@ -104,38 +163,100 @@ int main(int argc, char *argv[])
 		    
 		    t=0;
 		    while(!(last_char=='-')){
-			 trans_input[t] = last_char;
+			 transitions[trans_count-1][1][t] = last_char;
 			 t++;
 			 last_char =  (curr_char = fgetc(fp));
 			 }
-		    trans_input[t] = '\0';  
-		    printf("trans_input: %s \n" ,trans_input);
+		    transitions[trans_count-1][1][t] = '\0';  
+		//    printf("trans_input: %s \n" ,transitions[trans_count-1][1]);
 
 		    
 		    while(last_char=='-' || last_char==' ' || last_char=='>' || last_char=='\t')
 		      last_char =  (curr_char = fgetc(fp));
 		    
 		    
-		    t=0;
+		    t=0; 
 		    while(last_char!='\n'){
-				trans_output[t] = last_char;
+				transitions[trans_count-1][2][t] = last_char;
 				t++;
 				last_char =  (curr_char = fgetc(fp));
 			}
-			trans_output[t] = '\0';
-			printf("trans_output: %s \n" , trans_output);
+			transitions[trans_count-1][2][t] = '\0';
+		//	printf("trans_output: %s \n" , transitions[trans_count-1][2]);
 				
 		    continue;
 		}
 		
-		
-		 last_char=curr_char;
-	     printf("%c",last_char);
-				
+		if(last_char=='\n' && curr_char == 'p'){
+		 last_char =  (curr_char = fgetc(fp));
+		 while(last_char!='\n' || last_char!=EOF){
+			 last_char =  (curr_char = fgetc(fp));
+			 if(last_char == EOF) break;
+			 printf("%c ",last_char);
+		    }
+		  continue;    
+		}		
 		
 	}
 	
-	printf("No of transitions ; %d",trans_count); 
+	int h;
 	
-	return 0;
+	void *places_list = list_manager.create();
+	
+	int place_count = 0;
+	
+
+	char * so;
+	for(h=0; h<trans_count; h++){
+		 
+//		 printf ("Splitting input string \"%s\" into tokens:\n",transitions[h][1]);
+		 so = strtok (transitions[h][1]," ");
+		 
+		 while (so != NULL)
+			{
+		
+			int span = strcspn(so , "*");
+			char *pch =  malloc(span+1);
+			strncpy(pch , so , span);
+		 	printf ("%s\n",pch);
+			if(notPresent(pch , places_list)){
+				char *placeName = malloc(strlen(pch) + 1);
+				strcpy(placeName , pch);
+				list_manager.put(places_list , placeName);
+				place_count++;
+			}
+			so = strtok (NULL, " ");
+		  }
+//		printf ("Splitting output string \"%s\" into tokens:\n",transitions[h][2]);
+		 so = strtok (transitions[h][2]," ");
+		 while (so != NULL)
+			{
+			int span = strcspn(so , "*");
+			char *pch =  malloc(span+1);
+			strncpy(pch , so , span);
+		 	printf ("%s\n",pch);
+			if(notPresent(pch , places_list)){
+				char *placeName = malloc(strlen(pch) + 1);
+				strcpy(placeName , pch);
+				list_manager.put(places_list , placeName);
+				place_count++;
+			}
+			so = strtok (NULL, " ");
+		  }
+	}
+	
+	
+//assume now we have place_list , trans_count ,place_count	,transitions
+	
+	
+	 while(!list_manager.empty(places_list)){
+	    char* m = list_manager.get(places_list);
+	    printf("%s ,  mahanta ka udhaaran hain ye \n" , m);
+	}
+
+		printf("No of Places ; %d",place_count);
+		printf("No  of transitions ; %d" , trans_count);
+
+	
+return 0;
 }

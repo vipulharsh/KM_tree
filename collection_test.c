@@ -9,8 +9,7 @@ static void
 test_colmgr(const colmgr *colmgr)
 {
 	void *col;
-
-	col = colmgr->create();
+	scol = colmgr->create();
 	printf("Is empty: %d\n", colmgr->empty(col));
 	printf("Put(first)\n");
 	colmgr->put(col, (void *)"first");

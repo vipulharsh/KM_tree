@@ -3,28 +3,29 @@
 #include <string.h>
 #include "collection.h"
 
-typedef struct node {
+typedef struct item {
 	void		*data;		/* opaque user data */
-	struct node	*next;
-} node;
+	struct item	*next;
+} item;
 
 /*
- * XXX	Maintain a global pool of free nodes.
+ * XXX	Maintain a global pool of free items.
  */
 
 typedef struct {
-	node		*first;
+	item		*first;
 } list;
 
 typedef struct {
-	node		*first;
-	node		**last;
+	item		*first;
+	item		**last;
 } queue;
 
 static void		*list_create(void);
 static void		 list_put(void *, void *);
 static void		*list_get(void *);
 static int		 list_empty(void *);
+
 static void		*queue_create(void);
 static void		 queue_put(void *, void *);
 static void		*queue_get(void *);
@@ -58,7 +59,7 @@ static void
 list_put(void *x, void *d)
 {
 	list *l = (list *)x;
-	node *n;
+	item *n;
 
 	assert(l != NULL);
 	n = malloc(sizeof(*n));
@@ -71,7 +72,7 @@ static void *
 list_get(void *x)
 {
 	list *l = (list *)x;
-	node *n;
+	item *n;
 	void *ret;
 
 	assert(l != NULL);
@@ -107,7 +108,7 @@ static void
 queue_put(void *x, void *d)
 {
 	queue *q = (queue *)x;
-	node *n;
+	item *n;
 
 	assert(q != NULL);
 	n = malloc(sizeof(*n));
@@ -121,7 +122,7 @@ static void *
 queue_get(void *x)
 {
 	queue *q = (queue *)x;
-	node *n;
+	item *n;
 	void *ret;
 
 	assert(q != NULL);

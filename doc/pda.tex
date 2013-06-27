@@ -8,14 +8,49 @@
 \usepackage{float}
 \addtolength{\topmargin}{-.50in}
 \title{Pushdown automaton criterion for completeness of coverability sets}
-\author{Vipul Harsh\\
+\author{Vipul Harsh \and J\'er\^ome Leroux \and Gr\'egoire Sutre\\
         IIT Bombay , INDIA\\
         \texttt{vipulharsh.cse.iitb.ac.in}\\[0.3 cm]
         }
 
+
+
+% Natural numbers
+\usepackage{amssymb,amsmath}
+\newcommand{\setN}{\mathbb{N}}
+
+% Vectors
+\def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+{\mbox{\boldmath$\textstyle#1$}}
+{\mbox{\boldmath$\scriptstyle#1$}}
+{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+
 \begin{document}
 
+
 \maketitle
+
+The set of natural numbers $\setN$ is extended with a special symbol $\omega\not\in\setN$. The completed set $\setN\cup\{\omega\}$ is denoted by $\setN_\omega$. The sum function is extended over $\setN_\omega$ by $x+y=\omega$ if $x=\omega$ or $y=\omega$. The classical total order $\leq$ over $\setN$ is extended into the total order over $\setN_\omega$, still denoted by $\leq$, and defined by $x\leq y$ if, and only if, there exists $z\in\setN_\omega$ such that $y=x+z$. In the sequel, $d$ denotes a natural number, called the \emph{dimension}. The sum and the total order are also extended component-wise over the vectors in $\setN_\omega^d$.
+
+
+\medskip
+
+A \emph{Petri net} is a finite set $T$ of pairs in $\setN^d\times\setN^d$. Pairs $t\in\setN^d\times\setN^d$ are called \emph{transitions}, and vectors in $\setN_\omega^d$ are called \emph{configurations}. We associate to every transition $t$ given as a pair $(\vec{a},\vec{b})\in\setN^d\times\setN^d$ the binary relation $\xrightarrow{t}$ over the configurations defined by $\vec{x}\xrightarrow{t}\vec{y}$ if, and only if, $\vec{x}\geq \vec{a}$, $\vec{y}\geq \vec{b}$, and $\vec{x}+\vec{b}=\vec{y}+\vec{a}$. A finite set $\vec{C}\subseteq \setN_\omega^d$ is said to be \emph{closed} for the Petri net $T$ if for every $\vec{c}\xrightarrow{t}\vec{y}$ with $\vec{c}\in\vec{C}$ and $t\in T$, there exists $\vec{c}'\in\vec{C}$ such that $\vec{y}\leq \vec{c}'$.
+
+
+\medskip
+
+
+Given a word $\sigma=t_1\ldots t_k$ of transitions $t_j\in T$, we denote by $\xrightarrow{\sigma}$ the binary relation over the configurations defined by $\vec{x}\xrightarrow{\sigma}\vec{y}$ if, and only if, there exists a sequence $\vec{c}_0,\ldots,\vec{c}_k$ of configurations such that $\vec{c}_0=\vec{x}$, $\vec{c}_k=\vec{y}$ and such that $\vec{c}_{j-1}\xrightarrow{t_j}\vec{c}_j$ for every $1\leq j\leq k$. We also denote by $\xrightarrow{\sigma^\omega}$ the binary relation over the configurations defined by $\vec{c}\xrightarrow{\sigma^\omega}\vec{c}'$ if there exists a configuration $\vec{y}\geq \vec{c}$ such that $\vec{c}\xrightarrow{\sigma}\vec{y}$ and such that $\vec{c}'(i)=\vec{c}(i)$ if $\vec{c}(i)=\vec{y}(i)$ and $\vec{c}'(i)=\omega$ if $\vec{c}(i)<\vec{y}(i)$ for every $1\leq i \leq d$.
+
+
+\medskip
+
+
+An \emph{accelerated graph} for a Petri net $T$ is a tuple $G=(Q,\Lambda,\Delta,\Delta_\omega,\sqsubseteq)$ where $Q$ is a finite set of \emph{states}, $\Lambda:Q\rightarrow\setN_\omega^d$, $\Delta$ is a finite set of triples $(q,t,q')\in Q\times T\times Q$ such that $\Lambda(q)\xrightarrow{t}\Lambda(q')$, $\Delta_\omega$ is a finite set of triples $(q,\sigma,q')\in Q\times T^*\times Q$ such that $\Lambda(q)\xrightarrow{\sigma^\omega}\Lambda(q')$, and $\sqsubseteq$ is a binary relation over $Q$ satisfying $q\sqsubseteq q'\Rightarrow\Lambda(q)\leq \Lambda(q')$. Given a finite set $Q'\subseteq Q$, we are intereted in a sufficient condition, given as a pushdown automaton, such that $\vec{C}=\{\Lambda(q') \mid q'\in Q'\}$ is closed for $T$.
+
+
 
 \section{Introduction}
   Consider a set of nodes , S for which we need to check completeness for a given Petri Net P. Also , consider 

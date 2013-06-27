@@ -148,6 +148,8 @@ long int returnAmt(char *s){
 * 1 : gotta read a transition
 * 2 : reading input/output places of a transition
 * 3 : finished reading a transition
+* 5 : having read once , analyse transition input
+* 6: having read once , analyse transition output
 */ 
 int		 petrinet_read1(FILE *fp, net **PNet){
 	int trans_count=0;
@@ -230,6 +232,11 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 	PN->trans_count = trans_count;
 	
 	int h,d;
+	for(d=0; d < dimension; d++){
+		 	PN->init[d] = 0;
+	}
+	
+	
 	for(h=0; h < PN->trans_count ; h++){
 		PN->trans[h].input = marking_create();
 		PN->trans[h].output = marking_create();

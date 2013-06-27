@@ -10,8 +10,6 @@
 
 
 
-
-
 void createDotFile(FILE *dotFile , node *root){
 	
 	
@@ -20,21 +18,21 @@ void createDotFile(FILE *dotFile , node *root){
 		
 		fprintf(dotFile, "digraph G { \n");
 		
-		list_nodes* unprocessedNodes = NULL;
-		push_front(&unprocessedNodes , root);
-		fprintf(dotFile , " \"%X\"   [label = \"" , (int)root); 
+		void* unprocessedNodes = list_manager.create();
+		list_manager.put(unprocessedNodes , root);
+		fprintf(dotFile , " \"%X\"   [label = \"" , root); 
 		marking_write(dotFile,root->marking);
 		fprintf(dotFile , "\"]; \n");
 	
-		while(unprocessedNodes!=NULL)
+		while(!list_manager.empty(unprocessedNodes))
 		{
 	  
-		 node* temp = pop_front(&unprocessedNodes);
+		 node* temp = list_manager.get(unprocessedNodes);
 		 node* child = temp->child; 
 		 
 			while(child!=NULL){
 			    
-			    push_front(&unprocessedNodes,child);
+			    list_manager.put(unprocessedNodes,child);
 			    
 			    fprintf(dotFile , "\"%X\"  [label = \"" , child); 
 			    marking_write(dotFile,child->marking);
@@ -64,27 +62,6 @@ void createDotFile(FILE *dotFile , node *root){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int main(int argc, char *argv[])
 {
 	FILE *fp;
@@ -101,7 +78,7 @@ int main(int argc, char *argv[])
 		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[1]);
 		/* NOTREACHED */
 	}
-	petrinet_read(fp, &PetriNet);
+	petrinet_read1(fp, &PetriNet);
 	fclose(fp);
 
 	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);

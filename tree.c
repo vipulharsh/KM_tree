@@ -34,6 +34,7 @@ node_root(const net *pn)
 	node *ret;
 
 	ret = node_create();
+	ret->cover=NULL;
 	(void)memset(ret, 0, sizeof(node));
 	marking_copy(ret->marking, pn->init);
 	return ret;
@@ -64,6 +65,7 @@ node_expand_all(const net *pn, node *x)
 		child->action = &(pn->trans[k]);
 		child->parent = x;
 		child->next = NULL;
+		child->cover = NULL;
 			
 		if(count == 0){                   //for the first-child
 			x->child =child;
