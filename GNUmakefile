@@ -15,7 +15,7 @@ RESDIR = $(PROJECT_ROOT)/results
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)
-SRCS = main.c marking.c tree.c petrinet.c covtree.c list_nodes.c
+SRCS = main.c marking.c tree.c petrinet.c covtree.c collection.c
 EXE = kmt
 
 .PHONY: all clean doc
