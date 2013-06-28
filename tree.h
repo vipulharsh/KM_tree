@@ -18,7 +18,7 @@ typedef struct node {
 	transition	*action;
 	struct node	*next;		/* pointer to the next sibling */
 	struct node	*child;
-	struct node *cover;      //for mp and finkel
+	struct node	*cover;		/* node covering this one (if any) */
 	wnat		marking[0];	/* variable length */
 } node;
 

@@ -20,7 +20,7 @@ void createDotFile(FILE *dotFile , node *root){
 		
 		void* unprocessedNodes = list_manager.create();
 		list_manager.put(unprocessedNodes , root);
-		fprintf(dotFile , " \"%X\"   [label = \"" , root); 
+		fprintf(dotFile , " \"%p\"   [label = \"" , root); 
 		marking_write(dotFile,root->marking);
 		fprintf(dotFile , "\"]; \n");
 	
@@ -34,13 +34,13 @@ void createDotFile(FILE *dotFile , node *root){
 			    
 			    list_manager.put(unprocessedNodes,child);
 			    
-			    fprintf(dotFile , "\"%X\"  [label = \"" , child); 
+			    fprintf(dotFile , "\"%p\"  [label = \"" , child); 
 			    marking_write(dotFile,child->marking);
 			    fprintf(dotFile , "\"]; \n");
-			    fprintf(dotFile , "\"%X\" -> \"%X\" [color=\"red\"]\n" , temp , child);
+			    fprintf(dotFile , "\"%p\" -> \"%p\" [color=\"red\"]\n" , temp , child);
 			    
 			    if(child->cover!=NULL){
-				fprintf(dotFile , "\"%X\" -> \"%X\" [color=\"green\" style=\"dashed\"]\n" , child , child->cover);
+				fprintf(dotFile , "\"%p\" -> \"%p\" [color=\"green\" style=\"dashed\"]\n" , child , child->cover);
 				}
 				
 				child = child->next;
