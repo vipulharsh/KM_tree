@@ -37,7 +37,7 @@ void createDotFile(FILE *dotFile , node *root){
 			    fprintf(dotFile , "\"%p\"  [label = \"" , child); 
 			    marking_write(dotFile,child->marking);
 			    fprintf(dotFile , "\"]; \n");
-			    fprintf(dotFile , "\"%p\" -> \"%p\" [color=\"red\"]\n" , temp , child);
+			    fprintf(dotFile , "\"%p\" -> \"%p\" [color=\"red\" label=\"%s\"]\n" , temp , child ,child->action->name);
 			    
 			    if(child->cover!=NULL){
 				fprintf(dotFile , "\"%p\" -> \"%p\" [color=\"green\" style=\"dashed\"]\n" , child , child->cover);
@@ -50,6 +50,7 @@ void createDotFile(FILE *dotFile , node *root){
 	    
 		fprintf(dotFile ,"}");
 	    fclose(dotFile);
+	    list_manager.destroy(unprocessedNodes);
    }
 	else printf("Unable to open file");
 	
