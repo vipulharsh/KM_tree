@@ -3,7 +3,8 @@
 
 typedef struct {
 	void		*(*create)(void);
-	void		 (*put)(void *, void *);
+	void		 (*destroy)(void *);
+	void		 (*put)(void *, const void *);
 	void		*(*get)(void *);
 	int		 (*empty)(void *);
 } colmgr;

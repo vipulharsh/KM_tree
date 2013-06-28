@@ -4,7 +4,7 @@
 #include "collection.h"
 
 typedef struct item {
-	void		*data;		/* opaque user data */
+	const void	*data;		/* opaque user data */
 	struct item	*next;
 } item;
 
@@ -22,17 +22,22 @@ typedef struct {
 } queue;
 
 static void		*list_create(void);
-static void		 list_put(void *, void *);
+static void		 list_destroy(void *);
+static void		 list_put(void *, const void *);
 static void		*list_get(void *);
 static int		 list_empty(void *);
 
 static void		*queue_create(void);
-static void		 queue_put(void *, void *);
+static void		 queue_destroy(void *);
+static void		 queue_put(void *, const void *);
 static void		*queue_get(void *);
 static int		 queue_empty(void *);
 
+static void		 destroy_all_items(item *);
+
 const colmgr list_manager = {
 	.create = list_create,
+	.destroy = list_destroy,
 	.put = list_put,
 	.get = list_get,
 	.empty = list_empty,
@@ -40,10 +45,23 @@ const colmgr list_manager = {
 
 const colmgr queue_manager = {
 	.create = queue_create,
+	.destroy = queue_destroy,
 	.put = queue_put,
 	.get = queue_get,
 	.empty = queue_empty,
 };
+
+static void
+destroy_all_items(item *n)
+{
+	item *s;
+
+	while (n != NULL) {
+		s = n;
+		n = n->next;
+		free(s);
+	}
+}
 
 static void *
 list_create(void)
@@ -56,7 +74,17 @@ list_create(void)
 }
 
 static void
-list_put(void *x, void *d)
+list_destroy(void *x)
+{
+	list *l = (list *)x;
+
+	assert(l != NULL);
+	destroy_all_items(l->first);
+	free(l);
+}
+
+static void
+list_put(void *x, const void *d)
 {
 	list *l = (list *)x;
 	item *n;
@@ -73,7 +101,7 @@ list_get(void *x)
 {
 	list *l = (list *)x;
 	item *n;
-	void *ret;
+	const void *ret;
 
 	assert(l != NULL);
 	assert(l->first != NULL);
@@ -81,7 +109,7 @@ list_get(void *x)
 	l->first = n->next;
 	ret = n->data;
 	free(n);
-	return ret;
+	return (void *)ret;
 }
 
 static int
@@ -105,7 +133,17 @@ queue_create(void)
 }
 
 static void
-queue_put(void *x, void *d)
+queue_destroy(void *x)
+{
+	queue *q = (queue *)x;
+
+	assert(q != NULL);
+	destroy_all_items(q->first);
+	free(q);
+}
+
+static void
+queue_put(void *x, const void *d)
 {
 	queue *q = (queue *)x;
 	item *n;
@@ -123,7 +161,7 @@ queue_get(void *x)
 {
 	queue *q = (queue *)x;
 	item *n;
-	void *ret;
+	const void *ret;
 
 	assert(q != NULL);
 	assert(q->first != NULL);
@@ -133,7 +171,7 @@ queue_get(void *x)
 		q->last = &q->first;
 	ret = n->data;
 	free(n);
-	return ret;
+	return (void *)ret;
 }
 
 static int
