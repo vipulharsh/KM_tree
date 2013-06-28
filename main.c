@@ -92,14 +92,14 @@ int main(int argc, char *argv[])
 	
 	petrinet_write(fp, PetriNet);
 	
-	root = covtree_original_km(PetriNet);
+	root = covtree_original_km(PetriNet, &list_manager);
 
 	
 	node_write(fp, root);
 	
 	fprintf(fp," ---- cov -reduced ----- \n");
 	
-	node *root1 = covtree_reduced_km(PetriNet);
+	node *root1 = covtree_reduced_km(PetriNet, &list_manager);
 	node_write(fp,root1);
 	fclose(fp);
 

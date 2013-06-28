@@ -26,7 +26,7 @@ int		 covtree_covers(wnat*, const node *);
  *	Computes the Karp&Miller tree, as defined in the seminal paper by
  *	Karp & Miller (1969).
  */
-node		*covtree_original_km(const net *);
+node		*covtree_original_km(const net *, const colmgr *);
 
 /*
  * covtree_reduced_km:
@@ -37,7 +37,7 @@ node		*covtree_original_km(const net *);
  * A branch is not continued if its smaller than an ancestor
  *	
  */
-node		*covtree_reduced_km(const net *);
+node		*covtree_reduced_km(const net *, const colmgr *);
 
 /*
  * covtree_finkel_mct:
@@ -46,7 +46,7 @@ node		*covtree_reduced_km(const net *);
  *	Recall that this tree may be incomplete.  A counter-example has been
  *	given by Geeraerts et al. (2007).
  */
-node		*covtree_finkel_mct(const net *);
+node		*covtree_finkel_mct(const net *, const colmgr *);
 
 /*
  * accel:

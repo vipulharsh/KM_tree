@@ -99,17 +99,17 @@ int		 covtree_complete(const net *PN, const node *x){
 
 
 
-node* covtree_reduced_km(const net *PN){
+node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 	
 	node *root = node_root(PN);
-	void *unprocessedNodes = list_manager.create() ;
-	list_manager.put(unprocessedNodes , root);
+	void *unprocessedNodes = wlmgr->create() ;
+	wlmgr->put(unprocessedNodes , root);
 	
 	node *curr_node;
 	
-	while(!list_manager.empty(unprocessedNodes)){
+	while(!wlmgr->empty(unprocessedNodes)){
 		
-		curr_node = list_manager.get(unprocessedNodes);  //!Node to be processed
+		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
 #ifdef DEBUG
 		marking_display(curr_node->marking);
 #endif
@@ -143,7 +143,7 @@ node* covtree_reduced_km(const net *PN){
 		node *temp = curr_node->child;         
 		while(temp!=NULL){
 			accel(temp);
-			list_manager.put(unprocessedNodes , temp);
+			wlmgr->put(unprocessedNodes , temp);
 #ifdef DEBUG
 			marking_display(temp->marking);
 #endif
@@ -162,16 +162,16 @@ node* covtree_reduced_km(const net *PN){
 
 
 
-node* covtree_original_km(const net *PN){
+node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 	node *root = node_root(PN);
-	void *unprocessedNodes = list_manager.create() ;
-	list_manager.put(unprocessedNodes , root);
+	void *unprocessedNodes = wlmgr->create() ;
+	wlmgr->put(unprocessedNodes , root);
 	
 	node *curr_node;
 	
-	while(!list_manager.empty(unprocessedNodes)){
+	while(!wlmgr->empty(unprocessedNodes)){
 		
-		curr_node = list_manager.get(unprocessedNodes);  //!Node to be processed
+		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
 #ifdef DEBUG
 		marking_display(curr_node->marking);
 #endif
@@ -206,7 +206,7 @@ node* covtree_original_km(const net *PN){
 		node *temp = curr_node->child;
 		while(temp!=NULL){
 			accel(temp);
-			list_manager.put(unprocessedNodes , temp);
+			wlmgr->put(unprocessedNodes , temp);
 #ifdef DEBUG
 			marking_display(temp->marking);
 #endif
