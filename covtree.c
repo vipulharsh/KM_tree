@@ -38,7 +38,7 @@ int		 covtree_covers(wnat* m, const node *x){
 int		 covtree_complete(const net *PN, const node *x){
 	
 	wnat *rootMarking = node_root(PN)->marking; //label of the root
-	node *tree = x;  // XXX 
+	const node *tree = x;  // XXX 
 	void *unProcessedNodes = list_manager.create();
 	void *unCheckedMarkings = list_manager.create();
     
