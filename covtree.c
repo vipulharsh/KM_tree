@@ -156,7 +156,7 @@ node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 		
 	}//end of while loop
 		
-	list_manager.destroy(unprocessedNodes);
+	wlmgr->destroy(unprocessedNodes);
 	return root;
 }
 
@@ -220,7 +220,7 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 		
 	}//end of while loop
 		
-	list_manager.destroy(unprocessedNodes);
+	wlmgr->destroy(unprocessedNodes);
 	return root;
 }
 
