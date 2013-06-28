@@ -17,14 +17,17 @@ int		 covtree_covers(wnat* m, const node *x){
 	
 	while(!list_manager.empty(unProcessedNodes)){
 		currNode = list_manager.get(unProcessedNodes);
-		if(marking_leq(m , currNode->marking)) return 1;  //m covered by this node , return 1
-		
+		if(marking_leq(m , currNode->marking)){
+			 list_manager.destroy(unProcessedNodes);
+			 return 1;  //m covered by this node , return 1
+		  }
 		node *temp = currNode->child;        //add children of this node to unprocessed nodes
 		while(temp!=NULL){
 			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}	
 	}
+	list_manager.destroy(unProcessedNodes);
 	return 0;  //not covered
 }
 
@@ -84,7 +87,8 @@ int		 covtree_complete(const net *PN, const node *x){
 		
 	}
 	
-	
+	list_manager.destroy(unProcessedNodes);
+	list_manager.destroy(unCheckedMarkings);
 	return 1;
 }
 
@@ -152,6 +156,7 @@ node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 		
 	}//end of while loop
 		
+	list_manager.destroy(unprocessedNodes);
 	return root;
 }
 
@@ -215,7 +220,7 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 		
 	}//end of while loop
 		
-	
+	list_manager.destroy(unprocessedNodes);
 	return root;
 }
 
@@ -224,6 +229,24 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
+	return NULL;
+}
+	
 
 
 
