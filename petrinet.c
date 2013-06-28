@@ -60,7 +60,7 @@ petrinet_read(FILE *stream, net **PNet)
 
 
 
-
+//returns index corresponding to pch(name of place), the position in the list
 static
 int returnIndex(char *pch , void *places_list , int place_count){
 	
@@ -74,6 +74,7 @@ int returnIndex(char *pch , void *places_list , int place_count){
 			while(!list_manager.empty(temp)){
 		     list_manager.put(places_list , list_manager.get(temp));
 		  }
+		  list_manager.destroy(temp);
 		  return (place_count - ind) - 1;
 		}
 		else ind++; 
@@ -81,6 +82,7 @@ int returnIndex(char *pch , void *places_list , int place_count){
    while(!list_manager.empty(temp)){
 		     list_manager.put(places_list , list_manager.get(temp));
 		  }
+	list_manager.destroy(temp);	  
 	return -1;
 	
 }
@@ -100,6 +102,7 @@ int notPresent(char *pch , void *places_list){
 		  while(!list_manager.empty(temp)){
 		     list_manager.put(places_list , list_manager.get(temp));
 		  }
+		  list_manager.destroy(temp);
 		  return 0;
 	    }
 	 }
@@ -108,6 +111,7 @@ int notPresent(char *pch , void *places_list){
    while(!list_manager.empty(temp)){
 		     list_manager.put(places_list , list_manager.get(temp));
 		  }
+   list_manager.destroy(temp);
    return 1;		  
 }
 
@@ -156,7 +160,7 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 	char c;
 	int state=0;
 	void *places_list = list_manager.create();
-	int i,j,k,l;
+	int i;
 	
 	while((c = fgetc(fp))!=EOF){
 		if(state==0){            //remove initial garbage
@@ -277,6 +281,10 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 			//	printf("here %s %d \n",so,state);
 				
 				
+				
+				
+				
+				
 				if(so[0]=='['){
 				 state=5;	
 				 so = strtok (NULL, " ");
@@ -288,6 +296,24 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 				 so = strtok (NULL, " ");
 				 continue;
 			    }
+				
+				
+				
+				if(state==1){
+					PN->trans[trans_number].name = malloc(strlen(so)+1);
+					strcpy(PN->trans[trans_number].name , so);
+					state=9;
+					so = strtok (NULL, " ");
+					continue;
+				}
+			
+				
+				
+				
+				
+				
+				
+				
 				
 				if(state==5){
 					int span = strcspn(so , "*");
@@ -374,7 +400,7 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 	
 	
    *PNet = PN; 
-			
+	list_manager.destroy(places_list);		
 return 1;
 }
 
