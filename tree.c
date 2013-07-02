@@ -61,11 +61,16 @@ node_expand_all(const net *pn, node *x)
 		
 		//else
 		
+		
+		
 		node *child = node_create();
 		child->action = &(pn->trans[k]);
 		child->parent = x;
 		child->next = NULL;
 		child->cover = NULL;
+		child->child = NULL;
+		
+		
 			
 		if(count == 0){                   //for the first-child
 			x->child =child;
@@ -82,7 +87,14 @@ node_expand_all(const net *pn, node *x)
 		 marking_add(child->marking , x->marking , pn->trans[k].output);
 		 marking_sub(child->marking , child->marking , pn->trans[k].input);
 		 curr = child;
+		 assert(child->child == NULL);
+		 
+		 
+		 
+		 
+		 
 	}
+	
 //end of function
 }
 
@@ -96,7 +108,7 @@ node_write(FILE *stream, const node *x)
 		return 1;
 
 	node_write_helper(stream, x, 0);
-
+//	printf("wain ?\n");
 	return 1;
 }
 
@@ -108,6 +120,8 @@ void
 node_write_helper(FILE *stream, const node *x, int spaces)
 {
 	int i;
+//	printf("hain ? %d \n",spaces);
+	
 	node *currNode = x->child;
 
 	if(x == NULL)
