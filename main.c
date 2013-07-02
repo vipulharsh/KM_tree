@@ -97,21 +97,45 @@ int main(int argc, char *argv[])
 
 	
 	node_write(fp, root);
+	 FILE *dotFile1;
+	dotFile1= fopen("results/tree.dot","w");
+	createDotFile(dotFile1,root);
+
+
+	
 	
 	fprintf(fp," ---- cov -reduced ----- \n");
 	
 	node *root1 = covtree_reduced_km(PetriNet, &list_manager);
 	node_write(fp,root1);
+
+		fprintf(fp," ---- finkel mct ----- \n");
+   
+	FILE *dotFile2;
+	dotFile2= fopen("results/tree1.dot","w");
+	createDotFile(dotFile2,root1);
+
+
+	node *root2 = covtree_finkel_mct(PetriNet, &list_manager);
+	node_write(fp,root2);
 	fclose(fp);
+	FILE *dotFile3;
+	dotFile3= fopen("results/tree2.dot","w");
+	createDotFile(dotFile3,root2);
+
+
+
+
+
+
 
 	int result = covtree_complete(PetriNet , root);
 	
 	printf("The result is %d \n", result);
 //	printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
     
-    FILE *dotFile1;
-	dotFile1= fopen("results/tree.dot","w");
-	createDotFile(dotFile1,root1);
+
+
 
 	return 0;
 }
