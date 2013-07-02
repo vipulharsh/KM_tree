@@ -257,6 +257,28 @@ int remove_node(node *x){
 
 
 
+/*
+ * removes the node x and it's entire subtree
+ */ 
+static
+int remove_tree(node *x){
+	
+	void *unProcessedNodes = list_manager.create();
+	node *currNode;
+	list_manager.put(unProcessedNodes , x);
+	while(!list_manager.empty(unProcessedNodes)){
+		currNode = list_manager.get(unProcessedNodes);
+		node *temp = currNode->child;        //add children of this node to unprocessed nodes
+		while(temp!=NULL){
+			list_manager.put(unProcessedNodes , temp);
+			temp = temp->next;
+		}
+	   node_destroy(x);	
+	}
+	list_manager.destroy(unProcessedNodes);
+	return 1;	
+	
+}
 
 
 
@@ -283,7 +305,6 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 		node *x;
 		list_manager.put(unCheckedNodes , root);
 		int result;
-		node *comparison_processed_result; 
 		while(!list_manager.empty(unCheckedNodes)){
 				x = list_manager.get(unCheckedNodes);
 				if(x->processed == 0) continue;
@@ -296,7 +317,6 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 				}
 		  
 				if(marking_le(curr_node->marking , x->marking)){
-					comparison_processed_result = curr_node;
 					list_manager.destroy(unCheckedNodes);
 					result = 2;
 					break;  //curr_node covered by x , return 2
@@ -304,7 +324,6 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 				 
 		  
 				if(marking_le(curr_node->marking , x->marking)){
-					comparison_processed_result = curr_node;
 					result = 3;  //x covers curr_node , return 3
 					break;
 				}
