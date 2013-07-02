@@ -20,6 +20,7 @@ typedef struct node {
 	struct node	*child;
 	struct node	*cover;		/* node covering this one (if any) */
 	wnat		marking[0];	/* variable length */
+	int processed;
 } node;
 
 /*
