@@ -66,15 +66,11 @@ int		 covtree_complete(const net *PN, const node *x){
 			wnat *cMarking = marking_create();  //!XXX
 			marking_add(cMarking , currNode->marking , PN->trans[k].output);
 			marking_sub(cMarking , cMarking , PN->trans[k].input);
-		//	marking_display(cMarking);
-		//	printf(" 2\n");
 			list_manager.put(unCheckedMarkings , cMarking);	
 		}
 		
 		while(!list_manager.empty(unCheckedMarkings)){
 			wnat *currMarking = list_manager.get(unCheckedMarkings);
-		//	marking_display(currMarking);
-		//	printf(" 3\n");
 			int res = covtree_covers(currMarking , x);
 			if(res == 0) return 0;    //!XXX
 		}
@@ -268,21 +264,26 @@ int remove_tree(node *x){
 	
 	void *unProcessedNodes = list_manager.create();
 	node *currNode;
-	node *temp = x->child;        //add children of this node to unprocessed nodes
+	node *temp = x->child;              //add children of x to unprocessed nodes
 	while(temp!=NULL){
 		list_manager.put(unProcessedNodes , temp);
 		temp = temp->next;
 	}
 	while(!list_manager.empty(unProcessedNodes)){
 		currNode = list_manager.get(unProcessedNodes);
-		node *temp = currNode->child;        //add children of this node to unprocessed nodes
+#ifdef DEBUG
+		marking_display(currNode->marking);
+#endif		
+		temp = currNode->child;        //add children of this node to unprocessed nodes
 		while(temp!=NULL){
 			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}
 	   node_destroy(currNode);	
 	}
+	
 	list_manager.destroy(unProcessedNodes);
+	x->child = NULL;
 	return 1;	
 	
 }
@@ -291,55 +292,39 @@ int remove_tree(node *x){
 
 
 static 
-int comparison_processed(node *x , node *root){
+int comparison_processed(const node *x , const node *root){
+	
+	
 	void *unProcessedNodes = list_manager.create();
 	node *currNode;
 	list_manager.put(unProcessedNodes , root);
-	
-	
-	printf("flag 3 \n");
-	
 	
 	while(!list_manager.empty(unProcessedNodes)){
 		currNode = list_manager.get(unProcessedNodes);
 		
 		if(currNode->processed == 0) continue;
 		
-		printf("flag 8 \n");
-		marking_display(x->marking);
-		marking_display(currNode->marking);
-
-		
-		
-		
 		if(marking_eq(x->marking , currNode->marking)){
-			printf("flag 4 \n");
 			list_manager.destroy(unProcessedNodes);
 			return 1;   //x covered by currNode , return 1
 		}
 		  
 		if(marking_le(x->marking , currNode->marking)){
-			printf("flag 5 \n");
 			list_manager.destroy(unProcessedNodes);
 			return 2;  //x covered by currNode , return 2
 		}
 				 
 		  
 		if(marking_le(currNode->marking , x->marking)){
-			printf("flag 6 \n");
 			list_manager.destroy(unProcessedNodes);
 			return 3;  //x covers curr_node , return 3
 		}
 				
-		printf("flag 9 \n");
-		 
 		node *temp = currNode->child;        //add children of this node to unprocessed nodes
 		while(temp!=NULL){
 			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}
-		printf("flag 9 \n");
-		printf("flag 10 \n");
 
  
 	}
@@ -399,8 +384,8 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 		
 		//!Case 3:
 		if(result==3){
-			int t = accel(curr_node);
 			
+			int t = accel(curr_node);
 			if(t == 1){
 				node *first_ancestor;
 				node *p = curr_node;
@@ -410,14 +395,10 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 					p = p->parent;
 				}
 			    marking_copy(first_ancestor->marking , curr_node->marking);
-			    FILE *fp1= fopen("results/out.txt","a");
-			    node_write(fp1 , root);
-			    fclose(fp1);
-			    printf("flag 12 \n");
+			    //FILE *fp1= fopen("results/out.txt","a");
 			    remove_tree(first_ancestor);
-			    printf("flag 13 \n");
 			    curr_node = first_ancestor;		
-			 }
+			  }
 			
 		//a breadth first search to delete smaller nodes and subtrees.
 			void *unExploredNodes = list_manager.create();
@@ -442,11 +423,19 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 			
 			
 		//else
+		
+		
+		
+		
 		node_expand_all(PN , curr_node);
+		
+		
+		
+		
 		
 		//pushing children of currNode to unprocessed Nodes . 
 		
-		//printf("Pushing children n");
+		//printf("Pushing children ");
 		curr_node->processed = 1;
 		node *descendant = curr_node->child;
 		while(descendant!=NULL){
@@ -456,7 +445,10 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 #endif
 			descendant->processed = 0;
 			descendant = descendant->next;
+		
 		}
+					
+		
 			
 	}
 	
