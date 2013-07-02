@@ -245,7 +245,10 @@ int remove_node(node *x){
 	  return 1;
     }
 	
-	while(child->next != x);
+	while(child->next != x){
+		child = child->next;
+		assert(child!=NULL);
+	}
 	child->next = x->next;
 	node_destroy(x);
 	return 1;	
@@ -265,7 +268,11 @@ int remove_tree(node *x){
 	
 	void *unProcessedNodes = list_manager.create();
 	node *currNode;
-	list_manager.put(unProcessedNodes , x);
+	node *temp = x->child;        //add children of this node to unprocessed nodes
+	while(temp!=NULL){
+		list_manager.put(unProcessedNodes , temp);
+		temp = temp->next;
+	}
 	while(!list_manager.empty(unProcessedNodes)){
 		currNode = list_manager.get(unProcessedNodes);
 		node *temp = currNode->child;        //add children of this node to unprocessed nodes
@@ -273,7 +280,7 @@ int remove_tree(node *x){
 			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}
-	   node_destroy(x);	
+	   node_destroy(currNode);	
 	}
 	list_manager.destroy(unProcessedNodes);
 	return 1;	
@@ -283,7 +290,63 @@ int remove_tree(node *x){
 
 
 
+static 
+int comparison_processed(node *x , node *root){
+	void *unProcessedNodes = list_manager.create();
+	node *currNode;
+	list_manager.put(unProcessedNodes , root);
+	
+	
+	printf("flag 3 \n");
+	
+	
+	while(!list_manager.empty(unProcessedNodes)){
+		currNode = list_manager.get(unProcessedNodes);
+		
+		if(currNode->processed == 0) continue;
+		
+		printf("flag 8 \n");
+		marking_display(x->marking);
+		marking_display(currNode->marking);
 
+		
+		
+		
+		if(marking_eq(x->marking , currNode->marking)){
+			printf("flag 4 \n");
+			list_manager.destroy(unProcessedNodes);
+			return 1;   //x covered by currNode , return 1
+		}
+		  
+		if(marking_le(x->marking , currNode->marking)){
+			printf("flag 5 \n");
+			list_manager.destroy(unProcessedNodes);
+			return 2;  //x covered by currNode , return 2
+		}
+				 
+		  
+		if(marking_le(currNode->marking , x->marking)){
+			printf("flag 6 \n");
+			list_manager.destroy(unProcessedNodes);
+			return 3;  //x covers curr_node , return 3
+		}
+				
+		printf("flag 9 \n");
+		 
+		node *temp = currNode->child;        //add children of this node to unprocessed nodes
+		while(temp!=NULL){
+			list_manager.put(unProcessedNodes , temp);
+			temp = temp->next;
+		}
+		printf("flag 9 \n");
+		printf("flag 10 \n");
+
+ 
+	}
+	
+	list_manager.destroy(unProcessedNodes);	  
+	return 0;	
+}
 
 
 
@@ -299,44 +362,17 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 	while(!wlmgr->empty(unprocessedNodes)){
 		
 		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
-		
+#ifdef DEBUG
+		printf("curr node is ");
+		marking_display(curr_node->marking);
+		printf("\n");
+#endif
+
 //*********************		
-		void *unCheckedNodes = list_manager.create();
-		node *x;
-		list_manager.put(unCheckedNodes , root);
-		int result;
-		while(!list_manager.empty(unCheckedNodes)){
-				x = list_manager.get(unCheckedNodes);
-				if(x->processed == 0) continue;
-		
-		
-				if(marking_eq(x->marking , curr_node->marking)){
-					list_manager.destroy(unCheckedNodes);
-					result = 1;
-					break;
-				}
-		  
-				if(marking_le(curr_node->marking , x->marking)){
-					list_manager.destroy(unCheckedNodes);
-					result = 2;
-					break;  //curr_node covered by x , return 2
-				}
-				 
-		  
-				if(marking_le(curr_node->marking , x->marking)){
-					result = 3;  //x covers curr_node , return 3
-					break;
-				}
-				
-				 
-				node *temp = curr_node->child;        //add children of this node to unprocessed nodes
-				while(temp!=NULL){
-					list_manager.put(unCheckedNodes , temp);
-					temp = temp->next;
-				} 
-		}
-		list_manager.destroy(unCheckedNodes);	  
+		int result = comparison_processed(curr_node , root);
 //************************		  
+		
+		
 		
 		//!Case 1:
 		if(result==1){     //!check for termination condition of the branch
@@ -373,24 +409,28 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 					first_ancestor = p;
 					p = p->parent;
 				}
-			   marking_copy(first_ancestor->marking , curr_node->marking);
-			   p = first_ancestor->child;
-			   while(p!=NULL){
-				   remove_tree(p);
-				   p= p->next;
-				}
-			  curr_node = first_ancestor;		
-			}
+			    marking_copy(first_ancestor->marking , curr_node->marking);
+			    FILE *fp1= fopen("results/out.txt","a");
+			    node_write(fp1 , root);
+			    fclose(fp1);
+			    printf("flag 12 \n");
+			    remove_tree(first_ancestor);
+			    printf("flag 13 \n");
+			    curr_node = first_ancestor;		
+			 }
 			
 		//a breadth first search to delete smaller nodes and subtrees.
 			void *unExploredNodes = list_manager.create();
+			node *x;
 			list_manager.put(unExploredNodes , root);
 			while(list_manager.empty(unExploredNodes)){
 				x = list_manager.get(unExploredNodes);
-				if(marking_le(x->marking , 	curr_node->marking))
+				if(marking_le(x->marking , 	curr_node->marking)){
 					remove_tree(x);
+					remove_node(x);
+				}
 				else{
-				node *temp1 = curr_node->child;        //add children of this node to unprocessed nodes
+				node *temp1 = x->child;        //add children of this node to unprocessed nodes
 					while(temp1!=NULL){
 					list_manager.put(unExploredNodes , temp1);
 					temp1 = temp1->next;
@@ -405,10 +445,9 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 		node_expand_all(PN , curr_node);
 		
 		//pushing children of currNode to unprocessed Nodes . 
-		//Acceleration is also done here
 		
 		//printf("Pushing children n");
-		
+		curr_node->processed = 1;
 		node *descendant = curr_node->child;
 		while(descendant!=NULL){
 			wlmgr->put(unprocessedNodes , descendant);
