@@ -228,6 +228,29 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 
 
 
+/*
+ * removes the node x and the arc from x to its ancestor
+ * Assumption : x can't be the root
+ */ 
+static
+int remove_node(node *x){
+	node *parent = x->parent;
+	assert(parent!=NULL);
+	
+	node *child = parent->child;
+	
+	if(child == x) {
+	  parent->child = x->next;
+	  node_destroy(x);
+	  return 1;
+    }
+	
+	while(child->next != x);
+	child->next = x->next;
+	node_destroy(x);
+	return 1;	
+	
+}
 
 
 
@@ -244,7 +267,143 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 
 
 node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
-	return NULL;
+	
+	node *root = node_root(PN);
+	void *unprocessedNodes = wlmgr->create() ;
+	wlmgr->put(unprocessedNodes , root);
+	root->processed = 0;
+	node *curr_node;
+	
+	while(!wlmgr->empty(unprocessedNodes)){
+		
+		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
+		
+//*********************		
+		void *unCheckedNodes = list_manager.create();
+		node *x;
+		list_manager.put(unCheckedNodes , root);
+		int result;
+		node *comparison_processed_result; 
+		while(!list_manager.empty(unCheckedNodes)){
+				x = list_manager.get(unCheckedNodes);
+				if(x->processed == 0) continue;
+		
+		
+				if(marking_eq(x->marking , curr_node->marking)){
+					list_manager.destroy(unCheckedNodes);
+					result = 1;
+					break;
+				}
+		  
+				if(marking_le(curr_node->marking , x->marking)){
+					comparison_processed_result = curr_node;
+					list_manager.destroy(unCheckedNodes);
+					result = 2;
+					break;  //curr_node covered by x , return 2
+				}
+				 
+		  
+				if(marking_le(curr_node->marking , x->marking)){
+					comparison_processed_result = curr_node;
+					result = 3;  //x covers curr_node , return 3
+					break;
+				}
+				
+				 
+				node *temp = curr_node->child;        //add children of this node to unprocessed nodes
+				while(temp!=NULL){
+					list_manager.put(unCheckedNodes , temp);
+					temp = temp->next;
+				} 
+		}
+		list_manager.destroy(unCheckedNodes);	  
+//************************		  
+		
+		//!Case 1:
+		if(result==1){     //!check for termination condition of the branch
+#ifdef DEBUG
+ 			marking_display(curr_node->marking);
+			printf(" Branch ends here \n");
+			curr_node->processed = 1;
+#endif
+			 continue;
+		}
+		
+	
+			//!Case 2:
+		if(result==2){     //!check for termination condition of the branch
+#ifdef DEBUG
+ 			marking_display(curr_node->marking);
+			printf(" Branch ends here \n");
+#endif
+			remove_node(curr_node);
+			 continue;
+		}
+	
+		
+		
+		//!Case 3:
+		if(result==3){
+			int t = accel(curr_node);
+			
+			if(t == 1){
+				node *first_ancestor;
+				node *p = curr_node;
+				while(p!=root){
+					if(marking_le(p->marking , curr_node->marking))
+					first_ancestor = p;
+					p = p->parent;
+				}
+			   marking_copy(first_ancestor->marking , curr_node->marking);
+			   p = first_ancestor->child;
+			   while(p!=NULL){
+				   remove_tree(p);
+				   p= p->next;
+				}
+			  curr_node = first_ancestor;		
+			}
+			
+		//a breadth first search to delete smaller nodes and subtrees.
+			void *unExploredNodes = list_manager.create();
+			list_manager.put(unExploredNodes , root);
+			while(list_manager.empty(unExploredNodes)){
+				x = list_manager.get(unExploredNodes);
+				if(marking_le(x->marking , 	curr_node->marking))
+					remove_tree(x);
+				else{
+				node *temp1 = curr_node->child;        //add children of this node to unprocessed nodes
+					while(temp1!=NULL){
+					list_manager.put(unExploredNodes , temp1);
+					temp1 = temp1->next;
+				}
+			   }	
+			}
+		}		
+			
+			
+			
+		//else
+		node_expand_all(PN , curr_node);
+		
+		//pushing children of currNode to unprocessed Nodes . 
+		//Acceleration is also done here
+		
+		//printf("Pushing children n");
+		
+		node *descendant = curr_node->child;
+		while(descendant!=NULL){
+			wlmgr->put(unprocessedNodes , descendant);
+#ifdef DEBUG
+			marking_display(descendant->marking);
+#endif
+			descendant->processed = 0;
+			descendant = descendant->next;
+		}
+			
+	}
+	
+	list_manager.destroy(unprocessedNodes);
+	return root;
 }
 	
 
@@ -295,9 +454,12 @@ int accel(node *x)
 	
 	marking_copy(accel_ret, x->marking); 
 	
+	int res=0;
+	
 	node *ancestor = x->parent;
 	while(ancestor != NULL){
 	  if(marking_le(ancestor->marking , accel_ret)){
+			res=1;
 			int j;
 			for(j=0;j<dimension;j++){
 				if(wnat_le(ancestor->marking[j], accel_ret[j]))
@@ -307,7 +469,7 @@ int accel(node *x)
 		
 	ancestor = ancestor->parent;	
 	}
-	return 1;
+	return res;
 }
 
 
