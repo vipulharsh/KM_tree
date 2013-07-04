@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	node *(*engine)(const net *, const colmgr *);
 	const colmgr *wlmgr;
 	char *dotfile, *txtfile;
-	int validate;
+	int quiet, validate;
 	FILE *fp;
 	net *PetriNet;
 	node *root;
@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
 	wlmgr = &list_manager;
 	dotfile = NULL;
 	txtfile = NULL;
+	quiet = 0;
 	validate = 0;
 
 	if (argc < 2) {
@@ -98,7 +99,7 @@ int main(int argc, char *argv[])
 		/* NOTREACHED */
 	}
 
-	while ((c = getopt(argc, argv, "cd:e:hs:t:")) != -1) {
+	while ((c = getopt(argc, argv, "cd:e:hqs:t:")) != -1) {
 		switch (c) {
 		case 'c':
 			validate = 1;
@@ -118,6 +119,9 @@ int main(int argc, char *argv[])
 				usage();
 				/* NOTREACHED */
 			}
+			break;
+		case 'q':
+			quiet = 1;
 			break;
 		case 's':
 			if (strcmp(optarg, "bfs") == 0)
@@ -158,14 +162,8 @@ int main(int argc, char *argv[])
 
 	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
 
-	if (txtfile != NULL) {
-		fp = fopen(txtfile, "w");
-		if (fp == NULL) {
-			err(EXIT_FAILURE, "Unable to open `%s' for write", txtfile);
-			/* NOTREACHED */
-		}
-		petrinet_write(fp, PetriNet);
-	}
+        if (!quiet)
+		petrinet_write(stdout, PetriNet);
 
 	root = engine(PetriNet, wlmgr);
 
@@ -177,6 +175,11 @@ int main(int argc, char *argv[])
 	}
 
 	if (txtfile != NULL) {
+		fp = fopen(txtfile, "w");
+		if (fp == NULL) {
+			err(EXIT_FAILURE, "Unable to open `%s' for write", txtfile);
+			/* NOTREACHED */
+		}
 		node_write(fp, root);
 		fclose(fp);
 	}
@@ -203,7 +206,8 @@ usage(void)
 	    "  -d <file>\tFile name of .dot output.\n"
 	    "  -e {km, km-red, mct, mp}\n\t\tCoverability tree computation procedure.\n"
 	    "  -s {bfs, dfs}\tOrder of exploration.\n"
-	    "  -t <file>\tFile name of .txt output.\n",
+	    "  -t <file>\tFile name of .txt output.\n"
+	    "  -q\t\tQuiet output.\n",
 	    progname);
 	exit(EXIT_FAILURE);
 	/* NOTREACHED */
