@@ -12,6 +12,15 @@
  *
  *	Each node is labeled by a marking.  The array defining this marking
  *	is stored within the node itself.
+ *
+ *	The cover relation is maintained through the field cover stored in
+ *	each node.  This field, when not NULL, points to another node that
+ *	satisfies, in pseudo-code notation:
+ *
+ *	n.marking <= n.cover.marking
+ *
+ *	This implementation only permits functional cover relations: a node
+ *	cannot have multiple coverers.
  */
 typedef struct node {
 	struct node	*parent;
