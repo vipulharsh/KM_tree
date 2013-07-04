@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <err.h>
+#include <inttypes.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #include "petrinet.h"
 #include "tree.h"
@@ -69,6 +72,8 @@ void createDotFile(FILE *dotFile , node *root)
 
 int main(int argc, char *argv[])
 {
+	struct rusage rusage;
+	struct timeval start, end, duration;
 	node *(*engine)(const net *, const colmgr *);
 	const colmgr *wlmgr;
 	char *dotfile, *txtfile;
@@ -162,15 +167,31 @@ int main(int argc, char *argv[])
 
 	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
 
-        if (!quiet)
+	if (!quiet)
 		petrinet_write(stdout, PetriNet);
 
+	if (getrusage(RUSAGE_SELF, &rusage) != 0) {
+		err(EXIT_FAILURE, "Unable to get resource usage");
+		/* NOTREACHED */
+	}
+	start = rusage.ru_utime;
+
 	root = engine(PetriNet, wlmgr);
+
+	if (getrusage(RUSAGE_SELF, &rusage) != 0) {
+		err(EXIT_FAILURE, "Unable to get resource usage");
+		/* NOTREACHED */
+	}
+	end = rusage.ru_utime;
+
+	timersub(&end, &start, &duration);
+	printf("Coverability tree: CPU user time: %jd.%06ld s\n",
+	    (intmax_t)duration.tv_sec, duration.tv_usec);
 
 	if (validate) {
 		int result = covtree_complete(PetriNet , root);
 
-		printf("Completeness of the coverability tree: %s\n", result ? "yes" : "no");
+		printf("Coverability tree: Completeness check: %s\n", result ? "ok" : "not ok");
 //		printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
 	}
 
