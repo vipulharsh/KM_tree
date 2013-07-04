@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
 	node *(*engine)(const net *, const colmgr *);
 	const colmgr *wlmgr;
 	char *dotfile, *txtfile;
+	int validate;
 	FILE *fp;
 	net *PetriNet;
 	node *root;
@@ -89,14 +90,22 @@ int main(int argc, char *argv[])
 	wlmgr = &list_manager;
 	dotfile = NULL;
 	txtfile = NULL;
+	validate = 0;
 
 	if (argc < 2) {
+		warnx("Missing input file");
 		usage();
 		/* NOTREACHED */
 	}
 
-	while ((c = getopt(argc, argv, "e:s:d:t:")) != -1) {
+	while ((c = getopt(argc, argv, "cd:e:hs:t:")) != -1) {
 		switch (c) {
+		case 'c':
+			validate = 1;
+			break;
+		case 'd':
+			dotfile = optarg;
+			break;
 		case 'e':
 			if (strcmp(optarg, "km") == 0)
 				engine = covtree_original_km;
@@ -104,19 +113,22 @@ int main(int argc, char *argv[])
 				engine = covtree_reduced_km;
 			else if (strcmp(optarg, "mct") == 0)
 				engine = covtree_finkel_mct;
-			else
+			else {
+				warnx("Invalid argument `%s' for -e", optarg);
 				usage();
+				/* NOTREACHED */
+			}
 			break;
 		case 's':
 			if (strcmp(optarg, "bfs") == 0)
 				wlmgr = &queue_manager;
 			else if (strcmp(optarg, "dfs") == 0)
 				wlmgr = &list_manager;
-			else
+			else {
+				warnx("Invalid argument `%s' for -s", optarg);
 				usage();
-			break;
-		case 'd':
-			dotfile = optarg;
+				/* NOTREACHED */
+			}
 			break;
 		case 't':
 			txtfile = optarg;
@@ -130,12 +142,15 @@ int main(int argc, char *argv[])
 	argc -= optind;
 	argv += optind;
 
-	if (argc != 1)
+	if (argc != 1) {
+		warnx("Missing input file");
 		usage();
+		/* NOTREACHED */
+	}
 
 	fp = fopen(argv[0], "r");
 	if (fp == NULL) {
-		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[1]);
+		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[0]);
 		/* NOTREACHED */
 	}
 	petrinet_read1(fp, &PetriNet);
@@ -154,10 +169,12 @@ int main(int argc, char *argv[])
 
 	root = engine(PetriNet, wlmgr);
 
-	int result = covtree_complete(PetriNet , root);
+	if (validate) {
+		int result = covtree_complete(PetriNet , root);
 
-	printf("The resulting tree is complete: %s\n", result ? "yes" : "no");
-//	printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
+		printf("Completeness of the coverability tree: %s\n", result ? "yes" : "no");
+//		printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
+	}
 
 	if (txtfile != NULL) {
 		node_write(fp, root);
@@ -180,13 +197,14 @@ int main(int argc, char *argv[])
 static void
 usage(void)
 {
-	errx(EXIT_FAILURE,
-	    "unrecognized command line\n"
-	    "Usage: %s [options] <file>\n"
-	    "  -e {km, km-red, mct, mp}\n\t\tCoverability tree computation procedure.\n"
+	fprintf(stderr,
+	    "Usage: %s [options] <file>\n\n"
+	    "  -c\t\tCheck completeness of coverability tree.\n"
 	    "  -d <file>\tFile name of .dot output.\n"
-	    "  -t <file>\tFile name of .txt output.\n"
-	    "  -s {bfs, dfs}\tOrder of exploration.\n",
+	    "  -e {km, km-red, mct, mp}\n\t\tCoverability tree computation procedure.\n"
+	    "  -s {bfs, dfs}\tOrder of exploration.\n"
+	    "  -t <file>\tFile name of .txt output.\n",
 	    progname);
+	exit(EXIT_FAILURE);
 	/* NOTREACHED */
 }
