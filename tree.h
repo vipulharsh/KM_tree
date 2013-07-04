@@ -23,13 +23,14 @@
  *	cannot have multiple coverers.
  */
 typedef struct node {
+	int		 processed;
 	struct node	*parent;
 	transition	*action;
 	struct node	*next;		/* pointer to the next sibling */
 	struct node	*child;
 	struct node	*cover;		/* node covering this one (if any) */
 	wnat		marking[0];	/* variable length */
-	int processed;
+	/* DO NOT ADD ANYTHING HERE */
 } node;
 
 /*
