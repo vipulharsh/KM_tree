@@ -1,7 +1,7 @@
 # Configuration ################################################################
 
 CC = gcc -g
-CFLAGS = -Wall -DDEBUG
+CFLAGS = -Wall -Wextra -DDEBUG
 INCLUDES = -I.
 
 # Project Paths
