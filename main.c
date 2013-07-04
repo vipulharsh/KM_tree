@@ -181,6 +181,7 @@ static void
 usage(void)
 {
 	errx(EXIT_FAILURE,
+	    "unrecognized command line\n"
 	    "Usage: %s [options] <file>\n"
 	    "  -e {km, km-red, mct, mp}\n\t\tCoverability tree computation procedure.\n"
 	    "  -d <file>\tFile name of .dot output.\n"
