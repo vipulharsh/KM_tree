@@ -1,7 +1,8 @@
 # Configuration ################################################################
 
 CC = gcc -g
-CFLAGS = -Wall -Wextra -DDEBUG
+CFLAGS = -Wall -Wextra
+#CFLAGS += -DDEBUG
 INCLUDES = -I.
 
 # Project Paths
@@ -9,7 +10,6 @@ PROJECT_ROOT ?= $(CURDIR)
 SRCDIR = $(PROJECT_ROOT)
 OBJDIR = $(PROJECT_ROOT)/objs
 DOCDIR = $(PROJECT_ROOT)/doc
-RESDIR = $(PROJECT_ROOT)/results
 
 # Main #########################################################################
 
@@ -38,13 +38,12 @@ doc:
 	@dvipdf $(PROJECT_ROOT)/pda.dvi $(DOCDIR)/pda.pdf
 	@rm -rf $(PROJECT_ROOT)/pda.*
 
-
-dot: $(RESDIR)/tree.dot
-	@dot -Tpdf $(RESDIR)/tree.dot > $(RESDIR)/tree.pdf
+%.pdf: %.dot
+	@dot -Tpdf $< > $@
 
 clean:
 	@rm -rf $(OBJDIR) $(DOCDIR)/*.aux $(DOCDIR)/*.pdf $(DOCDIR)/*.dvi $(DOCDIR)/*.log $(DOCDIR)/*~
 	@rm -rf $(PROJECT_ROOT)/*.aux $(PROJECT_ROOT)/*.pdf $(PROJECT_ROOT)/*.dvi $(PROJECT_ROOT)/*.log $(PROJECT_ROOT)/*~
-	@rm -rf $(PROJECT_ROOT)/*.out $(PROJECT_ROOT)/*.o $(RESDIR)/*
+	@rm -rf $(PROJECT_ROOT)/*.out $(PROJECT_ROOT)/*.o
 
 -include $(DEPS)
