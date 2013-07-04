@@ -1,9 +1,11 @@
 # Configuration ################################################################
 
-CC = gcc -g
+CC = gcc
 CFLAGS = -Wall -Wextra
-#CFLAGS += -DDEBUG
+#CFLAGS += -DNDEBUG -O		# For production and benchmarks
+CFLAGS += -DDEBUG -g		# For debugging
 INCLUDES = -I.
+LIBS = -lm
 
 # Project Paths
 PROJECT_ROOT ?= $(CURDIR)
@@ -26,7 +28,7 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
 $(OBJDIR)/$(EXE): $(OBJS) | $(OBJDIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
