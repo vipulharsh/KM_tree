@@ -1,5 +1,5 @@
 /*
- * Compile with: gcc -std=c99 -Wall -o coltest collection.c collection_test.c
+ * Compile with: gcc -Wall -o coltest collection.c collection_test.c
  */
 
 #include <stdio.h>
@@ -9,7 +9,8 @@ static void
 test_colmgr(const colmgr *colmgr)
 {
 	void *col;
-	scol = colmgr->create();
+
+	col = colmgr->create();
 	printf("Is empty: %d\n", colmgr->empty(col));
 	printf("Put(first)\n");
 	colmgr->put(col, (void *)"first");
