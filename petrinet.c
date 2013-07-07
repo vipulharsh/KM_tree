@@ -1,58 +1,103 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <inttypes.h>
 
 #include "collection.h"
 #include "petrinet.h"
 
+void
+petrinet_destroy(net *pn)
+{
+	unsigned int i;
 
-
+	if (pn != NULL) {
+		if (pn->place != NULL) {
+			for (i = 0; i < pn->place_count; i++) {
+				free(pn->place[i].name);
+			}
+		}
+		free(pn->place);
+		if (pn->trans != NULL) {
+			for (i = 0; i < pn->trans_count; i++) {
+				marking_destroy(pn->trans[i].input);
+				marking_destroy(pn->trans[i].output);
+				free(pn->trans[i].name);
+			}
+		}
+		free(pn->trans);
+		marking_destroy(pn->init);
+	}
+	free(pn);
+}
 
 /*
- * I/O functions for Petri nets.
+ * Stream I/O functions for Petri nets.
  */
+
 int
 petrinet_read_in(FILE *stream, net **PNet)
 {
-	unsigned int nOfPlaces;
+	net *PN;
+	intmax_t pc, tc;
+	unsigned int i;
+	int res, errsv;
 
 	assert(stream != NULL);
+	res = 0;
 
-
-//Initialize dimension here
-	fscanf(stream , "%d" , &nOfPlaces);
-	marking_initialize(nOfPlaces);
-		
-//allocate space to PNet	
-	
-	net *PN ;
-	PN = malloc(sizeof(net));
-	PN->place = NULL;
-	PN->place_count = nOfPlaces;
-	
-	
-	int trans_count;
-		
-	fscanf(stream , "%d" , &trans_count);
-	PN->trans = malloc(trans_count * sizeof(transition));
-	PN->trans_count = trans_count;
-	
-	
-	int i;
-	for(i=0;i< PN->trans_count ; i++){
-		
-		marking_read(stream, &PN->trans[i].input);
-		
-		marking_read(stream, &PN->trans[i].output);
+	PN = malloc(sizeof(*PN));
+	if (PN == NULL) {
+		goto fail;
 	}
-	
-	
-	marking_read(stream, &PN->init);
-	//PNet = malloc(sizeof(net *));
+	memset(PN, 0, sizeof(*PN));
+
+	if ((res = fscanf(stream, "%jd", &pc)) < 1)
+		goto fail;
+	if ((res = fscanf(stream, "%jd", &tc)) < 1)
+		goto fail;
+
+	PN->place_count = (unsigned int)pc;
+	PN->trans_count = (unsigned int)tc;
+
+	/* Check for overflow. */
+	if (pc != PN->place_count || tc != PN->trans_count)
+		goto fail;
+
+	/* Allocate and zeroify the arrays for places and transitions. */
+	PN->place = malloc(PN->place_count * sizeof(place));
+	if (PN->place == NULL) {
+		goto fail;
+	}
+	memset(PN->place, 0, PN->place_count * sizeof(place));
+	PN->trans = malloc(PN->trans_count * sizeof(transition));
+	if (PN->trans == NULL) {
+		goto fail;
+	}
+	memset(PN->trans, 0, PN->trans_count * sizeof(transition));
+
+	/* Initialize dimension. */
+	marking_initialize(PN->place_count);
+
+	for (i = 0; i < PN->trans_count; i++) {
+		if ((res = marking_read(stream, &PN->trans[i].input)) < 0)
+			goto fail;
+		if ((res = marking_read(stream, &PN->trans[i].output)) < 0)
+			goto fail;
+	}
+
+	if ((res = marking_read(stream, &PN->init)) < 0)
+		goto fail;
+
 	*PNet = PN;
-	printf("PNet->transcount = %d \n", (*PNet)->trans_count);    
-	return 1;
-	
+	return 0;
+
+fail:
+	errsv = errno;
+	petrinet_destroy(PN);
+	errno = errsv;
+	return (res < 0) ? res : -1;
 }
 
 

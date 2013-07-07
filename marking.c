@@ -27,6 +27,10 @@ marking_destroy(wnat *x)
 	free(x);
 }
 
+/*
+ * Stream I/O functions for markings.
+ */
+
 int
 marking_read(FILE *stream, wnat **x)
 {

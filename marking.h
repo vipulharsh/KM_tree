@@ -1,6 +1,7 @@
 #ifndef _KMT_MARKING_H
 #define _KMT_MARKING_H
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
