@@ -7,3 +7,6 @@ dot output (with cover relation)
 latex report for the pushdown automaton criterion
 
 Make petrinet_read_net aware of errors (see the _in function)
+
+Check for NULL in calls to malloc and _create functions
+          -1 in calls to the put function of collection managers
