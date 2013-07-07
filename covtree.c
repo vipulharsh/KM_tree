@@ -521,14 +521,3 @@ int accel(node *x)
 	}
 	return res;
 }
-
-
-
-
-
-
-
-
-
-
-

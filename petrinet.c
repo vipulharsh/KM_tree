@@ -198,7 +198,9 @@ long int returnAmt(char *s){
 * 5 : having read once , analyse transition input
 * 6: having read once , analyse transition output
 */ 
-int		 petrinet_read_net(FILE *fp, net **PNet){
+int
+petrinet_read_net(FILE *fp, net **PNet)
+{
 	int trans_count=0;
 	int place_count=0;
 	char c;
@@ -277,7 +279,8 @@ int		 petrinet_read_net(FILE *fp, net **PNet){
 	PN->init = marking_create();
 	PN->trans = malloc(trans_count * sizeof(transition));
 	PN->trans_count = trans_count;
-	PN->place = NULL;
+	PN->place = malloc(place_count * sizeof(place));
+	memset(PN->place, 0, place_count * sizeof(place));
 	PN->place_count = place_count;
 	
 	unsigned int h,d;
@@ -445,47 +448,46 @@ int		 petrinet_read_net(FILE *fp, net **PNet){
 	}//end of reading file twice
 	
 	
-   *PNet = PN; 
-	list_manager.destroy(places_list);		
-return 1;
+	list_manager.destroy(places_list);
+	*PNet = PN;
+	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 int
 petrinet_write(FILE *stream, const net *PN)
 {
 	unsigned int i;
+	int res;
 
 	assert(stream != NULL);
 
-	fprintf(stream , "No of transitions : %d \n", PN->trans_count);
-	fprintf(stream , "No of Places : %d \n\n", dimension);
-
-	for(i=0;i< PN->trans_count ; i++)
-	{
-		fprintf(stream , "Transition number %d :\n" , i);
-		marking_write(stream, PN->trans[i].input);
-		fprintf(stream ,"\n");
-		marking_write(stream, PN->trans[i].output);
-		fprintf(stream ,"\n");
+	if ((res = fprintf(stream, "Places:")) < 7)
+		return (res < 0) ? res : -1;
+	for (i = 0; i < PN->place_count; i++) {
+		if ((res = fprintf(stream, "\n  [%3u] %s", i,
+		    PN->place[i].name)) < 9)
+			return (res < 0) ? res : -1;
 	}
 
-	return 1;
+	if ((res = fprintf(stream, "\n")) < 1)
+		return (res < 0) ? res : -1;
+
+	if ((res = fprintf(stream, "Transitions:")) < 12)
+		return (res < 0) ? res : -1;
+	for (i = 0; i < PN->trans_count; i++) {
+		if ((res = fprintf(stream, "\n  [%3u] %s: ", i,
+		    PN->trans[i].name)) < 11)
+			return (res < 0) ? res : -1;
+		if ((res = marking_write(stream, PN->trans[i].input)) < 0)
+			return res;
+		if ((res = fprintf(stream, " ->- ")) < 5)
+			return (res < 0) ? res : -1;
+		if ((res = marking_write(stream, PN->trans[i].output)) < 0)
+			return res;
+	}
+
+	if ((res = fprintf(stream, "\n")) < 1)
+		return (res < 0) ? res : -1;
+
+	return 0;
 }
