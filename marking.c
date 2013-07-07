@@ -1,22 +1,24 @@
 #include <assert.h>
 #include <stdlib.h>
-#include <err.h>
+
 #include "marking.h"
 
-unsigned int dimension = 0; //The Global Variable to store the number of places
+/* The global variable that stores the number of places. */
+unsigned int dimension = 0;
 
 void
 marking_initialize(unsigned int d)
 {
-	assert(dimension == 0 && d > 0);  //can be initialized only once
+	/* Can be initialized only once. */
+	assert(dimension == 0 && d > 0);
 	dimension = d;
 }
 
 wnat *
 marking_create(void)
 {
-	    assert(dimension > 0);
-        return malloc(dimension * sizeof(wnat));
+	assert(dimension > 0);
+	return malloc(dimension * sizeof(wnat));
 }
 
 void
@@ -118,37 +120,51 @@ marking_sub(wnat *m1, const wnat *m2, const wnat *m3)
 
 
 int
-marking_read(FILE *stream, wnat *m)
+marking_read(FILE *stream, wnat **x)
 {
-	int i;
+	wnat *y;
+	unsigned int i;
+	int res;
 
+	assert(dimension > 0);
 	assert(stream != NULL);
 
-	for(i = 0; i < dimension; i++) {
-		//assert(!feof(stream));		/* XXX */
-		if (feof(stream)) {
-		err(EXIT_FAILURE, "Incomplete input file  to marking_read");
-	     }
-		fscanf(stream, "%lf", &m[i]);
+	y = marking_create();
+	if (y == NULL)
+		return -1;
+
+	for (i = 0; i < dimension; i++) {
+		if ((res = wnat_read(stream, &y[i])) < 0)
+			return res;
 	}
-	return 1;
+
+	*x = y;
+	return 0;
 }
 
-
-
 int
-marking_write(FILE *stream, const wnat *m)
+marking_write(FILE *stream, const wnat *x)
 {
-	int i;
+	unsigned int i;
+	int res;
 
+	assert(dimension > 0);
 	assert(stream != NULL);
 
-	fprintf(stream , "(");
-	for(i = 0; i < dimension-1; i++)
-	{
-		fprintf(stream, "%.0lf,", m[i]);
+	if ((res = fprintf(stream, "(")) < 1)
+		return (res < 0) ? res : -1;
+
+	for (i = 0; i < dimension-1; i++) {
+		if ((res = wnat_write(stream, x[i])) < 0)
+			return res;
+		if ((res = fprintf(stream, ",")) < 1)
+			return (res < 0) ? res : -1;
 	}
 
-	fprintf(stream, "%.0lf)", m[i]);
-	return 1;
+	if ((res = wnat_write(stream, x[i])) < 0)
+		return res;
+	if ((res = fprintf(stream, ")")) < 1)
+		return (res < 0) ? res : -1;
+
+	return 0;
 }

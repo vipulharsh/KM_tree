@@ -25,9 +25,7 @@ petrinet_read(FILE *stream, net **PNet)
 	
 	net *PN ;
 	PN = malloc(sizeof(net));
-	
-	
-	PN->init = marking_create();
+
 	
 	
 	int trans_count;
@@ -40,15 +38,13 @@ petrinet_read(FILE *stream, net **PNet)
 	int i;
 	for(i=0;i< PN->trans_count ; i++){
 		
-		PN->trans[i].input = marking_create();
-		marking_read(stream, PN->trans[i].input);
+		marking_read(stream, &PN->trans[i].input);
 		
-		PN->trans[i].output = marking_create();
-		marking_read(stream, PN->trans[i].output);
+		marking_read(stream, &PN->trans[i].output);
 	}
 	
 	
-	marking_read(stream, PN->init);
+	marking_read(stream, &PN->init);
 	//PNet = malloc(sizeof(net *));
 	*PNet = PN;
 	printf("PNet->transcount = %d \n", (*PNet)->trans_count);    

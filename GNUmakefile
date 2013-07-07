@@ -17,7 +17,7 @@ DOCDIR = $(PROJECT_ROOT)/doc
 
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRCS:%.c=$(OBJDIR)/%.d)
-SRCS = main.c marking.c tree.c petrinet.c covtree.c collection.c
+SRCS = collection.c covtree.c main.c marking.c petrinet.c tree.c wnat.c
 EXE = kmt
 
 .PHONY: all clean doc

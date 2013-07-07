@@ -3,16 +3,18 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include "wnat.h"
 
 /*
  * dimension:
+ *
  *	This global variable is assigned when the Petri net is read from the
- *	standard input, and remains constant afterwards.
+ *	input file, and remains constant afterwards.
  */
 extern unsigned int	 dimension;
 
-void		 marking_initialize(unsigned int d); //#done
+void		 marking_initialize(unsigned int);
 
 /*
  * A marking is an array of length dimension whose elements are wnats.
@@ -21,15 +23,15 @@ void		 marking_initialize(unsigned int d); //#done
 /*
  * Important note on memory management:
  *
- *	Apart from marking_create, none of the following functions allocate
- *	memory.  The perform in-place modifications.
+ *	Apart from marking_create and marking_read, none of the following
+ *	functions allocate memory.  They perform in-place modifications.
  */
 
-wnat		*marking_create(void);        //#done
-void		 marking_destroy(wnat *);	  //#done
+wnat		*marking_create(void);
+void		 marking_destroy(wnat *);
 
 /*
- * XXX	The following should be defined static inline.  Implement them!
+ * XXX	The following should be defined static inline.
  */
 
 /*
@@ -58,9 +60,15 @@ void		 marking_add(wnat *, const wnat *, const wnat *);
 void		 marking_sub(wnat *, const wnat *, const wnat *);
 
 /*
- * I/O functions for markings.
+ * Stream I/O functions for markings:
+ *
+ *	These functions return zero on success.  On error, a negative value
+ *	is returned, and the pointer argument is left untouched.
+ *
+ *	Memory is allocated by the read functions to store the marking.  The
+ *	caller should subsequently destroy it when it is no longer needed.
  */
-int		 marking_read(FILE *stream, wnat *);
-int		 marking_write(FILE *stream, const wnat *);
+int		 marking_read(FILE *, wnat **);
+int		 marking_write(FILE *, const wnat *);
 
 #endif	/* !_KMT_MARKING_H */
