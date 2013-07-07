@@ -47,12 +47,14 @@ petrinet_read_in(FILE *stream, net **PNet)
 	assert(stream != NULL);
 	res = 0;
 
+	/* Allocate and zeroify the petri net structure. */
 	PN = malloc(sizeof(*PN));
 	if (PN == NULL) {
 		goto fail;
 	}
 	memset(PN, 0, sizeof(*PN));
 
+	/* Read number of places and number of transitions. */
 	if ((res = fscanf(stream, "%jd", &pc)) < 1)
 		goto fail;
 	if ((res = fscanf(stream, "%jd", &tc)) < 1)
@@ -80,6 +82,7 @@ petrinet_read_in(FILE *stream, net **PNet)
 	/* Initialize dimension. */
 	marking_initialize(PN->place_count);
 
+	/* Read transitions. */
 	for (i = 0; i < PN->trans_count; i++) {
 		if ((res = marking_read(stream, &PN->trans[i].input)) < 0)
 			goto fail;
@@ -87,6 +90,7 @@ petrinet_read_in(FILE *stream, net **PNet)
 			goto fail;
 	}
 
+	/* Read initial marking. */
 	if ((res = marking_read(stream, &PN->init)) < 0)
 		goto fail;
 
@@ -461,33 +465,38 @@ petrinet_write(FILE *stream, const net *PN)
 
 	assert(stream != NULL);
 
+	/* Write places. */
 	if ((res = fprintf(stream, "Places:")) < 7)
-		return (res < 0) ? res : -1;
+		goto fail;
 	for (i = 0; i < PN->place_count; i++) {
 		if ((res = fprintf(stream, "\n  [%3u] %s", i,
 		    PN->place[i].name)) < 9)
-			return (res < 0) ? res : -1;
+			goto fail;
 	}
 
 	if ((res = fprintf(stream, "\n")) < 1)
-		return (res < 0) ? res : -1;
+		goto fail;
 
+	/* Write transitions. */
 	if ((res = fprintf(stream, "Transitions:")) < 12)
-		return (res < 0) ? res : -1;
+		goto fail;
 	for (i = 0; i < PN->trans_count; i++) {
 		if ((res = fprintf(stream, "\n  [%3u] %s: ", i,
 		    PN->trans[i].name)) < 11)
-			return (res < 0) ? res : -1;
+			goto fail;
 		if ((res = marking_write(stream, PN->trans[i].input)) < 0)
-			return res;
+			goto fail;
 		if ((res = fprintf(stream, " ->- ")) < 5)
-			return (res < 0) ? res : -1;
+			goto fail;
 		if ((res = marking_write(stream, PN->trans[i].output)) < 0)
-			return res;
+			goto fail;
 	}
 
 	if ((res = fprintf(stream, "\n")) < 1)
-		return (res < 0) ? res : -1;
+		goto fail;
 
 	return 0;
+
+fail:
+	return (res < 0) ? res : -1;
 }
