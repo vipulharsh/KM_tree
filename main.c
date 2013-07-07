@@ -19,10 +19,19 @@
  */
 static void	 usage(void);
 
+/*
+ * getusertime:
+ *
+ *	Returns the total amount of time spent executing in user mode (see
+ *	getrusage(2)).
+ */
+static int	 getusertime(struct timeval *);
+
+/* The last component of the command line's program name. */
 static const char *progname;
 
 
-void createDotFile(FILE *dotFile , node *root)
+int createDotFile(FILE *dotFile, node *root)
 {
 	void *unprocessedNodes;
 
@@ -61,6 +70,7 @@ void createDotFile(FILE *dotFile , node *root)
 
 	fprintf(dotFile ,"}");
 	list_manager.destroy(unprocessedNodes);
+	return 0;
 }
 
 
@@ -72,15 +82,16 @@ void createDotFile(FILE *dotFile , node *root)
 
 int main(int argc, char *argv[])
 {
-	struct rusage rusage;
 	struct timeval start, end, duration;
 	node *(*engine)(const net *, const colmgr *);
+	int (*parser)(FILE *, net **);
 	const colmgr *wlmgr;
 	char *dotfile, *txtfile;
 	int quiet, validate;
 	FILE *fp;
 	net *PetriNet;
 	node *root;
+	char *suffix;
 	int c;
 
 	/* Program invocation name. */
@@ -92,6 +103,7 @@ int main(int argc, char *argv[])
 
 	/* Default options. */
 	engine = covtree_original_km;
+	parser = NULL;
 	wlmgr = &list_manager;
 	dotfile = NULL;
 	txtfile = NULL;
@@ -157,39 +169,57 @@ int main(int argc, char *argv[])
 		/* NOTREACHED */
 	}
 
+	suffix = rindex(argv[0], '.');
+	if (suffix != NULL) {
+		suffix++;
+		if (strcasecmp(suffix, "in") == 0)
+			parser = petrinet_read;
+		else if (strcasecmp(suffix, "net") == 0)
+			parser = petrinet_read1;
+		else {
+			warnx("File name suffix `%s' unrecognized", suffix);
+			usage();
+			/* NOTREACHED */
+		}
+	} else {
+		warnx("File name `%s' has no suffix", argv[0]);
+		usage();
+		/* NOTREACHED */
+	}
+
+
 	fp = fopen(argv[0], "r");
 	if (fp == NULL) {
 		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[0]);
 		/* NOTREACHED */
 	}
-	petrinet_read1(fp, &PetriNet);
+	parser(fp, &PetriNet);
 	fclose(fp);
 
-	//printf("Number of transitions : %d \n" , (PetriNet)->trans_count);
+	printf("Input Petri Net: %u places, %u transitions\n",
+	    /*PetriNet->place_count*/dimension, PetriNet->trans_count);
 
 	if (!quiet)
 		petrinet_write(stdout, PetriNet);
 
-	if (getrusage(RUSAGE_SELF, &rusage) != 0) {
+	if (getusertime(&start) != 0) {
 		err(EXIT_FAILURE, "Unable to get resource usage");
 		/* NOTREACHED */
 	}
-	start = rusage.ru_utime;
 
 	root = engine(PetriNet, wlmgr);
 
-	if (getrusage(RUSAGE_SELF, &rusage) != 0) {
+	if (getusertime(&end) != 0) {
 		err(EXIT_FAILURE, "Unable to get resource usage");
 		/* NOTREACHED */
 	}
-	end = rusage.ru_utime;
 
 	timersub(&end, &start, &duration);
 	printf("Coverability tree: CPU user time: %jd.%06ld s\n",
 	    (intmax_t)duration.tv_sec, duration.tv_usec);
 
 	if (validate) {
-		int result = covtree_complete(PetriNet , root);
+		int result = covtree_complete(PetriNet, root);
 
 		printf("Coverability tree: Completeness check: %s\n", result ? "ok" : "not ok");
 //		printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
@@ -222,14 +252,30 @@ static void
 usage(void)
 {
 	fprintf(stderr,
-	    "Usage: %s [options] <file>\n\n"
+	    "Usage: %s [options] <input file>\n"
+	    "\n"
 	    "  -c\t\tCheck completeness of coverability tree.\n"
 	    "  -d <file>\tFile name of .dot output.\n"
 	    "  -e {km, km-red, mct, mp}\n\t\tCoverability tree computation procedure.\n"
 	    "  -s {bfs, dfs}\tOrder of exploration.\n"
 	    "  -t <file>\tFile name of .txt output.\n"
-	    "  -q\t\tQuiet output.\n",
+	    "  -q\t\tQuiet output.\n"
+	    "\n"
+	    "The suffix of <input file> must be among {in, net}.\n",
 	    progname);
 	exit(EXIT_FAILURE);
 	/* NOTREACHED */
+}
+
+static int
+getusertime(struct timeval *tvp)
+{
+	struct rusage rusage;
+	int res;
+
+	if ((res = getrusage(RUSAGE_SELF, &rusage)) != 0) {
+		return res;
+	}
+	*tvp = rusage.ru_utime;
+	return res;
 }
