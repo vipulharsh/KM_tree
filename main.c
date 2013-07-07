@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
 	/* Display coverability tree computation time. */
 	timersub(&end, &start, &duration);
 	printf("Coverability tree: CPU user time: %jd.%06ld s\n",
-	    (intmax_t)duration.tv_sec, duration.tv_usec);
+	    (intmax_t)duration.tv_sec, (long int)duration.tv_usec);
 
 	/* Validate coverability tree. */
 	if (validate) {
