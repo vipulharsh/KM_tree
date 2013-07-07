@@ -47,7 +47,7 @@ node_expand_all(const net *pn, node *x)
 {
 	int count = 0;
 	
-	int k;
+	unsigned int k;
 	
 	struct node *curr;
 	

@@ -55,7 +55,7 @@ int		 covtree_complete(const net *PN, const node *x){
 	//	marking_display(currNode->marking);
 	//	printf(" 1\n");
 			
-		int k;
+		unsigned int k;
 		for(k=0;k<PN->trans_count;k++){
 			
 			if(!marking_leq(PN->trans[k].input , currNode->marking))  //! this transition is not firable
@@ -510,7 +510,7 @@ int accel(node *x)
 	while(ancestor != NULL){
 	  if(marking_le(ancestor->marking , accel_ret)){
 			res=1;
-			int j;
+			unsigned int j;
 			for(j=0;j<dimension;j++){
 				if(wnat_le(ancestor->marking[j], accel_ret[j]))
 				   x->marking[j] = omega;

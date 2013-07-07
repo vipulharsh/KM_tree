@@ -280,7 +280,7 @@ int		 petrinet_read_net(FILE *fp, net **PNet){
 	PN->place = NULL;
 	PN->place_count = place_count;
 	
-	int h,d;
+	unsigned int h,d;
 	for(d=0; d < dimension; d++){
 		 	PN->init[d] = 0;
 	}
@@ -471,7 +471,7 @@ return 1;
 int
 petrinet_write(FILE *stream, const net *PN)
 {
-	int i;
+	unsigned int i;
 
 	assert(stream != NULL);
 
