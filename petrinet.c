@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "collection.h"
 #include "petrinet.h"
 
 
@@ -10,7 +12,7 @@
  * I/O functions for Petri nets.
  */
 int
-petrinet_read(FILE *stream, net **PNet)
+petrinet_read_in(FILE *stream, net **PNet)
 {
 	unsigned int nOfPlaces;
 
@@ -25,7 +27,8 @@ petrinet_read(FILE *stream, net **PNet)
 	
 	net *PN ;
 	PN = malloc(sizeof(net));
-
+	PN->place = NULL;
+	PN->place_count = nOfPlaces;
 	
 	
 	int trans_count;
@@ -150,7 +153,7 @@ long int returnAmt(char *s){
 * 5 : having read once , analyse transition input
 * 6: having read once , analyse transition output
 */ 
-int		 petrinet_read1(FILE *fp, net **PNet){
+int		 petrinet_read_net(FILE *fp, net **PNet){
 	int trans_count=0;
 	int place_count=0;
 	char c;
@@ -229,6 +232,8 @@ int		 petrinet_read1(FILE *fp, net **PNet){
 	PN->init = marking_create();
 	PN->trans = malloc(trans_count * sizeof(transition));
 	PN->trans_count = trans_count;
+	PN->place = NULL;
+	PN->place_count = place_count;
 	
 	int h,d;
 	for(d=0; d < dimension; d++){

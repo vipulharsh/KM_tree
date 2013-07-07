@@ -173,9 +173,9 @@ int main(int argc, char *argv[])
 	if (suffix != NULL) {
 		suffix++;
 		if (strcasecmp(suffix, "in") == 0)
-			parser = petrinet_read;
+			parser = petrinet_read_in;
 		else if (strcasecmp(suffix, "net") == 0)
-			parser = petrinet_read1;
+			parser = petrinet_read_net;
 		else {
 			warnx("File name suffix `%s' unrecognized", suffix);
 			usage();
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 	fclose(fp);
 
 	printf("Input Petri Net: %u places, %u transitions\n",
-	    /*PetriNet->place_count*/dimension, PetriNet->trans_count);
+	    PetriNet->place_count, PetriNet->trans_count);
 
 	if (!quiet)
 		petrinet_write(stdout, PetriNet);
