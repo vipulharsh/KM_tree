@@ -10,7 +10,10 @@ OUTPUT_DIR="$( dirname $0 )/results"
 KMT="$( dirname $0 )/objs/kmt"
 
 # Default timeout in seconds (max CPU time) for each KMT run.
-TIMEOUT=300
+MAXTIME=300
+
+# Default maximum memory in MiB for each KMT run.
+MAXMEM=512
 
 # Directory containing the benchmark examples.
 EXAMPLE_DIR="$( dirname $0 )/examples"
@@ -27,6 +30,9 @@ pingpong.net"
 
 # Coverability tree computation procedures.
 ENGINES="km km-red mct"
+
+# Path to the time(1) utility.  Comment this line for quieter output.
+TIME=/usr/bin/time
 
 
 # Helper functions and constants ###############################################
@@ -46,12 +52,13 @@ Usage: $self [options]
 
   -e <exe>	Use KMT executable <exe>.
   -h		Print this message and exit.
+  -m <int>	Set the memory limit to <int> MiB for each run.
   -o <dir>	Write results in directory <dir>.
-  -t <int>	Set the (CPU) timeout to <int> for each bench.
+  -t <int>	Set the (CPU) timeout to <int> seconds for each run.
 EOF
 }
 
-while getopts "e:ho:t:" option; do
+while getopts "e:hm:o:t:" option; do
     case $option in
 	e)
 	    KMT="$OPTARG"
@@ -60,11 +67,14 @@ while getopts "e:ho:t:" option; do
 	    usage
 	    exit 0
 	    ;;
+	m)
+	    MAXMEM="$OPTARG"
+	    ;;
 	o)
 	    OUTPUT_DIR="$OPTARG"
 	    ;;
 	t)
-	    TIMEOUT="$OPTARG"
+	    MAXTIME="$OPTARG"
 	    ;;
 	*)
 	    usage
@@ -93,11 +103,17 @@ if [ ! -d "${EXAMPLE_DIR}" ]; then
     exit 1
 fi
 
+# Check for time(1).
+if [ -n "${TIME}" -a ! -x "${TIME}" ]; then
+    error "couldn't find time(1) in \`${TIME}'."
+    exit 1
+fi
+
 
 # Main #########################################################################
 
 echo "Simple Benchmark Script for KMT (${KMT})"
-echo "Timeout for each coverability tree computation run: ${TIMEOUT} (s)"
+echo "Resource limits for each run: ${MAXTIME} s, ${MAXMEM} MiB"
 echo "Output directory: ${OUTPUT_DIR}"
 
 mkdir -p ${OUTPUT_DIR}
@@ -117,11 +133,13 @@ for file in ${EXAMPLES}; do
 	    echo
 	    echo "Command line: ${cmdline}"
 	    echo
-	    ulimit -t ${TIMEOUT}
-	    if ! ${cmdline}; then
+	    ulimit -S -t ${MAXTIME}
+	    ulimit -S -d $((MAXMEM * 1024))
+	    ulimit -S -v $((MAXMEM * 1024))
+	    if ! ${TIME} ${cmdline} 2>&1; then
 		echo
 		echo "!!!! KMT returned an exit status of 1 (false) or was killed."
-		echo "!!!! Note: CPU time was limited to ${TIMEOUT} seconds."
+		echo "!!!! Note: Resource limits: ${MAXTIME} s, ${MAXMEM} MiB."
 		echo
 	    fi
 	done
