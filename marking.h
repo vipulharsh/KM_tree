@@ -31,17 +31,13 @@ wnat		*marking_create(void);
 void		 marking_destroy(wnat *);
 
 /*
- * XXX	The following should be defined static inline.
- */
-
-/*
  * Arithmetic operations on markings.  These functions perform the following
  * pseudo-code operations:
  *
  *	marking_copy(x, y)		x := y
  *	marking_eq(x, y)		x == y
- *	marking_le(x, y)		x < y
  *	marking_leq(x, y)		x <= y
+ *	marking_le(x, y)		x < y
  *	marking_add(x, y, z)		x := y+z
  *	marking_sub(x, y, z)		x := y-z
  */
@@ -51,13 +47,59 @@ marking_copy(wnat *x, const wnat *y)
 	(void)memcpy(x, y, dimension * sizeof(wnat));
 }
 
+static inline int
+marking_eq(const wnat *m1, const wnat *m2)
+{
+	unsigned int i;
 
+	assert(dimension > 0);
+	for (i = 0; i < dimension; i++) {
+		if (!wnat_eq(m1[i], m2[i]))
+			return 0;
+	}
+	return 1;
+}
 
-int		 marking_eq(const wnat *, const wnat *);
-int		 marking_le(const wnat *, const wnat *);
-int		 marking_leq(const wnat *, const wnat *);
-void		 marking_add(wnat *, const wnat *, const wnat *);
-void		 marking_sub(wnat *, const wnat *, const wnat *);
+static inline int
+marking_leq(const wnat *m1, const wnat *m2)
+{
+	unsigned int i;
+
+	assert(dimension > 0);
+	for (i = 0; i < dimension; i++) {
+		if (!wnat_leq(m1[i], m2[i]))
+			return 0;
+	}
+	return 1;
+}
+
+static inline int
+marking_le(const wnat *m1, const wnat *m2)
+{
+	assert(dimension > 0);
+	return (marking_leq(m1, m2) && (!marking_eq(m1, m2)));
+}
+
+static inline void
+marking_add(wnat *m1, const wnat *m2, const wnat *m3)
+{
+	unsigned int i;
+
+	assert(dimension > 0);
+	for (i = 0; i < dimension; i++)
+		m1[i] = wnat_add(m2[i], m3[i]);
+}
+
+static inline void
+marking_sub(wnat *m1, const wnat *m2, const wnat *m3)
+{
+	unsigned int i;
+
+	assert(dimension > 0);
+	assert(marking_leq(m3, m2));
+	for (i = 0; i < dimension; i++)
+		m1[i] = wnat_sub(m2[i], m3[i]);
+}
 
 /*
  * Stream I/O functions for markings:
