@@ -31,7 +31,8 @@ static int	 getusertime(struct timeval *);
 static const char *progname;
 
 
-int createDotFile(FILE *dotFile, node *root)
+int
+createDotFile(FILE *dotFile, node *root)
 {
 	void *unprocessedNodes;
 
@@ -116,6 +117,7 @@ int main(int argc, char *argv[])
 		/* NOTREACHED */
 	}
 
+	/* Parse options. */
 	while ((c = getopt(argc, argv, "cd:e:hqs:t:")) != -1) {
 		switch (c) {
 		case 'c':
@@ -163,12 +165,14 @@ int main(int argc, char *argv[])
 	argc -= optind;
 	argv += optind;
 
+	/* Expect only one remaining argument. */
 	if (argc != 1) {
 		warnx("Missing input file");
 		usage();
 		/* NOTREACHED */
 	}
 
+	/* Set up the parser according to the suffix of the input file. */
 	suffix = rindex(argv[0], '.');
 	if (suffix != NULL) {
 		suffix++;
@@ -187,37 +191,49 @@ int main(int argc, char *argv[])
 		/* NOTREACHED */
 	}
 
+	/* Nullify the pointers and streams that are released on failure. */
+	fp = NULL;
+	PetriNet = NULL;
+	root = NULL;
 
+	/* Open input file. */
 	fp = fopen(argv[0], "r");
 	if (fp == NULL) {
-		err(EXIT_FAILURE, "Unable to open `%s' for read", argv[0]);
-		/* NOTREACHED */
+		warn("Unable to open `%s' for read", argv[0]);
+		goto fail;
 	}
-	parser(fp, &PetriNet);
-	fclose(fp);
 
+	/* Read Petri net from input file. */
+	if (parser(fp, &PetriNet) < 0) {
+		warn("Unable to read Petri net from `%s'", argv[0]);
+		goto fail;
+	}
+	(void)fclose(fp);
+	fp = NULL;
+
+	/* Write Petri net to the standard output. */
 	printf("Input Petri Net: %u places, %u transitions\n",
 	    PetriNet->place_count, PetriNet->trans_count);
-
 	if (!quiet)
-		petrinet_write(stdout, PetriNet);
+		(void)petrinet_write(stdout, PetriNet);
 
+	/* Compute coverability tree. */
 	if (getusertime(&start) != 0) {
-		err(EXIT_FAILURE, "Unable to get resource usage");
-		/* NOTREACHED */
+		warn("Unable to get resource usage");
+		goto fail;
 	}
-
 	root = engine(PetriNet, wlmgr);
-
 	if (getusertime(&end) != 0) {
-		err(EXIT_FAILURE, "Unable to get resource usage");
-		/* NOTREACHED */
+		warn("Unable to get resource usage");
+		goto fail;
 	}
 
+	/* Display coverability tree computation time. */
 	timersub(&end, &start, &duration);
 	printf("Coverability tree: CPU user time: %jd.%06ld s\n",
 	    (intmax_t)duration.tv_sec, duration.tv_usec);
 
+	/* Validate coverability tree. */
 	if (validate) {
 		int result = covtree_complete(PetriNet, root);
 
@@ -225,27 +241,50 @@ int main(int argc, char *argv[])
 //		printf("root - covered %d \n" , covtree_covers(((root->child)->next)->marking , root->child));
 	}
 
+	/* Write coverability tree to txt output file. */
 	if (txtfile != NULL) {
 		fp = fopen(txtfile, "w");
 		if (fp == NULL) {
-			err(EXIT_FAILURE, "Unable to open `%s' for write", txtfile);
-			/* NOTREACHED */
+			warn("Unable to open `%s' for write", txtfile);
+			goto fail;
 		}
-		node_write(fp, root);
-		fclose(fp);
+		if (node_write(fp, root) < 0) {
+			warn("Unable to write txt coverability tree to `%s'",
+			    txtfile);
+			goto fail;
+		}
+		(void)fclose(fp);
+		fp = NULL;
 	}
 
+	/* Write coverability tree to dot output file. */
 	if (dotfile != NULL) {
 		fp = fopen(dotfile, "w");
 		if (fp == NULL) {
-			err(EXIT_FAILURE, "Unable to open `%s' for write", dotfile);
-			/* NOTREACHED */
+			warn("Unable to open `%s' for write", dotfile);
+			goto fail;
 		}
-		createDotFile(fp, root);
-		fclose(fp);
+		if (createDotFile(fp, root) < 0) {
+			warn("Unable to write dot coverability tree to `%s'",
+			    dotfile);
+			goto fail;
+		}
+		(void)fclose(fp);
+		fp = NULL;
 	}
 
-	return 0;
+	/* XXX Destroy the coverability tree */
+	petrinet_destroy(PetriNet);
+	exit(EXIT_SUCCESS);
+	/* NOTREACHED */
+
+fail:
+	/* XXX Destroy the coverability tree */
+	petrinet_destroy(PetriNet);
+	if (fp != NULL)
+		(void)fclose(fp);
+	exit(EXIT_FAILURE);
+	/* NOTREACHED */
 }
 
 static void
