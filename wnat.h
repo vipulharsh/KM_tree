@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 
 /*
  * wnat: Natural number or omega.
@@ -16,8 +17,8 @@ typedef	double		 wnat;
  */
 static const wnat omega = INFINITY;
 
-/* Macro to check that a double is a wnat.  Only used in assertions. */
-#define IS_WNAT(x)	(x == trunc(x))
+/* Macro to check that a double is a wnat.  Mostly used in assertions. */
+#define IS_WNAT(x)	((x) == trunc(x))
 
 /*
  * wnat_from: Converts an unsigned int into a wnat.
@@ -66,5 +67,14 @@ wnat_sub(wnat x, wnat n)
 	assert(wnat_leq(n, x));
 	return x - n;
 }
+
+/*
+ * Stream I/O functions for wnats:
+ *
+ *	These functions return zero on success.  On error, a negative value
+ *	is returned, and the pointer argument is left untouched.
+ */
+int		 wnat_read(FILE *, wnat *);
+int		 wnat_write(FILE *, wnat);
 
 #endif	/* !_KMT_WNAT_H */
