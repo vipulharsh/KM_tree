@@ -36,7 +36,8 @@ typedef struct node {
 /*
  * node_create:
  *
- *	Allocates a new node.  The contents of the node are unspecified.
+ *	Allocates a new node.  The allocated memory is not initialized.
+ *	Returns NULL on error.  See malloc(3).
  */
 node		*node_create(void);
 

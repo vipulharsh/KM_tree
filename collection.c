@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
-#include <string.h>
+
 #include "collection.h"
 
 typedef struct item {
@@ -23,13 +23,13 @@ typedef struct {
 
 static void		*list_create(void);
 static void		 list_destroy(void *);
-static void		 list_put(void *, const void *);
+static int		 list_put(void *, const void *);
 static void		*list_get(void *);
 static int		 list_empty(void *);
 
 static void		*queue_create(void);
 static void		 queue_destroy(void *);
-static void		 queue_put(void *, const void *);
+static int		 queue_put(void *, const void *);
 static void		*queue_get(void *);
 static int		 queue_empty(void *);
 
@@ -69,7 +69,9 @@ list_create(void)
 	list *l;
 
 	l = malloc(sizeof(*l));
-	l->first = NULL;
+	if (l != NULL) {
+		l->first = NULL;
+	}
 	return l;
 }
 
@@ -83,7 +85,7 @@ list_destroy(void *x)
 	free(l);
 }
 
-static void
+static int
 list_put(void *x, const void *d)
 {
 	list *l = (list *)x;
@@ -91,9 +93,12 @@ list_put(void *x, const void *d)
 
 	assert(l != NULL);
 	n = malloc(sizeof(*n));
+	if (n == NULL)
+		return -1;
 	n->data = d;
 	n->next = l->first;
 	l->first = n;
+	return 0;
 }
 
 static void *
@@ -127,8 +132,10 @@ queue_create(void)
 	queue *q;
 
 	q = malloc(sizeof(*q));
-	q->first = NULL;
-	q->last = &q->first;
+	if (q != NULL) {
+		q->first = NULL;
+		q->last = &q->first;
+	}
 	return q;
 }
 
@@ -142,7 +149,7 @@ queue_destroy(void *x)
 	free(q);
 }
 
-static void
+static int
 queue_put(void *x, const void *d)
 {
 	queue *q = (queue *)x;
@@ -150,10 +157,13 @@ queue_put(void *x, const void *d)
 
 	assert(q != NULL);
 	n = malloc(sizeof(*n));
+	if (n == NULL)
+		return -1;
 	n->data = d;
 	n->next = NULL;
 	*q->last = n;
 	q->last = &n->next;
+	return 0;
 }
 
 static void *

@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "marking.h"
 #include "tree.h"
 
@@ -19,7 +20,7 @@ node *
 node_create(void)
 {
 	assert(dimension > 0);
-	return malloc(sizeof(node) + dimension * sizeof(wnat));  
+	return malloc(sizeof(node) + dimension * sizeof(wnat));
 }
 
 void

@@ -28,7 +28,14 @@ void		 marking_initialize(unsigned int);
  *	functions allocate memory.  They perform in-place modifications.
  */
 
+/*
+ * marking_create:
+ *
+ *	Allocates a new marking.  The allocated memory is not initialized.
+ *	Returns NULL on error.  See malloc(3).
+ */
 wnat		*marking_create(void);
+
 void		 marking_destroy(wnat *);
 
 /*
