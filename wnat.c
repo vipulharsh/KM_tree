@@ -22,6 +22,8 @@ int
 wnat_write(FILE *stream, wnat x)
 {
 	int res;
+	
+//	printf("s:  %0.200lf ,  %d \n" ,x,trunc(x));
 
 	assert(IS_WNAT(x));
 	res = fprintf(stream, "%.0lf", x);

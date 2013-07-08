@@ -333,11 +333,6 @@ petrinet_read_net(FILE *fp, net **PNet)
 				
 			//	printf("here %s %d \n",so,state);
 				
-				
-				
-				
-				
-				
 				if(so[0]=='['){
 				 state=5;	
 				 so = strtok (NULL, " ");
@@ -360,12 +355,6 @@ petrinet_read_net(FILE *fp, net **PNet)
 					continue;
 				}
 			
-				
-				
-				
-				
-				
-				
 				
 				
 				if(state==5){
@@ -450,6 +439,18 @@ petrinet_read_net(FILE *fp, net **PNet)
 		
 		
 	}//end of reading file twice
+	unsigned int j;
+	for (j=0 ; j<PN->trans_count ;j++)
+		for(i=0 ; i<dimension ; i++){
+			assert(IS_WNAT(PN->trans[j].input[i]));
+			assert(IS_WNAT(PN->trans[j].output[i]));
+		}
+		
+	for(i=0 ; i<dimension ; i++){
+			assert(IS_WNAT(PN->init[i]));
+		}
+	
+	
 	
 	
 	list_manager.destroy(places_list);
