@@ -42,7 +42,7 @@ createDotFile(FILE *dotFile, node *root)
 
 	unprocessedNodes = list_manager.create();
 	list_manager.put(unprocessedNodes , root);
-	fprintf(dotFile , " \"%p\"   [label = \"" , root);
+	fprintf(dotFile , " \"%p\"   [style=filled ,fillcolor=\"%s\" , label = \" %d|" ,  root ,root->processed ? "red" : "azure4",root->id);
 	marking_write(dotFile,root->marking);
 	fprintf(dotFile , "\"]; \n");
 
@@ -55,7 +55,7 @@ createDotFile(FILE *dotFile, node *root)
 
 			list_manager.put(unprocessedNodes,child);
 
-			fprintf(dotFile , "\"%p\"  [label = \"" , child);
+			fprintf(dotFile , "\"%p\"  [style=filled fillcolor=\"%s\"  label = \" %d|"  ,child,   child->processed ? "red" : "azure4" ,child->id);
 			marking_write(dotFile,child->marking);
 			fprintf(dotFile , "\"]; \n");
 			fprintf(dotFile , "\"%p\" -> \"%p\" [color=\"red\" label=\"%s\"]\n" , temp , child ,child->action->name);
