@@ -57,7 +57,6 @@ static inline wnat
 wnat_add(wnat x, wnat n)
 {
 	assert(IS_WNAT(x) && IS_WNAT(n));
-	printf("%lf %lf \n" , x ,n);
 	assert(IS_WNAT(x + n));
 	return x + n;
 }
