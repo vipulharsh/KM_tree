@@ -177,6 +177,61 @@ An \emph{accelerated graph} for a Petri net $T$ is a tuple $G=(Q,\Lambda,\Delta,
    \subsection{Initial Stack Alphabet}
     Initially , the stack is empty.    
 
+\section{MODIFIED CRITERION}
+    Consider a graph whose nodes are a potential coverability set of a given Petri Net $\Pi$ . The edges in the graph are divided into two categories- the lower edges and the upper edges.
+    \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (p) at (0,-1) {$p$};
+        \node[circle,draw] (q) at (4,-1) {$q$};
+        \draw[->] (p) edge[bend left] node[above] {$\rho_{l}$} (q);
+        \draw[->] (p) edge[bend right] node[below] {$\rho_{u}$} (q);
+        \end{tikzpicture}
+     \end{center}
+     
+     Post(p , $\rho_{l}$) $\leq$  q   
+   
+     Post(p , $\rho_{u}$) $\geq$   q
     
-    
+   \subsection{PushDown Automata}
+   The states of the the automaton are the nodes of the graph. The transitions/arcs are in the following way.
+   For every "lower" edge  $\rho_{l}$ from p to q,  we have the following transition , i.e. we  pop $\rho_{l}$ from the stack.
+    \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (p) at (0,-1) {$p$};
+        \node[circle,draw] (q) at (4,-1) {$q$};
+        \draw[->] (p) edge[bend left] node[above] {$\epsilon , \epsilon ,\rho_{l}$} (q);
+        \end{tikzpicture}
+     \end{center}
+       
+       
+   For every "upper" edge  $\rho_{u}$ from p to q,  we have the following transition , i.e. we  push $\rho_{u}$ to the stack. 
+    \begin{center}
+      \begin{tikzpicture}
+        \node[circle,draw] (p) at (0,-1) {$p$};
+        \node[circle,draw] (q) at (4,-1) {$q$};
+        \draw[->] (q) edge[bend left] node[above] {$\epsilon ,\rho_{u} , \epsilon$} (p);
+        \end{tikzpicture}
+     \end{center}
+   
+ \subsection{CRITERION}
+ 
+    For every node n in the graph and every transition t , firable from that node , we run the PDA with t as the initial word on the stack and n as the starting node. We claim that if all such runs end up in an empty stack eventually and that the initial marking of $\Pi$ is covered by some node in the set, then infact the set is complete with respect to $\Pi$.   
+
+\subsection{PROOF}
+  The proof is a simple one by induction. At every step , we claim that Post(m , $\rho$) $\geqslant$ Post(n ,t), where $\rho$ is the current word on the stack and m is the current node. 
+  \newline
+  This is easy to check.
+  \begin{itemize}
+    \item 
+ If we push a certain $\rho1$ to the stack at some step , i.e.  if $\rho1$ is an upper edge from m to m1, 
+  then Post(m1 , $\rho1$) $\geqslant$ m , where m1 is the next state in the PDA (after m). Using monotonicity of Petri Nets , Post(m1 , $\rho1$)  $\geqslant$  Post(m , $\rho$) 
+  \item
+  If we pop a certain $\rho1$ from the stack at some step , i.e.  if $\rho1$ is a lower edge m1 to m, 
+  then m1  $\geqslant$ Post(m ,$\rho1$) , where m1 is the next state in the PDA (after m). Again , using monotonicity of Petri Nets , we conclude that Post(m1 , $\rho1$)  $\geqslant$  Post(m , $\rho$)
+   \end{itemize}
+   
+  Observe that , this necessarily means that Post(n,t) is covered by the set. This ensures completeness of the graph. 
+   
+   
+     
 \end{document}
