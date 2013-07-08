@@ -24,6 +24,7 @@
  */
 typedef struct node {
 	int		 processed;
+	int id;
 	struct node	*parent;
 	transition	*action;
 	struct node	*next;		/* pointer to the next sibling */

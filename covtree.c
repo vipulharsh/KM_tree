@@ -1,4 +1,13 @@
+
 #include "covtree.h"
+#include <stdlib.h>
+
+typedef struct {
+	int transitionNumber;
+	node *x;
+} MPpair;
+
+
 
 
 static void
@@ -101,6 +110,7 @@ int		 covtree_complete(const net *PN, const node *x){
 
 node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 	
+	int count = 0;
 	node *root = node_root(PN);
 	void *unprocessedNodes = wlmgr->create() ;
 	wlmgr->put(unprocessedNodes , root);
@@ -110,6 +120,10 @@ node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 	while(!wlmgr->empty(unprocessedNodes)){
 		
 		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
+		curr_node->processed = 1;
+		curr_node->id = count;
+		count++; 
+		
 #ifdef DEBUG
 		marking_display(curr_node->marking);
 #endif
@@ -131,6 +145,7 @@ node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 			printf(" Branch ends here \n");
 #endif
 			 curr_node->cover = res;
+			 curr_node->processed = 0;
 			 continue;
 		}
 		
@@ -142,7 +157,7 @@ node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 		//!Acceleration is also done here
 		node *temp = curr_node->child;         
 		while(temp!=NULL){
-			accel(temp);
+			accel(temp,0);
 			wlmgr->put(unprocessedNodes , temp);
 #ifdef DEBUG
 			marking_display(temp->marking);
@@ -165,6 +180,7 @@ node* covtree_reduced_km(const net *PN, const colmgr *wlmgr){
 
 node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 	node *root = node_root(PN);
+	int count=0;
 	void *unprocessedNodes = wlmgr->create() ;
 	wlmgr->put(unprocessedNodes , root);
 	
@@ -173,6 +189,8 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 	while(!wlmgr->empty(unprocessedNodes)){
 		
 		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
+		curr_node->id = count;
+		count++;
 #ifdef DEBUG
 		marking_display(curr_node->marking);
 #endif
@@ -206,7 +224,7 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 		
 		node *temp = curr_node->child;
 		while(temp!=NULL){
-			accel(temp);
+			accel(temp,0);
 			wlmgr->put(unprocessedNodes , temp);
 #ifdef DEBUG
 			marking_display(temp->marking);
@@ -290,6 +308,7 @@ int remove_tree(node *x){
 
 
 
+static node *comparison_processed_result;
 
 static 
 int comparison_processed(const node *x , const node *root){
@@ -306,17 +325,20 @@ int comparison_processed(const node *x , const node *root){
 		
 		if(marking_eq(x->marking , currNode->marking)){
 			list_manager.destroy(unProcessedNodes);
+			comparison_processed_result = currNode;
 			return 1;   //x covered by currNode , return 1
 		}
 		  
 		if(marking_le(x->marking , currNode->marking)){
 			list_manager.destroy(unProcessedNodes);
+			comparison_processed_result = currNode;
 			return 2;  //x covered by currNode , return 2
 		}
 				 
 		  
 		if(marking_le(currNode->marking , x->marking)){
 			list_manager.destroy(unProcessedNodes);
+			comparison_processed_result = currNode;
 			return 3;  //x covers curr_node , return 3
 		}
 				
@@ -336,9 +358,11 @@ int comparison_processed(const node *x , const node *root){
 
 
 
+
 node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 	
 	node *root = node_root(PN);
+	int count=0;
 	void *unprocessedNodes = wlmgr->create() ;
 	wlmgr->put(unprocessedNodes , root);
 	root->processed = 0;
@@ -347,6 +371,8 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 	while(!wlmgr->empty(unprocessedNodes)){
 		
 		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
+		curr_node->id = count;
+		count++;
 #ifdef DEBUG
 		printf("curr node is ");
 		marking_display(curr_node->marking);
@@ -385,7 +411,7 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 		//!Case 3:
 		if(result==3){
 			
-			int t = accel(curr_node);
+			int t = accel(curr_node,1);
 			if(t == 1){
 				node *first_ancestor;
 				node *p = curr_node;
@@ -423,16 +449,7 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 			
 			
 		//else
-		
-		
-		
-		
 		node_expand_all(PN , curr_node);
-		
-		
-		
-		
-		
 		//pushing children of currNode to unprocessed Nodes . 
 		
 		//printf("Pushing children ");
@@ -455,6 +472,101 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 	list_manager.destroy(unprocessedNodes);
 	return root;
 }
+
+
+
+
+node* covtree_MP(const net *PN , const colmgr *wlmgr){
+	
+	node *root = node_root(PN);
+	void *unprocessedNodes = wlmgr->create() ;
+	unsigned int k;
+	for(k=0;k<PN->trans_count;k++){
+		if(marking_leq(PN->trans[k].input , root->marking)){  //if this transition is firable
+			MPpair *p = malloc(sizeof(MPpair));
+			p->transitionNumber = k;
+			p->x = root;
+			wlmgr->put(unprocessedNodes , p);
+		}
+	}
+	root->processed = 1;	
+	while(!wlmgr->empty(unprocessedNodes)){
+		MPpair *currElm = wlmgr->get(unprocessedNodes);
+		
+		if(currElm->x->processed == 0) continue;
+		
+		//else
+		node *m = node_create();
+		m->parent = currElm->x;
+		m->child = NULL;
+		m->next = NULL;
+		m->cover = NULL;
+		m->processed = 0;
+		m->action = &(PN->trans[currElm->transitionNumber]);
+		node *temp = currElm->x->child;
+		if(temp!=NULL){
+			while(temp->next!=NULL){
+				temp = temp->child;
+			}
+			temp->next = m;
+		}
+		else 
+		  currElm->x->child = m;
+		 
+		  
+		 marking_add(m->marking, currElm->x->marking , PN->trans[currElm->transitionNumber].output);
+		 marking_sub(m->marking , m->marking , PN->trans[currElm->transitionNumber].input);
+		 accel(m,1);
+		 
+		 int result = comparison_processed(m , root);
+		 if(result == 1 || result == 2){
+			 m->cover = comparison_processed_result;
+		 }
+		 
+		 
+		 if(result == 3){
+			 
+			
+			
+			
+			
+			
+			
+			for(k=0;k<PN->trans_count;k++){
+				if(marking_leq(PN->trans[k].input , root->marking)){  //if this transition is firable
+					MPpair *p = malloc(sizeof(MPpair));
+					p->transitionNumber = k;
+					p->x = root;
+					wlmgr->put(unprocessedNodes , p);
+				}
+			}		 
+		 }
+		 
+	}
+	
+	return root;
+	
+}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 
 
@@ -497,7 +609,7 @@ int equal_ancestor(node* x)
 static wnat *accel_ret = NULL;    //Global variable for accel
 
 
-int accel(node *x)
+int accel(node *x,int arg)
 {
 	if(accel_ret == NULL)
 	accel_ret = marking_create(); //XXX : avoid malloc if possible
@@ -508,7 +620,7 @@ int accel(node *x)
 	
 	node *ancestor = x->parent;
 	while(ancestor != NULL){
-	  if(marking_le(ancestor->marking , accel_ret)){
+	  if(marking_le(ancestor->marking , accel_ret) && (arg==0 || ancestor->processed==1)){
 			res=1;
 			unsigned int j;
 			for(j=0;j<dimension;j++){
@@ -521,3 +633,4 @@ int accel(node *x)
 	}
 	return res;
 }
+
