@@ -43,6 +43,7 @@ petrinet_read_in(FILE *stream, net **PNet)
 	intmax_t pc, tc;
 	unsigned int i;
 	int res, errsv;
+	char buf[16];
 
 	assert(stream != NULL);
 	res = 0;
@@ -82,11 +83,23 @@ petrinet_read_in(FILE *stream, net **PNet)
 	/* Initialize dimension. */
 	marking_initialize(PN->place_count);
 
+	/* Create places. */
+	for (i = 0; i < PN->place_count; i++) {
+		if ((res = snprintf(buf, sizeof(buf), "p%u", i)) < 0)
+			goto fail;
+		if ((PN->place[i].name = strdup(buf)) == NULL)
+			goto fail;
+	}
+
 	/* Read transitions. */
 	for (i = 0; i < PN->trans_count; i++) {
 		if ((res = marking_read(stream, &PN->trans[i].input)) < 0)
 			goto fail;
 		if ((res = marking_read(stream, &PN->trans[i].output)) < 0)
+			goto fail;
+		if ((res = snprintf(buf, sizeof(buf), "t%u", i)) < 0)
+			goto fail;
+		if ((PN->trans[i].name = strdup(buf)) == NULL)
 			goto fail;
 	}
 
