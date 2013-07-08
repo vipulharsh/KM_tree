@@ -496,6 +496,15 @@ petrinet_write(FILE *stream, const net *PN)
 	if ((res = fprintf(stream, "\n")) < 1)
 		goto fail;
 
+	/* Write initial marking. */
+	if ((res = fprintf(stream, "Init: ")) < 6)
+		goto fail;
+	if ((res = marking_write(stream, PN->init)) < 0)
+		goto fail;
+
+	if ((res = fprintf(stream, "\n")) < 1)
+		goto fail;
+
 	return 0;
 
 fail:
