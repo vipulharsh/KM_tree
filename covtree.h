@@ -55,7 +55,7 @@ node		*covtree_finkel_mct(const net *, const colmgr *);
  *
  *	Note: doesn't need the Petri net as argument.
  */
-int		 accel(node *);
+int		 accel(node *,int);
 
 /*
  * equal_ancestor:

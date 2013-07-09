@@ -255,7 +255,10 @@ int remove_node(node *x){
 	
 	if(child == x) {
 	  parent->child = x->next;
-	  node_destroy(x);
+	  if(x->processed == 0)
+		x ->processed = 1;
+	  else	
+		node_destroy(x);
 	  return 1;
     }
 	
@@ -264,7 +267,10 @@ int remove_node(node *x){
 		assert(child!=NULL);
 	}
 	child->next = x->next;
-	node_destroy(x);
+	if(x->processed == 0)
+		x ->processed = 1;
+	else
+		node_destroy(x);
 	return 1;	
 	
 }
@@ -297,7 +303,11 @@ int remove_tree(node *x){
 			list_manager.put(unProcessedNodes , temp);
 			temp = temp->next;
 		}
-	   node_destroy(currNode);	
+		
+	   if(currNode->processed == 0)
+	     currNode->processed =1 ;	
+	   else	
+		node_destroy(currNode);	
 	}
 	
 	list_manager.destroy(unProcessedNodes);
@@ -371,6 +381,13 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 	while(!wlmgr->empty(unprocessedNodes)){
 		
 		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
+		
+		
+		if(curr_node->processed == 1){
+			node_destroy(curr_node);
+			continue;
+		}
+		
 		curr_node->id = count;
 		count++;
 #ifdef DEBUG
@@ -430,7 +447,7 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 			void *unExploredNodes = list_manager.create();
 			node *x;
 			list_manager.put(unExploredNodes , root);
-			while(list_manager.empty(unExploredNodes)){
+			while(!list_manager.empty(unExploredNodes)){
 				x = list_manager.get(unExploredNodes);
 				if(marking_le(x->marking , 	curr_node->marking)){
 					remove_tree(x);
