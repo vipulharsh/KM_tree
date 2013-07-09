@@ -221,6 +221,7 @@ petrinet_read_net(FILE *fp, net **PNet)
 	int trans_count=0;
 	int place_count=0;
 	char c;
+	int res, errsv;
 	int state=0;
 	void *places_list = list_manager.create();
 	int i;
@@ -452,6 +453,10 @@ petrinet_read_net(FILE *fp, net **PNet)
 		
 		
 	}//end of reading file twice
+	
+	
+	
+	
 	unsigned int j;
 	for (j=0 ; j<PN->trans_count ;j++)
 		for(i=0 ; i<dimension ; i++){
@@ -464,12 +469,32 @@ petrinet_read_net(FILE *fp, net **PNet)
 		}
 	
 	
+   unsigned int ind=0;
+   while(!list_manager.empty(places_list)){
+		char* m = list_manager.get(places_list);
+		PN->place[(place_count - ind) - 1].name = malloc(strlen(m)+1);
+		 strcpy(PN->place[(place_count - ind) - 1].name , m);
+	ind++;
+	}  
+	
+	
+	
 	
 	
 	list_manager.destroy(places_list);
 	*PNet = PN;
 	return 0;
+	
+	
+fail:
+	errsv = errno;
+	petrinet_destroy(PN);
+	errno = errsv;
+	return -1;
 }
+
+
+
 
 int
 petrinet_write(FILE *stream, const net *PN)
