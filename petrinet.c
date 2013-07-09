@@ -221,10 +221,15 @@ petrinet_read_net(FILE *fp, net **PNet)
 	int trans_count=0;
 	int place_count=0;
 	char c;
-	int res, errsv;
+	int errsv;
 	int state=0;
 	void *places_list = list_manager.create();
-	int i;
+	
+	if(places_list== NULL)
+		goto fail;
+	
+	
+	unsigned int i;
 	
 	while((c = fgetc(fp))!=EOF){
 		if(state==0){            //remove initial garbage
@@ -268,7 +273,8 @@ petrinet_read_net(FILE *fp, net **PNet)
 						place_count++;
 					}
 					
-				 so = strtok (NULL, " ");	
+				 so = strtok (NULL, " ");
+				 free(pch);	
 				 continue;
 			      }	
 				
@@ -294,10 +300,27 @@ petrinet_read_net(FILE *fp, net **PNet)
 	
 	net *PN;
 	PN = malloc(sizeof(net));
+	
+	if(PN == NULL)
+		goto fail;
+	
 	PN->init = marking_create();
+	
+	if(PN->init == NULL)
+		goto fail;
+	
 	PN->trans = malloc(trans_count * sizeof(transition));
+	
+	if(PN->trans == NULL)
+		goto fail;
+	
+	
 	PN->trans_count = trans_count;
 	PN->place = malloc(place_count * sizeof(place));
+	
+	if(PN->place == NULL)
+		goto fail;
+	
 	memset(PN->place, 0, place_count * sizeof(place));
 	PN->place_count = place_count;
 	
@@ -310,6 +333,10 @@ petrinet_read_net(FILE *fp, net **PNet)
 	for(h=0; h < PN->trans_count ; h++){
 		PN->trans[h].input = marking_create();
 		PN->trans[h].output = marking_create();
+		
+		if(PN->trans[h].input == NULL || PN->trans[h].output == NULL)
+			goto fail;
+		
 		for(d=0; d < dimension; d++){
 		 	PN->trans[h].input[d] = 0;
 			PN->trans[h].output[d] = 0;
@@ -447,10 +474,6 @@ petrinet_read_net(FILE *fp, net **PNet)
 			PN->init[place_number] = amt;
 			state = 3;
 		}
-		
-		
-		
-		
 		
 	}//end of reading file twice
 	
