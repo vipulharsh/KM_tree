@@ -6,6 +6,29 @@
 /* The global variable that stores the number of places. */
 unsigned int dimension = 0;
 
+
+
+
+int 
+isMarking(wnat *m){
+	assert(dimension > 0);
+	unsigned int i;
+	for(i=0; i<dimension ; i++)
+	  if(!IS_WNAT(m[i])) return 0;
+ return 1;
+}	  
+
+
+
+
+
+
+
+
+
+
+
+
 void
 marking_initialize(unsigned int d)
 {

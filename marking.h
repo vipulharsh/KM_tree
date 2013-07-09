@@ -17,6 +17,19 @@ extern unsigned int	 dimension;
 
 void		 marking_initialize(unsigned int);
 
+
+
+
+
+/*
+ * Checks whether all tokens are wnat's or not 
+ */ 
+
+int isMarking(wnat* m); 
+
+
+
+
 /*
  * A marking is an array of length dimension whose elements are wnats.
  */
