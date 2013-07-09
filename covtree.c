@@ -281,7 +281,7 @@ int remove_node(node *x){
 
 
 /*
- * removes the node x and it's entire subtree
+ * removes the entire subtree rooted at x (except x)
  */ 
 static
 int remove_tree(node *x){
