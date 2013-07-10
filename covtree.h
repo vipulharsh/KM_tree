@@ -48,6 +48,23 @@ node		*covtree_reduced_km(const net *, const colmgr *);
  */
 node		*covtree_finkel_mct(const net *, const colmgr *);
 
+
+/*
+ * covtree_finkel_mct:
+ *
+ *	Computes the minimal coverability tree, as defined by Finkel (1990).
+ *	Recall that this tree may be incomplete.  A counter-example has been
+ *	given by Geeraerts et al. (2007).
+ */
+node		*covtree_MP(const net *, const colmgr *);
+
+
+
+
+
+
+
+
 /*
  * accel:
  *

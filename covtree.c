@@ -62,7 +62,7 @@ int		 covtree_complete(const net *PN, const node *x){
 		node *currNode  = list_manager.get(unProcessedNodes);
 		
 	//	marking_display(currNode->marking);
-	//	printf(" 1\n");
+
 			
 		unsigned int k;
 		for(k=0;k<PN->trans_count;k++){
@@ -321,25 +321,31 @@ int remove_tree(node *x){
 static node *comparison_processed_result;
 
 static 
-int comparison_processed(const node *x , const node *root){
+int comparison_processed(const node *x , const node *root,int alg){
 	
 	
 	void *unProcessedNodes = list_manager.create();
 	node *currNode;
 	list_manager.put(unProcessedNodes , root);
 	
+	printf("comparison_processed : ");
+	marking_display(x->marking);
+	printf("end \n");
+	
+	
 	while(!list_manager.empty(unProcessedNodes)){
 		currNode = list_manager.get(unProcessedNodes);
 		
-		if(currNode->processed == 0) continue;
-		
-		if(marking_eq(x->marking , currNode->marking)){
+		if(currNode->processed == 0 && alg==0)   continue;
+		marking_display(currNode->marking);
+		printf("end \n");
+		if(marking_eq(x->marking , currNode->marking) && (alg==0 || currNode->processed==1)){
 			list_manager.destroy(unProcessedNodes);
 			comparison_processed_result = currNode;
 			return 1;   //x covered by currNode , return 1
 		}
 		  
-		if(marking_le(x->marking , currNode->marking)){
+		if(marking_le(x->marking , currNode->marking) && (alg==0 || currNode->processed==1)){
 			list_manager.destroy(unProcessedNodes);
 			comparison_processed_result = currNode;
 			return 2;  //x covered by currNode , return 2
@@ -364,6 +370,13 @@ int comparison_processed(const node *x , const node *root){
 	list_manager.destroy(unProcessedNodes);	  
 	return 0;	
 }
+
+
+
+
+
+
+
 
 
 
@@ -397,7 +410,7 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 #endif
 
 //*********************		
-		int result = comparison_processed(curr_node , root);
+		int result = comparison_processed(curr_node , root,0);
 //************************		  
 		
 		
@@ -493,11 +506,70 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 
 
 
+
+
+
+
+
+/*
+ * deactivates the entire subtree rooted at x (including x)
+ */ 
+static
+int deactivate_tree(node *x){
+	
+	void *unProcessedNodes = list_manager.create();
+	node *currNode;
+	list_manager.put(unProcessedNodes , x);
+	while(!list_manager.empty(unProcessedNodes)){
+		currNode = list_manager.get(unProcessedNodes);
+#ifdef DEBUG
+		marking_display(currNode->marking);
+#endif		
+		node *temp = currNode->child;        //add children of this node to unprocessed nodes
+		while(temp!=NULL){
+			list_manager.put(unProcessedNodes , temp);
+			temp = temp->next;
+		}
+		currNode->processed =0;
+	}
+	
+	list_manager.destroy(unProcessedNodes);
+	return 1;	
+	
+}
+
+
+
+static
+int isAncestor(node *parent , node *child)
+{
+		printf(" \n isAncestor arguments : ");
+		marking_display(parent->marking);
+		marking_display(child->marking);
+		while(child!=NULL){
+			//marking_display(child->marking);
+			if(child == parent) return 1;
+			child = child->parent;
+
+		}
+		printf(" end of isAncestor\n");
+
+return 0;
+
+}
+
+
+
+
+
+
 node* covtree_MP(const net *PN , const colmgr *wlmgr){
 	
 	node *root = node_root(PN);
+	int count = 0;
 	void *unprocessedNodes = wlmgr->create() ;
 	unsigned int k;
+	
 	for(k=0;k<PN->trans_count;k++){
 		if(marking_leq(PN->trans[k].input , root->marking)){  //if this transition is firable
 			MPpair *p = malloc(sizeof(MPpair));
@@ -506,14 +578,26 @@ node* covtree_MP(const net *PN , const colmgr *wlmgr){
 			wlmgr->put(unprocessedNodes , p);
 		}
 	}
-	root->processed = 1;	
+	root->processed = 1;
+	root->id = count;
+	count++;	
 	while(!wlmgr->empty(unprocessedNodes)){
 		MPpair *currElm = wlmgr->get(unprocessedNodes);
+		
+#ifdef DEBUG
+		printf("curr Node is :  ");
+		marking_display(currElm->x->marking);
+		marking_display(PN->trans[currElm->transitionNumber].input);
+		marking_display(PN->trans[currElm->transitionNumber].output);
+		printf(" \n");	
+#endif
 		
 		if(currElm->x->processed == 0) continue;
 		
 		//else
 		node *m = node_create();
+		m->id = count;
+		count++;
 		m->parent = currElm->x;
 		m->child = NULL;
 		m->next = NULL;
@@ -521,9 +605,10 @@ node* covtree_MP(const net *PN , const colmgr *wlmgr){
 		m->processed = 0;
 		m->action = &(PN->trans[currElm->transitionNumber]);
 		node *temp = currElm->x->child;
+		
 		if(temp!=NULL){
 			while(temp->next!=NULL){
-				temp = temp->child;
+				temp = temp->next;
 			}
 			temp->next = m;
 		}
@@ -533,31 +618,94 @@ node* covtree_MP(const net *PN , const colmgr *wlmgr){
 		  
 		 marking_add(m->marking, currElm->x->marking , PN->trans[currElm->transitionNumber].output);
 		 marking_sub(m->marking , m->marking , PN->trans[currElm->transitionNumber].input);
-		 accel(m,1);
 		 
-		 int result = comparison_processed(m , root);
-		 if(result == 1 || result == 2){
-			 m->cover = comparison_processed_result;
+#ifdef DEBUG		 
+		 printf("computed node is  : ");
+		 marking_display(m->marking);
+		 printf(" \n");
+#endif		 
+		 int t = accel(m,1);
+		 
+		//a breadth search to check whether m is already covered or not 
+		 void *unSeenNodes = list_manager.create();
+		 node *cNode;
+		 int result= 0;
+		 list_manager.put(unSeenNodes , root);
+		 while(!list_manager.empty(unSeenNodes)){
+			cNode = list_manager.get(unSeenNodes);
+			if(marking_leq(m->marking , cNode->marking) && (cNode->processed==1)){
+				m->cover = cNode;
+			    m->processed = 0;
+				result = 1;
+				break;   //x covered by currNode , return 1
+		     }
+		 node *temp2 = cNode->child;        //add children of this node to unprocessed nodes
+		 while(temp2!=NULL){
+			list_manager.put(unSeenNodes , temp2);
+			temp2 = temp2->next;
+			}
+		}
+		list_manager.destroy(unSeenNodes);
+		 
+		 if(result == 1){
+			 free(currElm);
+			 continue;
 		 }
 		 
 		 
-		 if(result == 3){
-			 
-			
-			
-			
-			
-			
-			
-			for(k=0;k<PN->trans_count;k++){
-				if(marking_leq(PN->trans[k].input , root->marking)){  //if this transition is firable
+		  
+		if(t == 1){
+				node *first_ancestor;
+				node *p = m;
+				while(p!=root){
+					if(marking_le(p->marking , m->marking) && p->processed == 1)
+					first_ancestor = p;
+					p = p->parent;
+				}
+				
+				printf("first_ancestor is ");
+				marking_display(first_ancestor->marking);
+				printf("\n");
+				
+			    deactivate_tree(first_ancestor);
+			    m->processed =1;	
+		}
+			  
+		 //a breadth first search to deactivate smaller nodes and subtrees.
+		void *unExploredNodes = list_manager.create();
+		node *x;
+		list_manager.put(unExploredNodes , root);
+		while(!list_manager.empty(unExploredNodes)){
+			x = list_manager.get(unExploredNodes);
+			if(marking_le(x->marking , 	m->marking) && (x->processed == 1 || (isAncestor(x,m) == 0))){
+				printf("this is deactivated : ");
+				marking_display(x->marking);
+				printf("%d %d %d\n" , x->processed , isAncestor(x,m) , (x == m->parent->parent));
+				deactivate_tree(x);
+				x->cover = m;					
+				}
+			else{
+				node *temp1 = x->child;        //add children of this node to unprocessed nodes
+				while(temp1!=NULL){
+				list_manager.put(unExploredNodes , temp1);
+				temp1 = temp1->next;
+				}
+			 }	
+		}
+		 
+		 
+		 
+		 m->processed =1;
+		 //printf("pushing children \n");
+		 for(k=0;k<PN->trans_count;k++){
+				if(marking_leq(PN->trans[k].input , m->marking)){  //if this transition is firable
 					MPpair *p = malloc(sizeof(MPpair));
 					p->transitionNumber = k;
-					p->x = root;
+					p->x = m;
 					wlmgr->put(unprocessedNodes , p);
 				}
-			}		 
-		 }
+			}	
+		 free(currElm);
 		 
 	}
 	
