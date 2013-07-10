@@ -466,6 +466,21 @@ petrinet_read_net(FILE *fp, net **PNet)
 	
 	
 	
+	
+	int id=0;
+	while(!list_manager.empty(places_list)){
+		char *m = list_manager.get(places_list);
+		PN->place[place_count-id-1].name = malloc(strlen(m));
+		strcpy(PN->place[place_count-id-1].name , m);
+		id++;
+	}
+	
+	
+	
+	
+	
+	
+	
 	list_manager.destroy(places_list);
 	*PNet = PN;
 	return 0;
