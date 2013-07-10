@@ -133,6 +133,8 @@ int main(int argc, char *argv[])
 				engine = covtree_reduced_km;
 			else if (strcmp(optarg, "mct") == 0)
 				engine = covtree_finkel_mct;
+			else if (strcmp(optarg, "mp") == 0)
+				engine = covtree_MP;	
 			else {
 				warnx("Invalid argument `%s' for -e", optarg);
 				usage();
