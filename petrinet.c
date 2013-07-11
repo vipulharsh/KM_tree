@@ -221,9 +221,10 @@ petrinet_read_net(FILE *fp, net **PNet)
 	int trans_count=0;
 	int place_count=0;
 	char c;
+	int errsv;
 	int state=0;
 	void *places_list = list_manager.create();
-	int i;
+	unsigned int i;
 	
 	while((c = fgetc(fp))!=EOF){
 		if(state==0){            //remove initial garbage
@@ -293,10 +294,18 @@ petrinet_read_net(FILE *fp, net **PNet)
 	
 	net *PN;
 	PN = malloc(sizeof(net));
+	
+	if(PN==NULL)
+		goto fail;
+	
 	PN->init = marking_create();
 	PN->trans = malloc(trans_count * sizeof(transition));
 	PN->trans_count = trans_count;
 	PN->place = malloc(place_count * sizeof(place));
+	
+	if(PN->init == NULL || PN->trans ==NULL || PN->place == NULL)
+		goto fail;
+	
 	memset(PN->place, 0, place_count * sizeof(place));
 	PN->place_count = place_count;
 	
@@ -309,6 +318,8 @@ petrinet_read_net(FILE *fp, net **PNet)
 	for(h=0; h < PN->trans_count ; h++){
 		PN->trans[h].input = marking_create();
 		PN->trans[h].output = marking_create();
+		if(PN->trans[h].input == NULL || PN->trans[h].output == NULL)
+			goto fail;
 		for(d=0; d < dimension; d++){
 		 	PN->trans[h].input[d] = 0;
 			PN->trans[h].output[d] = 0;
@@ -362,6 +373,8 @@ petrinet_read_net(FILE *fp, net **PNet)
 				
 				if(state==1){
 					PN->trans[trans_number].name = malloc(strlen(so)+1);
+					if(PN->trans[trans_number].name == NULL)
+						goto fail;
 					strcpy(PN->trans[trans_number].name , so);
 					state=9;
 					so = strtok (NULL, " ");
@@ -374,12 +387,16 @@ petrinet_read_net(FILE *fp, net **PNet)
 					int span = strcspn(so , "*");
 					char *pch =  malloc(span+1);
 					char *amt = malloc(strlen(so) - span+1);
+					if(pch==NULL || amt==NULL)
+						goto fail;
 					strncpy(pch , so , span);
 					strncpy(amt , so + span, strlen(so)-span);
 					int pl_number = returnIndex(pch , places_list , place_count);
 					long int tokens = returnAmt(amt);
 					PN->trans[trans_number].input[pl_number] = tokens;
-				 so = strtok (NULL, " ");	
+					so = strtok (NULL, " ");	
+					//free(pch);
+					//free(amt);
 				 continue;
 			     }
 			     
@@ -484,6 +501,12 @@ petrinet_read_net(FILE *fp, net **PNet)
 	list_manager.destroy(places_list);
 	*PNet = PN;
 	return 0;
+	
+fail:
+	errsv = errno;
+	petrinet_destroy(PN);
+	errno = errsv;
+	return -1;
 }
 
 int
