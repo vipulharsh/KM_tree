@@ -50,17 +50,22 @@ node		*covtree_finkel_mct(const net *, const colmgr *);
 
 
 /*
- * covtree_finkel_mct:
+ * covtree_MP:
  *
- *	Computes the minimal coverability tree, as defined by Finkel (1990).
- *	Recall that this tree may be incomplete.  A counter-example has been
- *	given by Geeraerts et al. (2007).
+ *	Computes the minimal coverability tree, as defined in the MP paper.
  */
 node		*covtree_MP(const net *, const colmgr *);
 
 
-
-
+/*
+ * covtree_MCT2:
+ *  Computes the minimal coverability tree, as defined by Finkel (1990).
+ *	Recall that this tree may be incomplete.  A counter-example has been
+ *	given by Geeraerts et al. (2007). This version does not delete 
+ *  nodes , but deactivates them much like the MP algorithm
+ *  
+ */ 
+node		*covtree_MCT2(const net *, const colmgr *);
 
 
 
