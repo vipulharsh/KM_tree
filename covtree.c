@@ -54,6 +54,7 @@ int		 covtree_complete(const net *PN, const node *x){
 	void *unProcessedNodes = list_manager.create();
 	void *unCheckedMarkings = list_manager.create();
     
+    
     list_manager.put(unCheckedMarkings , rootMarking);
     list_manager.put(unProcessedNodes , tree);
     
@@ -368,6 +369,19 @@ int comparison_processed(const node *x , const node *root,int alg){
 
 
 
+static
+int isAncestor(node *parent , node *child)
+{
+		while(child!=NULL){
+			//marking_display(child->marking);
+			if(child == parent) return 1;
+			child = child->parent;
+
+		}
+		
+return 0;
+
+}
 
 
 
@@ -455,7 +469,7 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 			list_manager.put(unExploredNodes , root);
 			while(!list_manager.empty(unExploredNodes)){
 				x = list_manager.get(unExploredNodes);
-				if(marking_le(x->marking , 	curr_node->marking)){
+				if(marking_le(x->marking , 	curr_node->marking) && (!isAncestor(x,curr_node))){
 					remove_tree(x);
 					remove_node(x);
 				}
@@ -533,19 +547,6 @@ int deactivate_tree(node *x){
 
 
 
-static
-int isAncestor(node *parent , node *child)
-{
-		while(child!=NULL){
-			//marking_display(child->marking);
-			if(child == parent) return 1;
-			child = child->parent;
-
-		}
-		
-return 0;
-
-}
 
 
 
@@ -642,11 +643,14 @@ node* covtree_MP(const net *PN , const colmgr *wlmgr){
 		 }
 		 
 		 
+		 
+		 printf("here \n");
+		 
 		  
 		if(t == 1){
 				node *first_ancestor;
 				node *p = m;
-				while(p!=root){
+				while(p!=NULL){
 					if(marking_le(p->marking , m->marking) && p->processed == 1)
 					first_ancestor = p;
 					p = p->parent;
@@ -696,8 +700,7 @@ node* covtree_MP(const net *PN , const colmgr *wlmgr){
 			}	
 		 free(currElm);
 	}
-	return root;
-	
+	return root;	
 }	
 
 
@@ -799,7 +802,7 @@ node* covtree_MCT2(const net *PN , const colmgr *wlmgr){
 		if(t == 1){
 				node *first_ancestor;
 				node *p = m;
-				while(p!=root){
+				while(p!=NULL){
 					if(marking_le(p->marking , m->marking) && p->processed == 1)
 					first_ancestor = p;
 					p = p->parent;
@@ -810,7 +813,8 @@ node* covtree_MCT2(const net *PN , const colmgr *wlmgr){
 				printf("\n");
 #endif				
 			    deactivate_tree(first_ancestor);
-			    m->processed =1;	
+			    m->processed =1;
+			    first_ancestor->cover = m;	
 		}
 			  
 		 //a breadth first search to deactivate smaller nodes and subtrees.
