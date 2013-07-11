@@ -190,6 +190,7 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
 	while(!wlmgr->empty(unprocessedNodes)){
 		
 		curr_node = wlmgr->get(unprocessedNodes);  //!Node to be processed
+		curr_node->processed = 1;
 		curr_node->id = count;
 		count++;
 #ifdef DEBUG
@@ -211,6 +212,7 @@ node* covtree_original_km(const net *PN, const colmgr *wlmgr){
  			marking_display(curr_node->marking);
 			printf(" Branch ends here \n");
 #endif
+			 curr_node->processed = 0;
 			 continue;
 		}
 		
@@ -452,7 +454,7 @@ node		*covtree_finkel_mct(const net *PN, const colmgr *wlmgr){
 			if(t == 1){
 				node *first_ancestor;
 				node *p = curr_node;
-				while(p!=root){
+				while(p!=NULL){
 					if(marking_le(p->marking , curr_node->marking))
 					first_ancestor = p;
 					p = p->parent;
