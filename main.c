@@ -134,7 +134,9 @@ int main(int argc, char *argv[])
 			else if (strcmp(optarg, "mct") == 0)
 				engine = covtree_finkel_mct;
 			else if (strcmp(optarg, "mp") == 0)
-				engine = covtree_MP;	
+				engine = covtree_MP;
+			else if (strcmp(optarg, "mct2") == 0)
+				engine = covtree_MCT2;		
 			else {
 				warnx("Invalid argument `%s' for -e", optarg);
 				usage();
