@@ -1,0 +1,70 @@
+tr t0 [] p0 p3 -> p2 
+tr t1 [] p1 p4 -> p5 
+tr t2 [] p3 p28 -> p6 
+tr t3 [] p3 p14 -> p7 
+tr t4 [] p4 p13 -> p8 
+tr t5 [] p4 p31 -> p9 
+tr t6 [] p2 -> p3 p10 
+tr t7 [] p5 -> p4 p11 
+tr t8 [] p6 -> p3 p16 
+tr t9 [] p7 -> p1 p3 
+tr t10 [] p8 -> p0 p4 
+tr t11 [] p9 -> p4 p17 
+tr t12 [] p10 -> p12 
+tr t13 [] p10 -> p13 
+tr t14 [] p11 -> p14 
+tr t15 [] p11 -> p15 
+tr t16 [] p16 p19 -> p18 
+tr t17 [] p17 p20 -> p21 
+tr t18 [] p12 p19 -> p22 
+tr t19 [] p19 p30 -> p23 
+tr t20 [] p20 p29 -> p24 
+tr t21 [] p15 p20 -> p25 
+tr t22 [] p18 -> p19 p26 
+tr t23 [] p21 -> p20 p27 
+tr t24 [] p22 -> p0 p19 
+tr t25 [] p23 -> p17 p19 
+tr t26 [] p24 -> p16 p20 
+tr t27 [] p25 -> p1 p20 
+tr t28 [] p26 -> p28 
+tr t29 [] p26 -> p29 
+tr t30 [] p27 -> p30 
+tr t31 [] p27 -> p31 
+tr t32 [] p32 -> p32 p0
+tr t33 [] p32 -> p32 p1
+tr t34 [] p32 -> p32 p16
+tr t35 [] p32 -> p32 p17
+pl p0 (0)
+pl p1 (0)
+pl p2 (0)
+pl p3 (1)
+pl p4 (1)
+pl p5 (0)
+pl p6 (0)
+pl p7 (0)
+pl p8 (0)
+pl p9 (0)
+pl p10 (0)
+pl p11 (0)
+pl p12 (0)
+pl p13 (0)
+pl p14 (0)
+pl p15 (0)
+pl p16 (0)
+pl p17 (0)
+pl p18 (0)
+pl p19 (1)
+pl p20 (1)
+pl p21 (0)
+pl p22 (0)
+pl p23 (0)
+pl p24 (0)
+pl p25 (0)
+pl p26 (0)
+pl p27 (0)
+pl p28 (0)
+pl p29 (0)
+pl p30 (0)
+pl p31 (0)
+pl p32 (1)
+
