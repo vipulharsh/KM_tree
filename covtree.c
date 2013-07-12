@@ -9,7 +9,7 @@ typedef struct {
 
 
 
-
+//displays marking on stdout
 static void
 marking_display(const wnat *m)
 {
@@ -17,16 +17,15 @@ marking_display(const wnat *m)
 }
 
 
-
-
 int		 covtree_covers(wnat* m, const node *x){
 	void *unProcessedNodes = list_manager.create();
 	node *currNode;
 	list_manager.put(unProcessedNodes , x);
-	
+	//a depth first test with all nodes to check whether m is covered 
+	//by some node in the tree rooted at x
 	while(!list_manager.empty(unProcessedNodes)){
 		currNode = list_manager.get(unProcessedNodes);
-		if(marking_leq(m , currNode->marking)){
+		if(marking_leq(m , currNode->marking) && currNode->processed == 1){
 			 list_manager.destroy(unProcessedNodes);
 			 return 1;  //m covered by this node , return 1
 		  }
@@ -46,12 +45,12 @@ int		 covtree_covers(wnat* m, const node *x){
 
 
 
-
+/*
 int		 covtree_complete(const net *PN, const node *x){
 	
 	wnat *rootMarking = node_root(PN)->marking; //label of the root
 	const node *tree = x;  // XXX 
-	void *unProcessedNodes = list_manager.create();
+	void *unProcessedNodes = list_manager.create(); //nodes that aren't checked
 	void *unCheckedMarkings = list_manager.create();
     
     
@@ -64,21 +63,20 @@ int		 covtree_complete(const net *PN, const node *x){
 		
 	//	marking_display(currNode->marking);
 
-			
+		//!check for all firable transitions	
 		unsigned int k;
 		for(k=0;k<PN->trans_count;k++){
 			
 			if(!marking_leq(PN->trans[k].input , currNode->marking))  //! this transition is not firable
 				continue;
 				
-			
 			//!else
 			wnat *cMarking = marking_create();  //!XXX
 			marking_add(cMarking , currNode->marking , PN->trans[k].output);
 			marking_sub(cMarking , cMarking , PN->trans[k].input);
 			list_manager.put(unCheckedMarkings , cMarking);	
 		}
-		
+		//!XXX : can be optimized
 		while(!list_manager.empty(unCheckedMarkings)){
 			wnat *currMarking = list_manager.get(unCheckedMarkings);
 			int res = covtree_covers(currMarking , x);
@@ -97,6 +95,62 @@ int		 covtree_complete(const net *PN, const node *x){
 	list_manager.destroy(unCheckedMarkings);
 	return 1;
 }
+*/
+
+
+
+
+int		 covtree_complete(const net *PN, const node *x){
+	
+	wnat *rootMarking = node_root(PN)->marking; //label of the root
+	const node *tree = x;  // XXX 
+	void *unProcessedNodes = list_manager.create(); //nodes that aren't checked
+	list_manager.put(unProcessedNodes , tree);
+    wnat *cMarking = marking_create();  //!XXX
+	int res = covtree_covers(rootMarking , x);
+	if(res == 0) {
+		marking_destroy(cMarking);
+		return 0;    //!XXX	
+	}		
+	
+    while(!list_manager.empty(unProcessedNodes)){
+		
+		node *currNode  = list_manager.get(unProcessedNodes);
+		//!check for all firable transitions	
+		unsigned int k;
+		for(k=0;k<PN->trans_count;k++){
+			
+			if(!marking_leq(PN->trans[k].input , currNode->marking))  //! this transition is not firable
+			continue;
+				
+			//!else
+			marking_add(cMarking , currNode->marking , PN->trans[k].output);
+			marking_sub(cMarking , cMarking , PN->trans[k].input);
+			res = covtree_covers(cMarking , x);
+			if(res == 0) {
+				marking_destroy(cMarking);
+				return 0;    //!XXX	
+			}
+		}
+		
+		node *temp = currNode->child;          //!add children of this node to unprocessed nodes
+		while(temp!=NULL){
+			list_manager.put(unProcessedNodes , temp);
+			temp = temp->next;
+		}
+	}
+	
+	list_manager.destroy(unProcessedNodes);
+	return 1;
+}
+
+
+
+
+
+
+
+
 
 
 
