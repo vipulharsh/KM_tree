@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 			else if (strcmp(optarg, "mp") == 0)
 				engine = covtree_MP;
 			else if (strcmp(optarg, "mct2") == 0)
-				engine = covtree_MCT2;		
+				engine = covtree_MCT2;
 			else {
 				warnx("Invalid argument `%s' for -e", optarg);
 				usage();
@@ -299,7 +299,7 @@ usage(void)
 	    "\n"
 	    "  -c\t\tCheck completeness of coverability tree.\n"
 	    "  -d <file>\tFile name of .dot output.\n"
-	    "  -e {km, km-red, mct, mp}\n\t\tCoverability tree computation procedure.\n"
+	    "  -e {km, km-red, mct, mct2, mp}\n\t\tCoverability tree computation procedure.\n"
 	    "  -s {bfs, dfs}\tOrder of exploration.\n"
 	    "  -t <file>\tFile name of .txt output.\n"
 	    "  -q\t\tQuiet output.\n"

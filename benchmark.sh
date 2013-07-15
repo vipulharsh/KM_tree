@@ -29,7 +29,7 @@ l6000.net
 pingpong.net"
 
 # Coverability tree computation procedures.
-ENGINES="km km-red mct"
+ENGINES="km km-red mct mct2 mp"
 
 # Path to the time(1) utility.  Comment this line for quieter output.
 TIME=/usr/bin/time
