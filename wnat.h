@@ -18,7 +18,7 @@ typedef	double		 wnat;
 static const wnat omega = INFINITY;
 
 /* Macro to check that a double is a wnat.  Mostly used in assertions. */
-#define IS_WNAT(x)	((x) == trunc(x))
+#define IS_WNAT(x)	((x) == trunc(x) && (x) >= 0)
 
 /*
  * wnat_from: Converts an unsigned int into a wnat.
