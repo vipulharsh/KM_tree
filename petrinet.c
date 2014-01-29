@@ -393,7 +393,7 @@ petrinet_read_net(FILE *fp, net **PNet)
 					strncpy(amt , so + span, strlen(so)-span);
 					int pl_number = returnIndex(pch , places_list , place_count);
 					long int tokens = returnAmt(amt);
-					PN->trans[trans_number].input[pl_number] = tokens;
+					PN->trans[trans_number].input[pl_number] += tokens;
 					so = strtok (NULL, " ");	
 					//free(pch);
 					//free(amt);
@@ -408,7 +408,7 @@ petrinet_read_net(FILE *fp, net **PNet)
 					strncpy(amt , so + span, strlen(so)-span);
 					int pl_number = returnIndex(pch , places_list , place_count);
 					long int tokens = returnAmt(amt);
-					PN->trans[trans_number].output[pl_number] = tokens;
+					PN->trans[trans_number].output[pl_number] += tokens;
 				 so = strtok (NULL, " ");	
 				 continue;
 			     } 

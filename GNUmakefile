@@ -2,8 +2,8 @@
 
 CC = gcc
 CFLAGS = -Wall -Wextra
-#CFLAGS += -DNDEBUG -O		# For production and benchmarks
-CFLAGS += -DDEBUG -g		# For debugging
+CFLAGS += -DNDEBUG -O		# For production and benchmarks
+#CFLAGS += -DDEBUG -g		# For debugging
 INCLUDES = -I.
 LIBS = -lm
 
